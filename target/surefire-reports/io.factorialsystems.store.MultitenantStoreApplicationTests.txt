@@ -1,4 +1,0 @@
--------------------------------------------------------------------------------
-Test set: io.factorialsystems.store.MultitenantStoreApplicationTests
--------------------------------------------------------------------------------
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 3.906 s - in io.factorialsystems.store.MultitenantStoreApplicationTests
