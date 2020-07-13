@@ -1,0 +1,5 @@
+io/factorialsystems/store/mapper/product/CategoryMapperTest.class
+io/factorialsystems/store/MultitenantStoreApplicationTests.class
+io/factorialsystems/store/domain/product/ProductTest.class
+io/factorialsystems/store/service/store/StoreProductServiceTest.class
+io/factorialsystems/store/domain/product/CategoryTest.class

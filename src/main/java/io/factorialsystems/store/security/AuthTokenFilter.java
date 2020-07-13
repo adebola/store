@@ -38,7 +38,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
         String tenantHeader = request.getHeader("X-TenantID");
         log.info("Tenant Header {}", tenantHeader);
 
-        if (tenantHeader != null && !tenantHeader.isBlank()) {
+        if (tenantHeader != null && !tenantHeader.isEmpty()) {
 
             // Set TenantHeader into context, we dont have the username yet
             Context context = new Context(tenantHeader, null);
