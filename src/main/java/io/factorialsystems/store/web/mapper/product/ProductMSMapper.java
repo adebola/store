@@ -6,13 +6,12 @@ import io.factorialsystems.store.web.model.product.ProductDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
-import org.mapstruct.factory.Mappers;
 
 import java.util.List;
 
 @Mapper(uses = {DateMSMapper.class})
 public interface ProductMSMapper {
-    public static ProductMSMapper INSTANCE = Mappers.getMapper(ProductMSMapper.class);
+    //ProductMSMapper INSTANCE = Mappers.getMapper(ProductMSMapper.class);
 
     @Mappings({
             @Mapping(source = "id", target = "id"),
@@ -20,8 +19,7 @@ public interface ProductMSMapper {
             @Mapping(source = "category", target = "category"),
             @Mapping(source = "createdDate", target = "createdDate"),
             @Mapping(source = "lastModifiedDate", target = "lastModifiedDate"),
-            @Mapping(source = "variants", target = "variants"),
-            //@Mapping(source = "productVariantList.productVariantOptionList", target = "variants.variantOptions")
+            @Mapping(source = "variants", target = "variants")
     })
     ProductDto ProductToProductDto(Product product);
 
@@ -31,11 +29,9 @@ public interface ProductMSMapper {
             @Mapping(source = "category", target = "category"),
             @Mapping(source = "createdDate", target = "createdDate"),
             @Mapping(source = "lastModifiedDate", target = "lastModifiedDate"),
-            @Mapping(source = "variants", target = "variants"),
-            //@Mapping(source = "variants.variantOptions", target = "productVariantList.productVariantOptionList")
-
+            @Mapping(source = "variants", target = "variants")
     })
     Product ProductDtoToProduct(ProductDto productDto);
     List<ProductDto> ListProductToProductDto(List<Product> products);
-    List<Product> ListProductDtoToProduct(List<ProductDto> productDtos);
+    //List<Product> ListProductDtoToProduct(List<ProductDto> productDtos);
 }

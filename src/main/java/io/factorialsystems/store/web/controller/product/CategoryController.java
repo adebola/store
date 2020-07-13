@@ -43,7 +43,7 @@ public class CategoryController {
     @PostMapping("/save")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<CategoryDto> save(@Valid @RequestBody CategoryDto categoryDto) {
-        return new ResponseEntity<CategoryDto>(categoryService.save(categoryDto), HttpStatus.CREATED);
+        return new ResponseEntity<>(categoryService.save(categoryDto), HttpStatus.CREATED);
     }
 
     @DeleteMapping("/delete/{id}")

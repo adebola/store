@@ -12,7 +12,7 @@ import java.util.List;
 
 @Mapper(uses = {DateMSMapper.class})
 public interface ProductVariantOptionMSMapper {
-    public static ProductVariantOptionMSMapper INSTANCE = Mappers.getMapper(ProductVariantOptionMSMapper.class);
+    ProductVariantOptionMSMapper INSTANCE = Mappers.getMapper(ProductVariantOptionMSMapper.class);
 
     @Mappings({
             @Mapping(source = "id", target = "id"),

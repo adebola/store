@@ -26,7 +26,11 @@ public class UserDto {
     @Email
     private String email;
 
-    //@NotBlank
-    //private String password;
+    @NotBlank
+    private String fullName;
+
+    private String telephone;
+    private String address;
+
     private Set<String> roles;
 }

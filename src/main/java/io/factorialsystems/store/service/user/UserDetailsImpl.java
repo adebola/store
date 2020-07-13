@@ -20,6 +20,7 @@ public class UserDetailsImpl implements UserDetails {
     private String username;
 
     private String email;
+    private String fullName;
 
 
     @JsonIgnore
@@ -36,6 +37,7 @@ public class UserDetailsImpl implements UserDetails {
                 user.getId(),
                 user.getUsername(),
                 user.getEmail(),
+                user.getFullName(),
                 user.getPassword(),
                 authorities
         );
@@ -44,7 +46,6 @@ public class UserDetailsImpl implements UserDetails {
     public Integer getId() {
         return id;
     }
-
     public void setId(Integer id) {
         this.id = id;
     }
@@ -52,10 +53,9 @@ public class UserDetailsImpl implements UserDetails {
     public String getEmail() {
         return email;
     }
+    public void setEmail(String email) {  this.email = email; }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+    public String getFullName() { return fullName; }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

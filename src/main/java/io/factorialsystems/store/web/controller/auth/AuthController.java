@@ -26,7 +26,6 @@ import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Slf4j
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -46,8 +45,7 @@ public class AuthController {
     }
 
     @PostMapping("/signin")
-    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
-
+    public ResponseEntity<JwtResponse> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
 
@@ -55,15 +53,26 @@ public class AuthController {
         String jwt = jwtUtils.generateJwtToken(authentication);
 
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-        List<String> roles = userDetails.getAuthorities().stream()
-                .map(item -> item.getAuthority())
-                .collect(Collectors.toList());
+//        Roles Not needed for Now
+//        List<String> roles = userDetails.getAuthorities().stream()
+//                .map(item -> item.getAuthority())
+//                .collect(Collectors.toList());
 
-        return ResponseEntity.ok(new JwtResponse(jwt,
-                userDetails.getId(),
-                userDetails.getUsername(),
-                userDetails.getEmail(),
-                roles));
+        JwtResponse response =  JwtResponse.builder()
+                .id(userDetails.getId())
+                .username(userDetails.getUsername())
+                .email(userDetails.getEmail())
+                .fullName(userDetails.getFullName())
+                .token(jwt)
+                .build();
+
+        return ResponseEntity.ok(response);
+
+//        return ResponseEntity.ok(new JwtResponse(jwt,
+//                userDetails.getId(),
+//                userDetails.getUsername(),
+//                userDetails.getEmail(),
+//                roles));
     }
 
     @PostMapping("/signup")
@@ -81,6 +90,9 @@ public class AuthController {
         // Create User Account
         User user = new User(signupRequest.getUsername(),
                 signupRequest.getEmail(),
+                signupRequest.getFullname(),
+                signupRequest.getTelephone(),
+                signupRequest.getAddress(),
                 encoder.encode(signupRequest.getPassword()));
 
         Set<String> strRoles = signupRequest.getRole();
@@ -94,7 +106,7 @@ public class AuthController {
             }
 
             roles.add(userRole);
-            log.info("Roles NULL, Added user Role");
+            log.info("No Role Specified, Added User Role");
         } else {
             strRoles.forEach(role -> {
                 switch (role) {

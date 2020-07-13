@@ -48,7 +48,6 @@ public class ProductService {
         Product product = productMSMapper.ProductDtoToProduct(productDto);
         product.setTenantId(TenantContext.getCurrentTenant());
 
-
             productMapper.saveProduct(product);
 
             log.info(product.toString());

@@ -3,6 +3,7 @@ package io.factorialsystems.store.security;
 import io.factorialsystems.store.service.user.UserDetailsImpl;
 import io.jsonwebtoken.*;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
@@ -14,11 +15,11 @@ import java.util.function.Function;
 @Slf4j
 @Component
 public class JwtUtils {
-    //@Value("${spring.app.jwtSecret}")
-    private String jwtSecret = "The Brightness of His Glory";
+    @Value("${spring.app.jwtSecret}")
+    private String jwtSecret;
 
-    //@Value("${spring.app.jwtExpirationMs}")
-    private Integer jwtExpirationMs = 86400000;
+    @Value("${spring.app.jwtExpirationMs}")
+    private Integer jwtExpirationMs;
 
     public String generateJwtToken(@NotNull Authentication authentication) {
         UserDetailsImpl userPrincipal = (UserDetailsImpl)authentication.getPrincipal();

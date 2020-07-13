@@ -24,7 +24,7 @@ public class ProductController {
     @GetMapping("/")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<ProductDto>> findAll() {
-        return new ResponseEntity<List<ProductDto>>(productService.findAll(), HttpStatus.OK);
+        return new ResponseEntity<>(productService.findAll(), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
@@ -38,19 +38,21 @@ public class ProductController {
     public ResponseEntity<MessageResponse> update(@PathVariable("id") Integer id, @Valid @RequestBody ProductDto productDto) {
 
         MessageResponse messageResponse;
+        HttpStatus httpStatus = HttpStatus.OK;
 
         if (productService.update(id, productDto)) {
             messageResponse = new MessageResponse("Product updated Successfully");
         } else {
             messageResponse = new MessageResponse("Product update Error");
+            httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
         }
 
-        return new ResponseEntity<>(messageResponse, HttpStatus.OK);
+        return new ResponseEntity<>(messageResponse, httpStatus);
     }
 
     @PostMapping("/")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> save(@Valid @RequestBody ProductDto productDto) {
+    public ResponseEntity<ProductDto> save(@Valid @RequestBody ProductDto productDto) {
         return new ResponseEntity<>(productService.save(productDto), HttpStatus.CREATED);
     }
 

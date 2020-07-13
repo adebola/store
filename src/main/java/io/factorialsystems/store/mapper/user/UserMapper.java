@@ -14,41 +14,59 @@ public interface UserMapper {
     final String SELECT_ROLES = "select r.id, r.name, r.tenant_id from roles r, user_roles ur, users u " +
             "where r.id = ur.role_id and u.id = ur.user_id and u.id = #{userId}";
 
-    @Select("SELECT id, username, email, password, tenant_id from users where tenant_id = #{tenantId}")
+    final String SELECT_USER = "SELECT id, username, email, fullname, telephone, address, tenant_id from users where tenant_id = #{tenantId}";
+    final String SELECT_USER_ID = "SELECT id, username, email, fullname, telephone, address, tenant_id from users where id = #{id} and tenant_id = #{tenantId}";
+    final String SELECT_USER_NAME = "SELECT id, username, email, password, fullname, telephone, address, tenant_id from users where username = #{username} and tenant_id = #{tenantId}";
+    final String SELECT_USER_EMAIL = "SELECT id, username, email, password, fullname, telephone, address, tenant_id from users where email = #{email} and tenant_id = #{tenantId}";
+
+    @Select(SELECT_USER)
     @Results(value = {
             @Result(property="id", column = "id"),
             @Result(property = "username", column = "username"),
             @Result(property = "email", column = "email"),
+            @Result(property = "fullName", column = "fullname"),
+            @Result(property = "telephone", column = "telephone"),
+            @Result(property = "address", column = "address"),
             @Result(property = "tenantId", column = "tenant_id"),
             @Result(property = "roles", column = "id", javaType = List.class, many=@Many(select="selectUserRoles"))
     })
     List<User> findAll(String tenantId);
 
-    @Select("SELECT id, username, email, password, tenant_id from users where id = #{id} and tenant_id = #{tenantId}")
+    @Select(SELECT_USER_ID)
     @Results(value = {
             @Result(property="id", column = "id"),
             @Result(property = "username", column = "username"),
             @Result(property = "email", column = "email"),
+            @Result(property = "fullName", column = "fullname"),
+            @Result(property = "telephone", column = "telephone"),
+            @Result(property = "address", column = "address"),
             @Result(property = "tenantId", column = "tenant_id"),
             @Result(property = "roles", column = "id", javaType = List.class, many=@Many(select="selectUserRoles"))
     })
     User findById(Integer id, String tenantId);
 
-    @Select("SELECT id, username, email, password, tenant_id from users where username = #{username} and tenant_id = #{tenantId}")
+    @Select(SELECT_USER_NAME)
     @Results(value = {
             @Result(property="id", column = "id"),
             @Result(property = "username", column = "username"),
             @Result(property = "email", column = "email"),
+            @Result(property = "password", column = "password"),
+            @Result(property = "fullName", column = "fullname"),
+            @Result(property = "telephone", column = "telephone"),
+            @Result(property = "address", column = "address"),
             @Result(property = "tenantId", column = "tenant_id"),
             @Result(property = "roles", column = "id", javaType = List.class, many=@Many(select="selectUserRoles"))
     })
     User findByUsername(String username, String tenantId);
 
-    @Select("SELECT id, username, email, password, tenant_id from users email = #{email} and tenant_id = #{tenantId}")
+    @Select(SELECT_USER_EMAIL)
     @Results(value = {
             @Result(property="id", column = "id"),
             @Result(property = "username", column = "username"),
             @Result(property = "email", column = "email"),
+            @Result(property = "fullName", column = "fullname"),
+            @Result(property = "telephone", column = "telephone"),
+            @Result(property = "address", column = "address"),
             @Result(property = "tenantId", column = "tenant_id"),
             @Result(property = "roles", column = "id", javaType = List.class, many=@Many(select="selectUserRoles"))
     })
