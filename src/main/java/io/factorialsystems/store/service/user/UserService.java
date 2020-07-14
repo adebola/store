@@ -131,6 +131,7 @@ public class UserService {
             userMapper.createUser(user);
 
             Integer userId = user.getId();
+            log.info(String.format("User Created with UserId %d", userId));
 
             if (userId != null && userId > 0 && user.getRoles().size() > 0) {
                 userMapper.insertRoleList(userId, user.getRoles());
@@ -138,7 +139,7 @@ public class UserService {
 
             return user;
         } else {
-            String message = "Error Saving Use No Organization Specified";
+            String message = "Error Saving User No Organization Specified";
             log.error(message);
             throw new RuntimeException(message);
         }

@@ -7,13 +7,13 @@ import io.factorialsystems.store.web.model.product.CategoryDto.CategoryDtoBuilde
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
-import javax.annotation.Generated;
+import javax.annotation.processing.Generated;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2020-07-13T18:41:27+0100",
+    date = "2020-07-14T08:56:05+0100",
     comments = "version: 1.3.1.Final, compiler: javac, environment: Java 11.0.5 (Oracle Corporation)"
 )
 @Component

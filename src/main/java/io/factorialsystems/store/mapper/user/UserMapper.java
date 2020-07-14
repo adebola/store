@@ -87,7 +87,7 @@ public interface UserMapper {
     @Select("Select Exists(Select 1 from users where email = #{email} and tenant_id = #{tenantId})")
     Boolean existsByEmail(String email, String tenantId);
 
-    @Insert("insert into users(username, email, password, tenant_id) values(#{username}, #{email}, #{password}, #{tenantId})")
+    @Insert("insert into users(username, email, password, fullname, telephone, address, tenant_id) values(#{username}, #{email}, #{password}, #{fullName}, #{telephone}, #{address}, #{tenantId})")
     //@Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
     @SelectKey(statement = "select LAST_INSERT_ID()", keyProperty = "id", keyColumn = "id", before = false, resultType = Integer.class)
     Integer createUser(User user);
