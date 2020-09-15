@@ -54,13 +54,11 @@ create table categories (
 create table products (
     id int(11) AUTO_INCREMENT,
     name varchar(64) NOT NULL,
-    description varchar(256) NOT NULL,
+    description varchar(256) DEFAULT NULL,
     brand varchar(64),
     category_id int(11) NOT NULL,
-    tenant_id varchar(64) NOT NULL,
-    new boolean NOT NULL DEFAULT TRUE,
-    sale boolean NOT NULL DEFAULT FALSE,
     discontinued boolean NOT NULL DEFAULT FALSE,
+    tenant_id varchar(64) NOT NULL,
     createdAt timestamp DEFAULT CURRENT_TIMESTAMP,
     lastModifiedAt timestamp DEFAULT NULL,
     PRIMARY KEY(id),
@@ -100,8 +98,12 @@ create table sku_products (
     product_id int(11) NOT NULL,
     sku varchar(32) NOT NULL UNIQUE,
     price decimal(13,2),
+    discount decimal (13,2) NOT NULL DEFAULT 0,
+    sku_description varchar(256) DEFAULT NULL,
     discontinued boolean NOT NULL DEFAULT FALSE,
-    stocklevel int(11) NOT NULL DEFAULT 0,
+    quantity int(11) NOT NULL DEFAULT 0,
+    new boolean NOT NULL DEFAULT TRUE,
+    sale boolean NOT NULL DEFAULT FALSE,
     tenant_id varchar(64),
     createdAt timestamp DEFAULT CURRENT_TIMESTAMP,
     lastModifiedAt timestamp DEFAULT NULL,
@@ -138,10 +140,10 @@ create table product_tags (
     UNIQUE KEY idx_product_tag (product_id, tag_id)
 );
 
-create table product_images (
-  product_id int(11) NOT NULL,
+create table sku_images (
+  sku_id int(11) NOT NULL,
   image_id int(11) NOT NULL,
-  FOREIGN KEY (product_id) REFERENCES products(id),
+  FOREIGN KEY (sku_id) REFERENCES sku_products(id),
   FOREIGN KEY (image_id) REFERENCES images(id),
-  UNIQUE KEY idx_product_image (product_id, image_id)
+  UNIQUE KEY idx_product_image (sku_id, image_id)
 );

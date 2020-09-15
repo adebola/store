@@ -44,20 +44,20 @@ class StoreProductServiceTest {
         String variantOption2 = "Large";
 
         ProductSKU p1 = new ProductSKU();
-        p1.setSku(skuId1);
+        //p1.setSku(skuId1);
         p1.setProductId(productId1);
         p1.setName(productName1);
         p1.setImagePath(imagePath1);
         p1.setVariant(variant1);
-        p1.setVariant_options(variantOption1);
+        p1.setVariantOption(variantOption1);
 
         ProductSKU p2 = new ProductSKU();
-        p2.setSku(skuId1);
+        //p2.setSku(skuId1);
         p2.setProductId(productId1);
         p2.setName(productName1);
         p2.setImagePath(imagePath1);
         p2.setVariant(variant2);
-        p2.setVariant_options(variantOption2);
+        p2.setVariantOption(variantOption2);
 
         List<ProductSKU> skuList = Arrays.asList(p1, p2);
 

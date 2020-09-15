@@ -11,5 +11,5 @@ import lombok.NoArgsConstructor;
 @Builder
 public class StoreProductBundleVariantDto {
     private String variantName;
-    private String VariantOption;
+    private String variantOption;
 }
