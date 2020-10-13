@@ -147,3 +147,32 @@ create table sku_images (
   FOREIGN KEY (image_id) REFERENCES images(id),
   UNIQUE KEY idx_product_image (sku_id, image_id)
 );
+
+create table posts (
+    id int(11) AUTO_INCREMENT,
+    title varchar(256) NOT NULL,
+    content TEXT NOT NULL,
+    user_id int(11) NOT NULL,
+    product_id int(11) NOT NULL,
+    tenant_id varchar(64) NOT NULL,
+    likes int DEFAULT 0,
+    dislikes int DEFAULT 0,
+    createdAt timestamp DEFAULT CURRENT_TIMESTAMP,
+    lastModifiedAt timestamp DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (product_id) REFERENCES products(id),
+    FOREIGN KEY (tenant_id) REFERENCES tenants(id),
+    PRIMARY KEY (id)
+);
+
+create table comments(
+  id int(11) AUTO_INCREMENT,
+  content TEXT NOT NULL,
+  creator int(11) NOT NULL,
+  post_id int(11) NOT NULL,
+  createdAt timestamp DEFAULT CURRENT_TIMESTAMP,
+  lastModifiedAt timestamp DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (creator) REFERENCES users(id),
+  FOREIGN KEY (post_id) REFERENCES posts(id),
+  PRIMARY KEY (id)
+);
