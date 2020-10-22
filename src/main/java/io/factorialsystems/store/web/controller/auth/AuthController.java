@@ -13,7 +13,6 @@ import io.factorialsystems.store.service.user.UserDetailsImpl;
 import io.factorialsystems.store.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -39,11 +38,6 @@ public class AuthController {
     private final PasswordEncoder encoder;
     private final JwtUtils jwtUtils;
 
-    @GetMapping("/")
-    public ResponseEntity<MessageResponse> test() {
-        return new ResponseEntity<MessageResponse>(new MessageResponse("Jesus Is Lord!!!"), HttpStatus.OK);
-    }
-
     @PostMapping("/signin")
     public ResponseEntity<JwtResponse> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(
@@ -63,20 +57,17 @@ public class AuthController {
                 .username(userDetails.getUsername())
                 .email(userDetails.getEmail())
                 .fullName(userDetails.getFullName())
+                .telephone(userDetails.getTelephone())
+                .address(userDetails.getAddress())
                 .token(jwt)
                 .build();
 
         return ResponseEntity.ok(response);
-
-//        return ResponseEntity.ok(new JwtResponse(jwt,
-//                userDetails.getId(),
-//                userDetails.getUsername(),
-//                userDetails.getEmail(),
-//                roles));
     }
 
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signupRequest) {
+
         if (userService.existsByUsername(signupRequest.getUsername())) {
             return ResponseEntity.badRequest()
                     .body(new MessageResponse("Error: Username is already taken!"));
@@ -87,7 +78,6 @@ public class AuthController {
                     .body(new MessageResponse("Error E-mail is already in use!"));
         }
 
-        // Create User Account
         User user = new User(signupRequest.getUsername(),
                 signupRequest.getEmail(),
                 signupRequest.getFullName(),

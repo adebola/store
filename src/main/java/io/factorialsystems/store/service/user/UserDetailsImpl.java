@@ -21,6 +21,9 @@ public class UserDetailsImpl implements UserDetails {
 
     private String email;
     private String fullName;
+    private String telephone;
+    private String address;
+
 
 
     @JsonIgnore
@@ -38,6 +41,8 @@ public class UserDetailsImpl implements UserDetails {
                 user.getUsername(),
                 user.getEmail(),
                 user.getFullName(),
+                user.getTelephone(),
+                user.getAddress(),
                 user.getPassword(),
                 authorities
         );
@@ -56,6 +61,10 @@ public class UserDetailsImpl implements UserDetails {
     public void setEmail(String email) {  this.email = email; }
 
     public String getFullName() { return fullName; }
+
+    public String getTelephone() { return telephone; }
+
+    public String getAddress() { return  address; }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -124,6 +124,7 @@ public class UserService {
     // Save User is not exposed to the outside world, for now only used by the Auth Framework
     // so will still return user
     public User saveUser(User user) {
+
         String tenantId = TenantContext.getCurrentTenant();
 
         if (tenantId != null) {

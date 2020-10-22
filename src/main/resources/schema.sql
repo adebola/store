@@ -1,3 +1,22 @@
+
+drop table sku_product_variant_options;
+drop table sku_images;
+drop table sku_products;
+drop table product_variant_options;
+drop table product_variants;
+drop table product_tags;
+drop table orderItems;
+drop table orders;
+drop table sku_products;
+drop table comments;
+drop table posts;
+drop table products;
+drop table categories;
+drop table user_roles;
+drop table images;
+drop table tags;
+drop table users;
+
 create table tenants (
     id varchar(64) NOT NULL,
     organization varchar(64) NOT NULL,
@@ -23,7 +42,7 @@ create table users (
     password varchar(64) NOT NULL,
     fullname varchar(64) NOT NULL,
     telephone varchar(64),
-    address varchar(64),
+    address varchar(256),
     tenant_id varchar(64) NOT NULL,
     createdAt timestamp DEFAULT CURRENT_TIMESTAMP,
     lastModifiedAt timestamp DEFAULT NULL,
@@ -168,11 +187,42 @@ create table posts (
 create table comments(
   id int(11) AUTO_INCREMENT,
   content TEXT NOT NULL,
-  creator int(11) NOT NULL,
+  user_id int(11) NOT NULL,
   post_id int(11) NOT NULL,
   createdAt timestamp DEFAULT CURRENT_TIMESTAMP,
   lastModifiedAt timestamp DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (creator) REFERENCES users(id),
+  FOREIGN KEY (user_id) REFERENCES users(id),
   FOREIGN KEY (post_id) REFERENCES posts(id),
   PRIMARY KEY (id)
+);
+
+create table orders(
+    id int(11) AUTO_INCREMENT,
+    user_id int(11),
+    order_date timestamp DEFAULT CURRENT_TIMESTAMP,
+    order_amount decimal(10, 2) DEFAULT 0,
+    payment_ref  varchar(16),
+    transaction_id varchar(16),
+    pickup boolean NOT NULL DEFAULT TRUE,
+    deliver boolean NOT NULL DEFAULT TRUE,
+    full_name varchar(64),
+    telephone varchar(32),
+    address varchar(256),
+    tenant_id varchar(64) NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (tenant_id) REFERENCES tenants(id),
+    PRIMARY KEY (id)
+);
+
+create table orderitems(
+    id int(11) AUTO_INCREMENT,
+    order_id int(11) NOT NULL,
+    sku_id int(11) NOT NULL,
+    quantity int(11) DEFAULT 1,
+    unit_price decimal(10, 2) NOT NULL,
+    discount decimal(10, 2) DEFAULT 0,
+    total_price decimal(10, 2) NOT NULL,
+    FOREIGN KEY (order_id) REFERENCES orders(id),
+    FOREIGN KEY (sku_id) REFERENCES sku_products(id),
+    PRIMARY KEY (id)
 );

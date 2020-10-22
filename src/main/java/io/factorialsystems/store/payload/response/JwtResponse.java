@@ -12,5 +12,7 @@ public class JwtResponse {
     private String username;
     private String email;
     private String fullName;
+    private String telephone;
+    private String address;
     private String token;
 }

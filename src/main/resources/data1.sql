@@ -4,14 +4,23 @@ insert into tenants(id, organization) values
 insert into roles (name, tenant_id) values
 ('ROLE_USER', 'ca7f369c-7fef-11ea-8e3b-62fdd0190df3'),
 ('ROLE_OPERATOR', 'ca7f369c-7fef-11ea-8e3b-62fdd0190df3'),
-('ROLE_ADMIN', 'ca7f369c-7fef-11ea-8e3b-62fdd0190df3');
+('ROLE_ADMIN', 'ca7f369c-7fef-11ea-8e3b-62fdd0190df3'),
+('ROLE_USER', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),
+('ROLE_OPERATOR', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),
+('ROLE_ADMIN', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e');
 
 insert into categories(name, tenant_id) values
 ('Men', 'ca7f369c-7fef-11ea-8e3b-62fdd0190df3'),
 ('Women', 'ca7f369c-7fef-11ea-8e3b-62fdd0190df3'),
 ('Mens Shoes', 'ca7f369c-7fef-11ea-8e3b-62fdd0190df3'),
 ('bags', 'ca7f369c-7fef-11ea-8e3b-62fdd0190df3'),
-('watches', 'ca7f369c-7fef-11ea-8e3b-62fdd0190df3');
+('watches', 'ca7f369c-7fef-11ea-8e3b-62fdd0190df3'),
+('Butter', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),
+('Ice-Cream', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),
+('French-Fries', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),
+('Cheese', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),
+('Corn', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),
+('Chicken', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e');
 
 insert into products(name, category_id, description, brand, tenant_id) values
 ('Duxford', 3, 'Duxford Shoes', 'churches', 'ca7f369c-7fef-11ea-8e3b-62fdd0190df3'),
@@ -23,7 +32,20 @@ insert into products(name, category_id, description, brand, tenant_id) values
 ('Diplomat', 3, 'Diplomat Shoes', 'churches', 'ca7f369c-7fef-11ea-8e3b-62fdd0190df3'),
 ('Chetwynd', 3, 'Chetwynd Shoes', 'churches', 'ca7f369c-7fef-11ea-8e3b-62fdd0190df3'),
 ('Berlin', 3, 'Berlin Shoes', 'churches', 'ca7f369c-7fef-11ea-8e3b-62fdd0190df3'),
-('Burwood', 3, 'Burwood Shoes', 'churches', 'ca7f369c-7fef-11ea-8e3b-62fdd0190df3');
+('Burwood', 3, 'Burwood Shoes', 'churches', 'ca7f369c-7fef-11ea-8e3b-62fdd0190df3'),
+('Salted Butter', 6, 'Ambassador Salted Butter', 'Ambassador', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),
+('Cadbury Ice Cream', 7, 'Cadbury Caramello Ice Cream', 'Cadbury', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),
+('Phoenix Fries', 8, 'Golden Phoenix French Fries', 'Golden Phoenix', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),
+('Mozarella Cheese', 9, 'Maestrella Mozarella Shredded Cheese', 'Maestrella', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),
+('McCain Corn Kernels', 10, 'McCain Corn Kernels', 'McCain', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),
+('Unsalted Butter', 6, 'Ambassador Unsalted Butter', 'President', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),
+('Slightly Salted Butter', 6, 'President Slightly Salted Butter', 'President', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),
+('Vanilla Cream', 7, 'Cadbury Vanilla flavoured Ice Cream', 'Cadbury', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),
+('Chrunchie Ice Cream', 7, 'Cadbury Crunchie Ice Cream', 'Cadbury', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),
+('Chicken Franks', 11, 'Golden Phoenix Chicken Franks', 'Golden Phoenix', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),
+('Crinkle Cut Fries', 8, 'Golden Phoenix Crinkle CutFrench Fries', 'Golden Phoenix', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),
+('Shoestring Fries', 8, 'Golden Phoenix Shoestring cut French Fries', 'Golden Phoenix', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),
+('Chicken Griller', 11, 'Golden Phoenix Frozen Chicken Griller', 'Golden Phoenix', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e');
 
 insert into product_variants(product_id, name, tenant_id) values
 -- Duxford Shoes
@@ -55,7 +77,33 @@ insert into product_variants(product_id, name, tenant_id) values
 (9, 'Size', 'ca7f369c-7fef-11ea-8e3b-62fdd0190df3'),
 -- Burwood Shoes
 (10, 'Color', 'ca7f369c-7fef-11ea-8e3b-62fdd0190df3'),
-(10, 'Size', 'ca7f369c-7fef-11ea-8e3b-62fdd0190df3');
+(10, 'Size', 'ca7f369c-7fef-11ea-8e3b-62fdd0190df3'),
+-- Ambassador Butter
+(11, 'Unit', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),
+-- Cadbury Ice-Cream
+(12, 'Unit', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),
+-- Phoenix Fries
+(13, 'Unit', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),
+-- Mozarella Cheese
+(14, 'Unit', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),
+-- McCain Corn Kernels
+(15, 'Unit', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),
+-- Ambassador Unsalted Butter
+(16, 'Unit', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),
+-- Slightly salted Butter
+(17, 'Unit', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),
+-- Cabbury Vanilla Ice-Cream
+(18, 'Unit', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),
+-- Cadbury Crunchie Ice-Cream
+(19, 'Unit', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),
+-- Golden Phoenix Chicken Franks
+(20, 'Unit', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),
+-- Golden Phoenix Crinkle Cut Friesr
+(21, 'Unit', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),
+-- Golden Phoenix Shoestring cut fries
+(22, 'Unit', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),
+-- Golden Phoenix Chicken Griller
+(23, 'Unit', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e');
 
 insert into product_variant_options(product_variant_id, name, tenant_id) values
 -- Duxford Shoes
@@ -181,7 +229,46 @@ insert into product_variant_options(product_variant_id, name, tenant_id) values
 (20, '7', 'ca7f369c-7fef-11ea-8e3b-62fdd0190df3'),
 (20, '7.5', 'ca7f369c-7fef-11ea-8e3b-62fdd0190df3'),
 (20, '8', 'ca7f369c-7fef-11ea-8e3b-62fdd0190df3'),
-(20, '8.5', 'ca7f369c-7fef-11ea-8e3b-62fdd0190df3');
+(20, '8.5', 'ca7f369c-7fef-11ea-8e3b-62fdd0190df3'),
+-- Ambassador Butter
+(21, '200g', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),
+(21, 'Carton - 200g', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),
+-- Cadbury Caramello Ice-Cream
+(22, '480ml', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),
+(22, 'Carton - 480ml', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),
+-- Phoenix
+(23, 'Kg', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),
+(23, 'Carton - 20', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),
+-- Mozzarella Cheese
+(24, '2Kg', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),
+(24, 'Carton - 5', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),
+-- Mozzarella Cheese
+(25, '500g', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),
+(25, 'Carton - 10kg', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),
+-- Ambassador UnSalted Butter
+(26, '200g', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),
+(26, 'Carton - 200g', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),
+-- Ambassador Slightly Butter
+(27, '200g', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),
+(27, 'Carton - 200g', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),
+-- Cadbury Vanilla Ice-Cream
+(28, '480ml', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),
+(28, 'Carton - 480ml', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),
+-- Cadbury Crunchie Ice-Cream
+(29, '480ml', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),
+(29, 'Carton - 480ml', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),
+-- Golden Phoenix Chicken Franks
+(30, '340g', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),
+(30, 'Carton - 340g', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),
+-- Golden Phoenix Crinkle Cut Fries
+(31, '2.5kg', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),
+(31, 'Carton - 2.5kg', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),
+-- Golden Phoenix Shoestring cut fries
+(32, '2.5kg', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),
+(32, 'Carton - 2.5kg', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),
+-- Golden Phoenix Chicken Griller
+(33, '1000g', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),
+(33, 'Carton - 1kg', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e');
 
 insert into sku_products(product_id, sku, price, discount, sku_description, tenant_id) values
 -- Duxford Shoes
@@ -333,7 +420,47 @@ insert into sku_products(product_id, sku, price, discount, sku_description, tena
 (6, 'CAR-LEA-TAN-7', 625000, 5.5, 'Doha Leather Oxford Brogue Cordovan', 'ca7f369c-7fef-11ea-8e3b-62fdd0190df3'),
 (6, 'CAR-LEA-TAN-7.5', 625000, 5.5, 'Doha Leather Oxford Brogue Cordovan', 'ca7f369c-7fef-11ea-8e3b-62fdd0190df3'),
 (6, 'CAR-LEA-TAN-8', 625000, 5.5, 'Doha Leather Oxford Brogue Cordovan', 'ca7f369c-7fef-11ea-8e3b-62fdd0190df3'),
-(6, 'CAR-LEA-TAN-8.5', 625000, 5.5, 'Doha Leather Oxford Brogue Cordovan', 'ca7f369c-7fef-11ea-8e3b-62fdd0190df3');
+(6, 'CAR-LEA-TAN-8.5', 625000, 5.5, 'Doha Leather Oxford Brogue Cordovan', 'ca7f369c-7fef-11ea-8e3b-62fdd0190df3'),
+-- DELIFROST
+-- Salted Butter
+(11, 'AMB-SAL-BUT-200G', 2000, 2.5, 'Ambassador Salted Butter 200g', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),
+(11, 'AMB-SAL-BUT-CART-200G', 25000, 2.5, 'Ambassador Salted Butter Carton 10x200g', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),
+-- Cadbury Caramello
+(12, 'CAD-CAR-ICE-480ML', 500, 2.5, 'Cadbury Caramello Ice Cream 480 ml', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),
+(12, 'CAD-CAR-ICE-CART-480ML', 18000, 3, 'Cadbury Caramello Ice Cream 480 ml Carton 480ml x 20', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),
+-- Golden Phoenix French Fries
+(13, 'GOL-PHO-FRI-1KG', 1200, 2, 'Golden Phoenix French Fries 1Kg', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),
+(13, 'GOL-PHO-FRI-CART-1KG', 23000, 2.5, 'Golden Phoenix French Fries Carton 20 x 1Kg', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),
+-- Mozarella Cheese
+(14, 'MAE-MOZ-CHE-1KG', 2000, 2.5, 'Maestrella Mozzarella Shredded Cheese 2Kg', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),
+(14, 'MAE-MOZ-CHE-CART-1KG', 19000, 2.5, 'Maestrella Mozzarella Shredded Cheese Carton 10 x 2Kg', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),
+-- Corn Kernels
+(15, 'MC-COR-KER-500G', 2000, 2, 'McCain Corn Kernels 500g', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),
+(15, 'MC-COR-KER-CART-500G', 9500, 2, 'McCain Corn Kernels Carton 5 x 500g ', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),
+-- Unsalted Butter
+(16, 'AMB-UNSAL-BUT-200G', 2000, 5, 'Ambassador Unsalted Butter', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),
+(16, 'AMB-UNSAL-BUT-CART-200G', 25000, 2.5, 'Ambassador Unsalted Butter Carton 10 x 200g ', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),
+-- Slightly Salted Butter
+(17, 'AMB-SLSAL-BUT-200G', 2000, 5, 'Ambassador Unsalted Butter', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),
+(17, 'AMB-SLSAL-BUT-CART-200G', 25000, 2.5, 'Ambassador Unsalted Butter Carton 10 x 200g ', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),
+-- Cadbury Vanilla Flavour Ice-Cream
+(18, 'CAD-VAN-ICE-480ML', 500, 5, 'Cadbury Vanilla Flavour Ice Cream 480 ml', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),
+(18, 'CAD-VAN-ICE-CART-480ML', 25000, 2.5, 'Cadbury Vanilla Flavour Ice Cream 480 ml Carton 480ml x 20', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),
+-- Cadbury Crunchie Ice-Cream
+(19, 'CAD-CRU-ICE-480ML', 500, 5, 'Cadbury Crunchie Ice Cream 480 ml', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),
+(19, 'CAD-CRU-ICE-CART-480ML', 25000, 2.5, 'Cadbury Crunchie Ice Cream 480 ml Carton 480ml x 20', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),
+-- Golden Phoenix Chicken Franks
+(20, 'GOL-PHO-FRA-1KG', 1500, 5, 'Golden Phoenix Chicken Franks 1Kg', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),
+(20, 'GOL-PHO-FRA-CART-1KG', 25000, 2.5, 'Golden Phoenix Chicken Franks 20 x 1Kg', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),
+-- Golden Phoenix Crinkle Cut Fries
+(21, 'GOL-PHO-CRIFRI-1KG', 1500, 5, 'Golden Phoenix Crinkle Cut French Fries 1Kg', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),
+(21, 'GOL-PHO-CRIFRI-CART-1KG', 25000, 2.5, 'Golden Phoenix Crinkle Cut French French Fries Carton 20 x 1Kg', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),
+-- Golden Phoenix Shoestring Fries
+(22, 'GOL-PHO-SHOFRI-1KG', 1500, 5, 'Golden Phoenix Shoestring French cut Fries 1Kg', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),
+(22, 'GOL-PHO-SHOFRI-CART-1KG', 25000, 2.5, 'Golden Phoenix Shoestring cut French Fries Carton 20 x 1Kg', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),
+-- Golden Phoenix Chicken Griller
+(23, 'GOL-PHO-GRILL-1KG', 1500, 5, 'Golden Phoenix Chicken Griller 1Kg', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),
+(23, 'GOL-PHO-GRILL-CART-1KG', 25000, 2.5, 'Golden Phoenix Chicken Griller 20 x 1Kg', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e');
 
 insert into sku_product_variant_options(sku_id, product_variant_option_id) values
 -- Duxford Black
@@ -641,7 +768,47 @@ insert into sku_product_variant_options(sku_id, product_variant_option_id) value
 (143, 58),
 (143, 65),
 (144, 58),
-(144, 66);
+(144, 66),
+-- DELIFROST
+-- Ambassador
+(145, 115),
+(146, 116),
+-- Cadbury
+(147, 117),
+(148, 118),
+-- Phoenix
+(149, 119),
+(150, 120),
+-- Mozarella
+(151, 121),
+(152, 122),
+-- McCain
+(153, 123),
+(154, 124),
+-- Unsalted Butter
+(155, 125),
+(156, 126),
+-- Slightly Salted Butter
+(157, 127),
+(158, 128),
+-- Vanilla Ice Cream
+(159, 129),
+(160, 130),
+-- Crunchie Ice-Cream
+(161, 131),
+(162, 132),
+-- Chicken Franks
+(163, 133),
+(164, 134),
+-- Crinkle Cut Fries
+(165, 135),
+(166, 136),
+-- Shoestring Fries
+(167, 137),
+(168, 138),
+-- Chicken Griller
+(169, 139),
+(170, 140);
 
 
 insert into images (imagepath) values
@@ -698,7 +865,20 @@ insert into images (imagepath) values
 ('assets/images/product/shoes/westerham-black-3.jpg'),
 ('assets/images/product/shoes/westerham-brandy-1.jpg'),
 ('assets/images/product/shoes/westerham-brandy-2.jpg'),
-('assets/images/product/shoes/westerham-brandy-3.jpg');
+('assets/images/product/shoes/westerham-brandy-3.jpg'),
+('assets/images/salted-butter.jpg'),
+('assets/images/caramello-icecream.jpg'),
+('assets/images/golden-phoenix-fries.jpg'),
+('assets/images/mozarella-cheese.jpg'),
+('assets/images/corn-kernels.jpg'),
+('assets/images/caramello-icecream.jpg'),
+('assets/images/chicken-griller.jpg'),
+('assets/images/crinkle-cut-fries.jpg'),
+('assets/images/crunchie-icecream.jpg'),
+('assets/images/golden-phoenix-fries.jpg'),
+('assets/images/goldenphoenix-chickenfranks.jpg'),
+('assets/images/shoe-string-cut-fries.jpg'),
+('assets/images/slightly-salted-butter.jpg');
 
 
 
@@ -1135,26 +1315,35 @@ insert into sku_images (sku_id, image_id) values
 (87, 54),
 (88, 52),
 (88, 53),
-(88, 54);
+(88, 54),
+-- DELIFROST
+(145, 55),
+(146, 55),
+(147, 56),
+(148, 56),
+(149, 57),
+(150, 57),
+(151, 58),
+(152, 58),
+(153, 59),
+(154, 59),
+(155, 64),
+(156, 64),
+(157, 67),
+(158, 67),
+(159, 60),
+(160, 60),
+(161, 63),
+(162, 63),
+(163, 65),
+(164, 65),
+(165, 62),
+(166, 62),
+(167, 66),
+(168, 66),
+(169, 61),
+(170, 61);
 
-
-
-
-
-
-
-
-
-
-
-insert into tags (tagname) values
-('brogue'),
-                                  ('Leather'),
-                                  ('lace-up'),
-                                  ('')
-
-insert into product_tags(product_id, tag_id)
-values();
 
 
 

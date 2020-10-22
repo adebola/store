@@ -24,7 +24,7 @@ public class PostController {
     private final PostMSMapper postMSMapper;
 
     @GetMapping("/byproduct/{id}")
-    public ResponseEntity <List<PostDto>>findProductPosts(@PathVariable("id") Integer id) {
+    public ResponseEntity <List<PostDto>>findPostByProductId(@PathVariable("id") Integer id) {
         return new ResponseEntity<>(postMSMapper.ListPostToPostDto(postService.findPostByProductId(id)), HttpStatus.OK);
     }
 
