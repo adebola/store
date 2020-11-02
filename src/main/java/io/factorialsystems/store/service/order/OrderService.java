@@ -1,15 +1,18 @@
 package io.factorialsystems.store.service.order;
 
+import io.factorialsystems.store.business.mail.Mail;
 import io.factorialsystems.store.domain.order.Order;
 import io.factorialsystems.store.domain.order.OrderItem;
 import io.factorialsystems.store.domain.user.User;
 import io.factorialsystems.store.mapper.order.OrderMapper;
 import io.factorialsystems.store.mapper.user.UserMapper;
 import io.factorialsystems.store.security.TenantContext;
+import io.factorialsystems.store.task.TaskPDFMail;
 import io.factorialsystems.store.web.mapper.order.OrderMSMapper;
 import io.factorialsystems.store.web.model.order.OrderDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.task.TaskExecutor;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -19,6 +22,8 @@ public class OrderService {
     private final OrderMapper orderMapper;
     private final OrderMSMapper orderMSMapper;
     private final UserMapper userMapper;
+    private final TaskExecutor taskExecutor;
+    private final TaskPDFMail taskPDFMail;
 
     public Integer SaveOrder(OrderDto orderDto) {
 
@@ -42,6 +47,7 @@ public class OrderService {
             order.setAddress(orderDto.getAddress());
             order.setTelephone(orderDto.getTelephone());
             order.setFull_name(orderDto.getFull_name());
+            order.setEmail(orderDto.getEmail());
 
         } else if (orderDto.getUser_id() != null && orderDto.getDeliver()) {  // Logged On User Requesting Delivery Get Address from Database
 
@@ -55,6 +61,7 @@ public class OrderService {
             order.setAddress(user.getAddress());
             order.setTelephone(user.getTelephone());
             order.setFull_name(user.getFullName());
+            order.setEmail(user.getEmail());
         }
 
         orderMapper.saveOrder(order);
@@ -66,7 +73,7 @@ public class OrderService {
         int orderId = order.getId();
 
         // Save OrderItems
-        orderDto.getOrderItems().stream().forEach(e -> {
+        orderDto.getOrderItems().forEach(e -> {
             OrderItem item = OrderItem.builder()
                     .order_id(orderId)
                     .sku_id(e.getSku_id())
@@ -79,10 +86,22 @@ public class OrderService {
             orderMapper.saveOrderItem(item);
         });
 
+        // Send E-Mail & Generate Report all in 1 Async Task
+        if (order.getEmail() != null) {
+            taskPDFMail.setParameters(new Mail(order.getEmail()), TenantContext.getCurrentTenant(), order.getId());
+            taskExecutor.execute(taskPDFMail);
+        }
+
         return order.getId();
     }
 
     public OrderDto findOrderById(Integer id) {
         return orderMSMapper.OrderToOrderDto(orderMapper.findOrderById(id, TenantContext.getCurrentTenant()));
+    }
+
+    public void sendTestEmail() {
+
+        taskPDFMail.setParameters(new Mail("adeomoboya@gmail.com"), TenantContext.getCurrentTenant(), 1);
+        taskExecutor.execute(taskPDFMail);
     }
 }

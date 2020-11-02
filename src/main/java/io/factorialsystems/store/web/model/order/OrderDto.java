@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.Null;
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -20,8 +21,10 @@ public class OrderDto {
     Integer id;
 
     Integer user_id;
-
     String full_name;
+
+    @Email
+    String email;
 
     @Null
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssZ", shape = JsonFormat.Shape.STRING)

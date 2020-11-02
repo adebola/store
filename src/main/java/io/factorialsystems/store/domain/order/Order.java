@@ -22,6 +22,7 @@ public class Order {
     Boolean pickup;
     Boolean deliver;
     String full_name;
+    String email;
     String telephone;
     String address;
     String tenant_id;

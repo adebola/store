@@ -20,6 +20,7 @@ drop table users;
 create table tenants (
     id varchar(64) NOT NULL,
     organization varchar(64) NOT NULL,
+    email varchar(64) NOT NULL,
     created timestamp DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id)
 );
@@ -206,6 +207,7 @@ create table orders(
     pickup boolean NOT NULL DEFAULT TRUE,
     deliver boolean NOT NULL DEFAULT TRUE,
     full_name varchar(64),
+    email varchar(64),
     telephone varchar(32),
     address varchar(256),
     tenant_id varchar(64) NOT NULL,

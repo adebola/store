@@ -10,7 +10,7 @@ import java.util.List;
 @Mapper
 @Component
 public interface OrderMapper {
-    String SelectSQLOrder = "select id, user_id, order_date, order_amount, pickup, deliver, full_name, telephone, address, payment_ref, transaction_id, tenant_id " +
+    String SelectSQLOrder = "select id, user_id, order_date, order_amount, pickup, deliver, full_name, email, telephone, address, payment_ref, transaction_id, tenant_id " +
                             "from orders where id = #{id} and tenant_id = #{tenantId}";
 
     String SelectOrderItems = "select o.id, o.order_id, o.sku_id, p.name, o.quantity, o.unit_price, o.discount, o.total_price, i.imagepath " +
@@ -26,6 +26,7 @@ public interface OrderMapper {
             @Result(property = "deliver", column = "deliver"),
             @Result(property = "pickup", column = "pickup"),
             @Result(property = "full_name", column = "full_name"),
+            @Result(property = "email", column = "email"),
             @Result(property = "telephone", column = "telephone"),
             @Result(property = "address", column = "address"),
             @Result(property = "paymentRef", column = "payment_ref"),
@@ -36,8 +37,8 @@ public interface OrderMapper {
     public Order findOrderById(Integer id, String tenantId);
 
     @Insert(
-            "insert into orders(user_id, order_amount, payment_ref, transaction_id, pickup, deliver, full_name, telephone, address, tenant_id) " +
-            "values(#{user_id}, #{orderAmount}, #{paymentRef}, #{transaction_id}, #{pickup}, #{deliver}, #{full_name}, #{telephone}, #{address}, #{tenant_id})"
+            "insert into orders(user_id, order_amount, payment_ref, transaction_id, pickup, deliver, full_name, email, telephone, address, tenant_id) " +
+            "values(#{user_id}, #{orderAmount}, #{paymentRef}, #{transaction_id}, #{pickup}, #{deliver}, #{full_name}, #{email}, #{telephone}, #{address}, #{tenant_id})"
     )
     @SelectKey(statement = "select LAST_INSERT_ID()", keyProperty = "id", keyColumn = "id", before = false, resultType = Integer.class)
     public Integer saveOrder(Order order);
