@@ -34,6 +34,7 @@ import java.util.Date;
 public class Category {
     Integer id;
     String name;
+    String image_url;
     Date createdDate;
     Date lastModifiedDate;
     String tenantId;

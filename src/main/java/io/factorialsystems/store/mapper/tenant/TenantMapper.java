@@ -11,13 +11,15 @@ import org.springframework.stereotype.Component;
 @Mapper
 @Component
 public interface TenantMapper {
-    final String SELECT_TENANT = "Select id, organization, email from tenants where id=#{tenant_id}";
+    final String SELECT_TENANT = "Select id, organization, email, logo_url, base_url from tenants where id=#{tenant_id}";
 
     @Select(SELECT_TENANT)
     @Results(value = {
             @Result(property="id", column = "id"),
             @Result(property = "organization", column = "organization"),
-            @Result(property = "email", column = "email")
+            @Result(property = "email", column = "email"),
+            @Result(property = "logo_url", column = "logo_url"),
+            @Result(property = "base_url", column = "base_url")
     })
     Tenant findById(String tenant_id);
 

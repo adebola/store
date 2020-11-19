@@ -1,13 +1,12 @@
 
 drop table sku_product_variant_options;
 drop table sku_images;
+drop table orderItems;
 drop table sku_products;
 drop table product_variant_options;
 drop table product_variants;
 drop table product_tags;
-drop table orderItems;
 drop table orders;
-drop table sku_products;
 drop table comments;
 drop table posts;
 drop table products;
@@ -15,12 +14,18 @@ drop table categories;
 drop table user_roles;
 drop table images;
 drop table tags;
+drop table address;
+drop table user_activation;
 drop table users;
+drop table roles;
+drop table tenants;
 
 create table tenants (
     id varchar(64) NOT NULL,
     organization varchar(64) NOT NULL,
     email varchar(64) NOT NULL,
+    logo_url varchar(256) NOT NULL,
+    base_url varchar(256) NOT NULL,
     created timestamp DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id)
 );
@@ -43,7 +48,7 @@ create table users (
     password varchar(64) NOT NULL,
     fullname varchar(64) NOT NULL,
     telephone varchar(64),
-    address varchar(256),
+    activated boolean NOT NULL DEFAULT FALSE,
     tenant_id varchar(64) NOT NULL,
     createdAt timestamp DEFAULT CURRENT_TIMESTAMP,
     lastModifiedAt timestamp DEFAULT NULL,
@@ -51,6 +56,24 @@ create table users (
     FOREIGN KEY (tenant_id) REFERENCES tenants(id),
     UNIQUE KEY idx_username_tenant(username, tenant_id),
     UNIQUE KEY idx_email_tenant(email, tenant_id)
+);
+
+create table user_activation (
+    id varchar(64) NOT NULL,
+    user_id int (11) NOT NULL,
+    createdAt timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    closedAt timestamp,
+    PRIMARY KEY (id),
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+create table address (
+    id int (11) AUTO_INCREMENT,
+    user_id int (11) NOT NULL,
+    address varchar (256) NOT NULL,
+    is_default boolean NOT NULL DEFAULT FALSE,
+    PRIMARY KEY (id),
+    FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
 create table user_roles (
@@ -64,6 +87,7 @@ create table categories (
     id int(11) AUTO_INCREMENT,
     name varchar(64) NOT NULL,
     tenant_id varchar(64) NOT NULL,
+    image_url varchar(64) NOT NULL,
     createdAt timestamp DEFAULT CURRENT_TIMESTAMP,
     lastModifiedAt timestamp DEFAULT NULL,
     PRIMARY KEY(id),
@@ -83,8 +107,7 @@ create table products (
     lastModifiedAt timestamp DEFAULT NULL,
     PRIMARY KEY(id),
     FOREIGN KEY (tenant_id) REFERENCES tenants(id),
-    FOREIGN KEY (category_id) REFERENCES categories(id),
-    UNIQUE KEY idx_name_tenant(name, tenant_id)
+    FOREIGN KEY (category_id) REFERENCES categories(id)
 );
 
 create table product_variants (

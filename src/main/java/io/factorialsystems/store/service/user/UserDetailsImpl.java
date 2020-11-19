@@ -24,8 +24,6 @@ public class UserDetailsImpl implements UserDetails {
     private String telephone;
     private String address;
 
-
-
     @JsonIgnore
     private String password;
 
@@ -35,6 +33,11 @@ public class UserDetailsImpl implements UserDetails {
         List<GrantedAuthority> authorities = user.getRoles().stream()
                 .map(role -> new SimpleGrantedAuthority(role.getRoleType().name()))
                 .collect(Collectors.toList());
+
+//        ReVisit at some other time
+//        if (!user.getIs_Activated()) {
+//            return null;
+//        }
 
         return new UserDetailsImpl(
                 user.getId(),

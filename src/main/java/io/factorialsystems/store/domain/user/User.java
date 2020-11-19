@@ -41,6 +41,7 @@ public class User {
     private String telephone;
     private String address;
     private String password;
+    private Boolean is_Activated;
     private List<Role> roles;
     private String tenantId;
 

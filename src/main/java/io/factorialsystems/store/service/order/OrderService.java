@@ -27,6 +27,12 @@ public class OrderService {
 
     public Integer SaveOrder(OrderDto orderDto) {
 
+        User user = null;
+
+        if (orderDto.getUser_id() != null) {
+            user = userMapper.findById(orderDto.getUser_id(), TenantContext.getCurrentTenant());
+        }
+
         // Save Order
         Order order = Order.builder()
                 .orderAmount(orderDto.getOrderAmount())
@@ -38,30 +44,34 @@ public class OrderService {
                 .user_id(orderDto.getUser_id())
                 .build();
 
-        // Anonymous User Requesting Delivery Create Address Object from Dto
-        if (orderDto.getUser_id() == null && orderDto.getDeliver()) {
-            if (orderDto.getAddress() == null) {
-                throw new RuntimeException("Anonymous User has requested that goods be delivered but has not specified delivery address");
-            }
-
-            order.setAddress(orderDto.getAddress());
-            order.setTelephone(orderDto.getTelephone());
-            order.setFull_name(orderDto.getFull_name());
+        if (orderDto.getEmail() != null) {
             order.setEmail(orderDto.getEmail());
+        } else {
+            order.setEmail(user != null ? user.getEmail() : null);
+        }
 
-        } else if (orderDto.getUser_id() != null && orderDto.getDeliver()) {  // Logged On User Requesting Delivery Get Address from Database
+        if (orderDto.getAddress() != null) {
+            order.setAddress(orderDto.getAddress());
+        } else {
+            order.setAddress(user != null ? user.getAddress() : null);
+        }
 
-            User user = userMapper.findById(orderDto.getUser_id(), TenantContext.getCurrentTenant());
+        if (orderDto.getFull_name() != null) {
+            order.setFull_name(orderDto.getFull_name());
+        } else {
+            order.setFull_name(user != null ? user.getFullName() : null);
+        }
 
-            if (user.getAddress() == null) {
-                throw new RuntimeException(String.format("User %s has requested that goods be delivered but has no address on record and has not specified a delivery address", user.getFullName()));
-            }
+        if (orderDto.getTelephone() != null) {
+            order.setTelephone(orderDto.getTelephone());
+        } else {
+            order.setTelephone(user != null ? user.getTelephone() : null);
+        }
 
-            // If the User specified address use over the address in the database
-            order.setAddress(user.getAddress());
-            order.setTelephone(user.getTelephone());
-            order.setFull_name(user.getFullName());
-            order.setEmail(user.getEmail());
+
+        // Make Sure that User Requesting Delivery has an Address either submitted or in the database
+        if (order.getDeliver() && order.getAddress() == null) {
+            throw new RuntimeException("User has requested that goods be delivered but has not specified delivery address or address cannot be read from the database");
         }
 
         orderMapper.saveOrder(order);
@@ -87,7 +97,7 @@ public class OrderService {
         });
 
         // Send E-Mail & Generate Report all in 1 Async Task
-        if (order.getEmail() != null) {
+        if (order.getEmail() != null && order.getAddress() != null && order.getFull_name() != null) {
             taskPDFMail.setParameters(new Mail(order.getEmail()), TenantContext.getCurrentTenant(), order.getId());
             taskExecutor.execute(taskPDFMail);
         }
@@ -100,8 +110,7 @@ public class OrderService {
     }
 
     public void sendTestEmail() {
-
-        taskPDFMail.setParameters(new Mail("adeomoboya@gmail.com"), TenantContext.getCurrentTenant(), 1);
+        taskPDFMail.setParameters(new Mail("adeomoboya@gmail.com"), TenantContext.getCurrentTenant(), 22);
         taskExecutor.execute(taskPDFMail);
     }
 }

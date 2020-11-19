@@ -1,9 +1,13 @@
 package io.factorialsystems.store.service.user;
 
+import io.factorialsystems.store.domain.user.Address;
 import io.factorialsystems.store.domain.user.User;
+import io.factorialsystems.store.mapper.user.AddressMapper;
 import io.factorialsystems.store.mapper.user.UserMapper;
 import io.factorialsystems.store.security.TenantContext;
+import io.factorialsystems.store.web.mapper.user.AddressMSMapper;
 import io.factorialsystems.store.web.mapper.user.UserMSMapper;
+import io.factorialsystems.store.web.model.user.AddressDto;
 import io.factorialsystems.store.web.model.user.UserDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +24,8 @@ public class UserService {
 
     private final UserMapper userMapper;
     private final UserMSMapper userMapStructMapper;
+    private final AddressMapper addressMapper;
+    private final AddressMSMapper addressMapStructMapper;
 
     // Functions that will be Invoked through the Controller from the Outside
 
@@ -135,7 +141,25 @@ public class UserService {
             log.info(String.format("User Created with UserId %d", userId));
 
             if (userId != null && userId > 0 && user.getRoles().size() > 0) {
+
+                // Insert User Roles
                 userMapper.insertRoleList(userId, user.getRoles());
+
+                // Create Address Object and Save In database
+                AddressDto addressDto = AddressDto.builder()
+                        .address(user.getAddress())
+                        .user_id(userId)
+                        .is_default(true)
+                        .build();
+
+                AddressDto newAddress = saveUserAddress(addressDto);
+
+                if (newAddress == null || newAddress.getId() == 0) {
+
+                    String message = String.format("Unable to Save User Address for Newly Created User %s", user.getFullName());
+                    log.error(message);
+                    throw new RuntimeException(message);
+                }
             }
 
             return user;
@@ -144,5 +168,28 @@ public class UserService {
             log.error(message);
             throw new RuntimeException(message);
         }
+    }
+
+    public AddressDto saveUserAddress(AddressDto addressDto) {
+
+        Address address = addressMapStructMapper.AddressDtoToAddress(addressDto);
+        addressMapper.saveUserAddress(address);
+
+        if (address != null && address.getId() > 0) {
+            return addressMapStructMapper.AddressToAddressDto(address);
+        }
+
+        String message = "Error Saving Address";
+        log.error(message);
+        throw new RuntimeException(message);
+    }
+
+    public List<AddressDto> getUserAddresses(Integer userId) {
+
+        return addressMapStructMapper.ListAddressToAddressDto(addressMapper.getUserAddresses(userId));
+    }
+
+    public AddressDto getUserDefaultAddress(Integer userId) {
+        return addressMapStructMapper.AddressToAddressDto(addressMapper.getUserDefaultAddress(userId));
     }
 }

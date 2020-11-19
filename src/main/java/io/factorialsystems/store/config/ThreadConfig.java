@@ -16,10 +16,8 @@ public class ThreadConfig {
         executor.setCorePoolSize(4);
         executor.setMaxPoolSize(10);
         executor.setQueueCapacity(25);
-        executor.setThreadNamePrefix("default_task_executor_thread");
+        executor.setThreadNamePrefix("task_executor_thread");
         executor.initialize();
-
-        log.info("TaskExecutor Initialized");
 
         return executor;
     }

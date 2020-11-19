@@ -9,4 +9,6 @@ public class Tenant {
     private String id;
     private String organization;
     private String email;
+    private String logo_url;
+    private String base_url;
 }

@@ -48,8 +48,6 @@ public class AWSMailer  {
         if (mail.getFileName() != null) {
             FileSystemResource file = new FileSystemResource(new File(mail.getFileName()));
 
-            log.info(extractFilename(mail.getFileName()));
-
             if (file.exists() && file.isReadable()) {
                 helper.addAttachment(extractFilename(mail.getFileName()), file);
             }

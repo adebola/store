@@ -24,6 +24,10 @@ public class CategoryDto {
     @Size(min = 3, max = 32)
     private String name;
 
+    @NotBlank
+    @Size(min = 3, max = 128)
+    private String image_url;
+
     @Null
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssZ", shape = JsonFormat.Shape.STRING)
     private OffsetDateTime createdDate;

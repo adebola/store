@@ -8,11 +8,14 @@ import io.factorialsystems.store.payload.request.SignupRequest;
 import io.factorialsystems.store.payload.response.JwtResponse;
 import io.factorialsystems.store.payload.response.MessageResponse;
 import io.factorialsystems.store.security.JwtUtils;
+import io.factorialsystems.store.security.TenantContext;
 import io.factorialsystems.store.service.user.RoleService;
 import io.factorialsystems.store.service.user.UserDetailsImpl;
 import io.factorialsystems.store.service.user.UserService;
+import io.factorialsystems.store.task.TaskSendMail;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.task.TaskExecutor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -37,9 +40,12 @@ public class AuthController {
     private final RoleService roleService;
     private final PasswordEncoder encoder;
     private final JwtUtils jwtUtils;
+    private final TaskSendMail taskSendMail;
+    private final TaskExecutor taskExecutor;
 
     @PostMapping("/signin")
     public ResponseEntity<JwtResponse> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
+        
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
 
@@ -66,7 +72,7 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signupRequest) {
+    public ResponseEntity<MessageResponse> registerUser(@Valid @RequestBody SignupRequest signupRequest) {
 
         if (userService.existsByUsername(signupRequest.getUsername())) {
             return ResponseEntity.badRequest()
@@ -144,7 +150,17 @@ public class AuthController {
         user.setRoles(roles);
         User newUser = userService.saveUser(user);
 
-        log.info(String.format("User Created Successfully with Id %d and Username %s", newUser.getId(), newUser.getUsername()));
-        return ResponseEntity.ok(new MessageResponse("User Registered Successfully"));
+        if (newUser != null && newUser.getId() > 0) {
+            // Send Activation E-Mail
+            taskSendMail.setParameters(newUser.getEmail(), TenantContext.getCurrentTenant());
+            taskExecutor.execute(taskSendMail);
+
+            log.info(String.format("User Created Successfully with Id %d and Username %s", newUser.getId(), newUser.getUsername()));
+            return ResponseEntity.ok(new MessageResponse("User Registered Successfully"));
+        } else {
+            String message = "Unable to Create New User";
+            log.error(message);
+            throw new RuntimeException(message);
+        }
     }
 }

@@ -52,7 +52,7 @@ public class MyBatisConfiguration {
 
     @Bean
     public DataSource dataSource() {
-        log.info(String.format("Driver: %s, url: %s, username: %s, password: %s", driver, url, username, password));
+        log.info(String.format("Driver: %s, url: %s", driver, url));
         PooledDataSource dataSource = new PooledDataSource(driver, url, username, password);
         log.info("Datasource created successfully");
         return dataSource;
