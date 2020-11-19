@@ -52,8 +52,8 @@ public class InvoicePDF  {
             Document document = new Document(pdfDocument, PageSize.A4);
 
             // Logo
-            // Image logo = new Image(ImageDataFactory.create("https://delifrost-30582.web.app/assets/images/icon/logo-7.png"));
-            Image logo = new Image(ImageDataFactory.create("http://localhost:4200/assets/images/icon/logo-7.png"));
+            Image logo = new Image(ImageDataFactory.create("https://delifrost-30582.web.app/assets/images/icon/logo-7.png"));
+            // Image logo = new Image(ImageDataFactory.create("http://localhost:4200/assets/images/icon/logo-7.png"));
             logo.setFixedPosition(10, 695);
             document.add(logo);
 
