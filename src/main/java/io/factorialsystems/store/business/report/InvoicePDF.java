@@ -29,11 +29,12 @@ import java.text.SimpleDateFormat;
 @RequiredArgsConstructor
 public class InvoicePDF  {
 
-    public String generateInvoice(int orderId, String tenantId) {
+    public String generateInvoice(int orderId, String tenantId, String logo_url) {
 
         // Load Orders From Database
         OrderMapper orderMapper = ApplicationContextProvider.getBean(OrderMapper.class);
         Order order = orderMapper.findOrderById(orderId, tenantId);
+        java.util.List<OrderItem> orderItems = order.getOrderItems();
 
         if (order == null) {
             throw new RuntimeException(String.format("Unable to load Order %d from the database while generating receipt", orderId));
@@ -45,15 +46,14 @@ public class InvoicePDF  {
             PdfFont fontCourierBold = PdfFontFactory.createFont(FontConstants.COURIER_BOLD);
             PdfFont fontCourier = PdfFontFactory.createFont(FontConstants.COURIER);
 
-            File tempFile = File.createTempFile("invoice-", ".pdf");
+            File tempFile = File.createTempFile("receipt-", ".pdf");
             log.info(String.format("Receipt Generated: %s", tempFile.getAbsolutePath()));
 
             PdfDocument pdfDocument = new PdfDocument(new PdfWriter(tempFile));
             Document document = new Document(pdfDocument, PageSize.A4);
 
             // Logo
-            Image logo = new Image(ImageDataFactory.create("https://delifrost-30582.web.app/assets/images/icon/logo-7.png"));
-            // Image logo = new Image(ImageDataFactory.create("http://localhost:4200/assets/images/icon/logo-7.png"));
+            Image logo = new Image(ImageDataFactory.create(logo_url));
             logo.setFixedPosition(10, 695);
             document.add(logo);
 
@@ -94,9 +94,9 @@ public class InvoicePDF  {
                     .setFixedPosition(220,660, 200);
             document.add(p);
 
-            LineSeparator lineSeparator = new LineSeparator(new SolidLine(1f))
-                    .setFixedPosition(10, 660, 500);
-            document.add(lineSeparator);
+//            LineSeparator lineSeparator = new LineSeparator(new SolidLine(1f))
+//                    .setFixedPosition(10, 660, 500);
+//            document.add(lineSeparator);
 
             Style narrativeStyle = new Style();
             narrativeStyle.setFont(fontHelevitca)
@@ -126,7 +126,7 @@ public class InvoicePDF  {
             document.add(p);
 
             p = new Paragraph(order.getAddress())
-                    .setFixedPosition(350, 600, 500)
+                    .setFixedPosition(350, 620, 500)
                     .addStyle(narrativeStyle);
             document.add(p);
 
@@ -134,9 +134,15 @@ public class InvoicePDF  {
             tableStyle.setFont(fontCourier)
                     .setFontSize(14);
 
+            int bottom = 500;
+            int size = orderItems.size();
+
+            bottom -= (size-1) * 25;
+            bottom = bottom < 0 ? 10 : bottom;
+
             Table table = new Table(new float[5])
                     .addStyle(tableStyle)
-                    .setFixedPosition(10, 520, 500);
+                    .setFixedPosition(10, bottom, 500);
 
             // # Column
             Cell cell = new Cell(1, 1).add(new Paragraph("#"));
@@ -170,7 +176,7 @@ public class InvoicePDF  {
 
             int i = 1;
 
-            for (OrderItem e : order.getOrderItems()) {
+            for (OrderItem e : orderItems) {
 
                 Cell c = new Cell(1,1).add(new Paragraph(String.format("%d", i)));
                 c.setTextAlignment(TextAlignment.CENTER);
