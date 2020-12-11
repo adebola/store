@@ -229,7 +229,7 @@ insert into product_variants(product_id, name, tenant_id) values
 (45, 'Unit', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),
 -- Dairy Maid Fresh Vanilla Ice Cream
 (46, 'Unit', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),
---Dairy Maid 2L Country Fresh Neapolitan (Ice Cream)
+-- Dairy Maid 2L Country Fresh Neapolitan (Ice Cream)
 (47, 'Unit', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),
 -- Dairy Maid 5L Country Fresh Vanilla (Ice Cream)
 (48, 'Unit', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),
@@ -506,7 +506,7 @@ insert into product_variant_options(product_variant_id, name, tenant_id) values
 (67, 'CTN', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),
 -- McCain Original 6/6 French Fries 5 x 2.5kg
 (68, 'CTN', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),
---McCain Original 9/9 French Fries 5 x 2.5kg
+-- McCain Original 9/9 French Fries 5 x 2.5kg
 (69, 'CTN', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),
 -- Sympli Straight Cut Yam Fries 200g x 25 pcs
 (70, 'CTN', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),
@@ -634,7 +634,7 @@ insert into sku_products(product_id, sku, price, discount, sku_description, tena
 (14, '5174', 15000, 2, 'President Small Camembert in Tin 125g x 12 Pcs', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),
 -- President Cream Cheese 180g X 12 pcs
 (15, '10353', 15000, 2, 'President Cream Cheese 180g X 12 pcs', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),
---President 120g Processed Cheese 8 portions x 24 pcs
+-- President 120g Processed Cheese 8 portions x 24 pcs
 (16, '75599', 19000, 2.5, 'President 120g Processed Cheese 8 portions x 24 pcs', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),
 -- Corn Kernels
 (17, '89366', 9500, 2, 'President Edam Slices 150g x 10 pcs', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),
@@ -828,7 +828,6 @@ insert into sku_products(product_id, sku, price, discount, sku_description, tena
 (111, '75643', 15000, 2, 'Tiramisu Layer Cake 610g x 4 pcs', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),
 -- Bien Croissant 4 x 20 x 50g
 (112, '3415', 15000, 2, 'Bien Croissant 4 x 20 x 50g', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),
-
 -- Choco Bien 6 x 24 x 32g
 (113, '4210', 15000, 2, 'Choco Bien 6 x 24 x 32g', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),
 -- Roxy 6 x 24 x 40g
