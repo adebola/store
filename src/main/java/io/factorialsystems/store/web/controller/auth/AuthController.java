@@ -49,16 +49,16 @@ public class AuthController {
     @PostMapping("/signin")
     public ResponseEntity<JwtResponse> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
 
-        User user = userService.findByUsername(loginRequest.getUsername());
-
-        if (!user.isActivated()) {
-            JwtResponse response = JwtResponse.builder()
-                    .status(400)
-                    .message("User has not been activated please contact DELIFROST")
-                    .build();
-
-            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-        }
+//        User user = userService.findByUsername(loginRequest.getUsername());
+//
+//        if (!user.isActivated()) {
+//            JwtResponse response = JwtResponse.builder()
+//                    .status(400)
+//                    .message("User has not been activated please contact DELIFROST")
+//                    .build();
+//
+//            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+//        }
 
         if (!captchaService.verify(loginRequest.getCaptchaResponse())) {
             JwtResponse response = JwtResponse.builder()
