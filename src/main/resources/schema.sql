@@ -2,6 +2,7 @@
 drop table sku_product_variant_options;
 drop table sku_images;
 drop table orderItems;
+drop table wishlist;
 drop table sku_products;
 drop table product_variant_options;
 drop table product_variants;
@@ -19,6 +20,7 @@ drop table user_activation;
 drop table users;
 drop table roles;
 drop table tenants;
+drop table wishlist_status;
 
 create table tenants (
     id varchar(64) NOT NULL,
@@ -48,6 +50,7 @@ create table users (
     password varchar(64) NOT NULL,
     fullname varchar(64) NOT NULL,
     telephone varchar(64),
+    organization varchar(64),
     activated boolean NOT NULL DEFAULT FALSE,
     tenant_id varchar(64) NOT NULL,
     createdAt timestamp DEFAULT CURRENT_TIMESTAMP,
@@ -201,7 +204,7 @@ create table posts (
     likes int DEFAULT 0,
     dislikes int DEFAULT 0,
     createdAt timestamp DEFAULT CURRENT_TIMESTAMP,
-    lastModifiedAt timestamp DEFAULT CURRENT_TIMESTAMP,
+    lastModifiedAt timestamp DEFAULT NULL,
     FOREIGN KEY (user_id) REFERENCES users(id),
     FOREIGN KEY (product_id) REFERENCES products(id),
     FOREIGN KEY (tenant_id) REFERENCES tenants(id),
@@ -214,7 +217,7 @@ create table comments(
   user_id int(11) NOT NULL,
   post_id int(11) NOT NULL,
   createdAt timestamp DEFAULT CURRENT_TIMESTAMP,
-  lastModifiedAt timestamp DEFAULT CURRENT_TIMESTAMP,
+  lastModifiedAt timestamp DEFAULT NULL,
   FOREIGN KEY (user_id) REFERENCES users(id),
   FOREIGN KEY (post_id) REFERENCES posts(id),
   PRIMARY KEY (id)
@@ -227,6 +230,7 @@ create table orders(
     order_amount decimal(10, 2) DEFAULT 0,
     payment_ref  varchar(16),
     transaction_id varchar(16),
+    pin varchar(16) NOT NULL,
     pickup boolean NOT NULL DEFAULT TRUE,
     deliver boolean NOT NULL DEFAULT TRUE,
     full_name varchar(64),
@@ -249,5 +253,24 @@ create table orderitems(
     total_price decimal(10, 2) NOT NULL,
     FOREIGN KEY (order_id) REFERENCES orders(id),
     FOREIGN KEY (sku_id) REFERENCES sku_products(id),
+    PRIMARY KEY (id)
+);
+
+create table wishlist_status(
+    id int(11),
+    name varchar(16) NOT NULL,
+    PRIMARY KEY (id)
+);
+
+create table wishlist(
+    id int(11) AUTO_INCREMENT,
+    user_id int(11) NOT NULL,
+    sku_id int(11) NOT NULL,
+    status_id int(11) NOT NULL DEFAULT 1,
+    createdAt timestamp DEFAULT CURRENT_TIMESTAMP,
+    lastModifiedAt timestamp DEFAULT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (sku_id) REFERENCES sku_products(id),
+    FOREIGN KEY (status_id) REFERENCES wishlist_status(id),
     PRIMARY KEY (id)
 );

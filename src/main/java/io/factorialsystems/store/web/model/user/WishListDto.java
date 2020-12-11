@@ -1,39 +1,42 @@
-package io.factorialsystems.store.web.model.order;
+package io.factorialsystems.store.web.model.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class OrderItemDto {
+public class WishListDto {
+
     @Null
     Integer id;
 
-    @Null
-    Integer order_id;
+    @NotNull
+    Integer user_id;
 
+    @NotNull
     Integer sku_id;
 
-    @Null
-    String uom;
+    Integer status_id;
 
     @Null
-    String item_code;
+    String name;
 
     @Null
-    String image_path;
+    String description;
 
     @Null
-    String product_name;
+    Double price;
 
-    Integer quantity;
-    Double unit_price;
+    @Null
     Double discount;
-    Double total_price;
+
+    @Null
+    String imagepath;
 }

@@ -20,7 +20,7 @@ public interface UserMapper {
     final String SELECT_USER_ID = "SELECT u.id, u.username, u.email, u.fullname, u.telephone, a.address, u.tenant_id " +
             "from users u, address a where u.id = #{id} and u.tenant_id = #{tenantId} and a.user_id = u.id and a.is_default = true";
 
-    final String SELECT_USER_NAME = "SELECT u.id, u.username, u.email, u.password, u.fullname, u.telephone, a.address, u.tenant_id " +
+    final String SELECT_USER_NAME = "SELECT u.id, u.username, u.email, u.password, u.fullname, u.telephone, u.activated, a.address, u.tenant_id " +
             "from users u, address a where u.username = #{username} and u.tenant_id = #{tenantId} and a.user_id = u.id and a.is_default = true";
 
     final String SELECT_USER_EMAIL = "SELECT u.id, u.username, u.email, u.password, u.fullname, u.telephone, a.address, u.tenant_id " +
@@ -61,7 +61,7 @@ public interface UserMapper {
             @Result(property = "fullName", column = "fullname"),
             @Result(property = "telephone", column = "telephone"),
             @Result(property = "address", column = "address"),
-            @Result(property = "is_Activated", column = "activated"),
+            @Result(property = "activated", column = "activated"),
             @Result(property = "tenantId", column = "tenant_id"),
             @Result(property = "roles", column = "id", javaType = List.class, many=@Many(select="selectUserRoles"))
     })
@@ -95,7 +95,7 @@ public interface UserMapper {
     @Select("Select Exists(Select 1 from users where email = #{email} and tenant_id = #{tenantId})")
     Boolean existsByEmail(String email, String tenantId);
 
-    @Insert("insert into users(username, email, password, fullname, telephone, tenant_id) values(#{username}, #{email}, #{password}, #{fullName}, #{telephone}, #{tenantId})")
+    @Insert("insert into users(username, email, password, fullname, telephone, organization, tenant_id) values(#{username}, #{email}, #{password}, #{fullName}, #{telephone}, #{organization}, #{tenantId})")
     //@Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
     @SelectKey(statement = "select LAST_INSERT_ID()", keyProperty = "id", keyColumn = "id", before = false, resultType = Integer.class)
     Integer createUser(User user);

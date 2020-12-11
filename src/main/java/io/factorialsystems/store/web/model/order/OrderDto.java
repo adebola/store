@@ -33,6 +33,9 @@ public class OrderDto {
     String paymentRef;
     String transaction_id;
 
+    @Null
+    String pin;
+
     Double orderAmount;
 
     Boolean pickup;

@@ -8,12 +8,17 @@ import io.factorialsystems.store.mapper.order.OrderMapper;
 import io.factorialsystems.store.mapper.user.UserMapper;
 import io.factorialsystems.store.security.TenantContext;
 import io.factorialsystems.store.task.TaskPDFMail;
+import io.factorialsystems.store.web.mapper.order.OrderItemMSMapper;
 import io.factorialsystems.store.web.mapper.order.OrderMSMapper;
 import io.factorialsystems.store.web.model.order.OrderDto;
+import io.factorialsystems.store.web.model.order.OrderItemDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Random;
 
 @Slf4j
 @Service
@@ -21,6 +26,7 @@ import org.springframework.stereotype.Service;
 public class OrderService {
     private final OrderMapper orderMapper;
     private final OrderMSMapper orderMSMapper;
+    private final OrderItemMSMapper orderItemMSMapper;
     private final UserMapper userMapper;
     private final TaskExecutor taskExecutor;
     private final TaskPDFMail taskPDFMail;
@@ -42,6 +48,7 @@ public class OrderService {
                 .deliver(orderDto.getDeliver())
                 .tenant_id(TenantContext.getCurrentTenant())
                 .user_id(orderDto.getUser_id())
+                .pin(String.format("%04d", new Random().nextInt(10000)))
                 .build();
 
         if (orderDto.getEmail() != null) {
@@ -109,8 +116,17 @@ public class OrderService {
         return orderMSMapper.OrderToOrderDto(orderMapper.findOrderById(id, TenantContext.getCurrentTenant()));
     }
 
+    public List<OrderDto> findOrderByUserId(Integer userId) {
+
+        return orderMSMapper.ListOrderToOrderDto(orderMapper.findOrderByUserId(userId, TenantContext.getCurrentTenant()));
+    }
+
+    public List<OrderItemDto> findOrderItemById(Integer orderItemId) {
+        return orderItemMSMapper.ListOrderToOrderDto(orderMapper.findOrderItemsById(orderItemId));
+    }
+
     public void sendTestEmail() {
-        taskPDFMail.setParameters(new Mail("adeomoboya@gmail.com"), TenantContext.getCurrentTenant(), 22);
+        taskPDFMail.setParameters(new Mail("adeomoboya@gmail.com"), TenantContext.getCurrentTenant(), 8);
         taskExecutor.execute(taskPDFMail);
     }
 }

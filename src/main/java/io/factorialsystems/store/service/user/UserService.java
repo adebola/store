@@ -1,11 +1,8 @@
 package io.factorialsystems.store.service.user;
 
-import io.factorialsystems.store.domain.user.Address;
 import io.factorialsystems.store.domain.user.User;
-import io.factorialsystems.store.mapper.user.AddressMapper;
 import io.factorialsystems.store.mapper.user.UserMapper;
 import io.factorialsystems.store.security.TenantContext;
-import io.factorialsystems.store.web.mapper.user.AddressMSMapper;
 import io.factorialsystems.store.web.mapper.user.UserMSMapper;
 import io.factorialsystems.store.web.model.user.AddressDto;
 import io.factorialsystems.store.web.model.user.UserDto;
@@ -24,8 +21,7 @@ public class UserService {
 
     private final UserMapper userMapper;
     private final UserMSMapper userMapStructMapper;
-    private final AddressMapper addressMapper;
-    private final AddressMSMapper addressMapStructMapper;
+    private final AddressService addressService;
 
     // Functions that will be Invoked through the Controller from the Outside
 
@@ -152,7 +148,7 @@ public class UserService {
                         .is_default(true)
                         .build();
 
-                AddressDto newAddress = saveUserAddress(addressDto);
+                AddressDto newAddress = addressService.saveUserAddress(addressDto);
 
                 if (newAddress == null || newAddress.getId() == 0) {
 
@@ -168,28 +164,5 @@ public class UserService {
             log.error(message);
             throw new RuntimeException(message);
         }
-    }
-
-    public AddressDto saveUserAddress(AddressDto addressDto) {
-
-        Address address = addressMapStructMapper.AddressDtoToAddress(addressDto);
-        addressMapper.saveUserAddress(address);
-
-        if (address != null && address.getId() > 0) {
-            return addressMapStructMapper.AddressToAddressDto(address);
-        }
-
-        String message = "Error Saving Address";
-        log.error(message);
-        throw new RuntimeException(message);
-    }
-
-    public List<AddressDto> getUserAddresses(Integer userId) {
-
-        return addressMapStructMapper.ListAddressToAddressDto(addressMapper.getUserAddresses(userId));
-    }
-
-    public AddressDto getUserDefaultAddress(Integer userId) {
-        return addressMapStructMapper.AddressToAddressDto(addressMapper.getUserDefaultAddress(userId));
     }
 }

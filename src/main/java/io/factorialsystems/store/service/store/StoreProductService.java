@@ -23,21 +23,25 @@ public class StoreProductService {
         return Convert(productSKUMapper.findAll(TenantContext.getCurrentTenant()));
     }
 
-    public List<StoreProductDto> findByProductId(Integer id) {
-        return Convert(productSKUMapper.findByProductId(id, TenantContext.getCurrentTenant()));
+    public List<StoreProductDto> search(String searchString) {
+        return Convert(productSKUMapper.search(searchString,  TenantContext.getCurrentTenant()));
     }
 
-    public List<StoreProductSKUDto> findAllSKU() {
-        return ConvertSKU(productSKUMapper.findAll(TenantContext.getCurrentTenant()));
-    }
-
-    public List<StoreProductSKUDto> findSKUByProductId(Integer productId) {
-        return ConvertSKU(productSKUMapper.findByProductId(productId, TenantContext.getCurrentTenant()));
-    }
-
-    public List<StoreProductSKUDto> findSKUBySkuId(Integer skuId) {
-        return ConvertSKU(productSKUMapper.findBySkuId(skuId, TenantContext.getCurrentTenant()));
-    }
+//    public List<StoreProductDto> findByProductId(Integer id) {
+//        return Convert(productSKUMapper.findByProductId(id, TenantContext.getCurrentTenant()));
+//    }
+//
+//    public List<StoreProductSKUDto> findAllSKU() {
+//        return ConvertSKU(productSKUMapper.findAll(TenantContext.getCurrentTenant()));
+//    }
+//
+//    public List<StoreProductSKUDto> findSKUByProductId(Integer productId) {
+//        return ConvertSKU(productSKUMapper.findByProductId(productId, TenantContext.getCurrentTenant()));
+//    }
+//
+//    public List<StoreProductSKUDto> findSKUBySkuId(Integer skuId) {
+//        return ConvertSKU(productSKUMapper.findBySkuId(skuId, TenantContext.getCurrentTenant()));
+//    }
 
     private List<StoreProductSKUDto> ConvertSKU(List<ProductSKU> productSKUs) {
         Map<Integer, StoreProductSKUDto> storeProductSKUDtoMap = new HashMap<>();

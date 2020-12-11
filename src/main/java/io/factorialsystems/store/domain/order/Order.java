@@ -19,6 +19,7 @@ public class Order {
     Double orderAmount;
     String paymentRef;
     String transaction_id;
+    String pin;
     Boolean pickup;
     Boolean deliver;
     String full_name;

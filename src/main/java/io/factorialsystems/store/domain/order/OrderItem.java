@@ -13,6 +13,8 @@ public class OrderItem {
     Integer id;
     Integer order_id;
     Integer sku_id;
+    String uom;
+    String item_code;
     String image_path;
     String product_name;
     Integer quantity;

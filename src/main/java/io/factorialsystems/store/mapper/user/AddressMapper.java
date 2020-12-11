@@ -35,4 +35,10 @@ public interface AddressMapper {
     @SelectKey(statement = "select LAST_INSERT_ID()", keyProperty = "id", keyColumn = "id", before = false, resultType = Integer.class)
     public Integer saveUserAddress(Address address);
 
+    @Update("update address set address.address = #{address.address} where id = #{addressId}")
+    Integer updateUserAddress(Integer addressId, Address address);
+
+    @Delete("delete from address where id = #{id}")
+    public void deleteAddress(Integer id);
+
 }

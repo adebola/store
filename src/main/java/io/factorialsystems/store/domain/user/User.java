@@ -41,16 +41,19 @@ public class User {
     private String telephone;
     private String address;
     private String password;
-    private Boolean is_Activated;
+    private String organization;
+    private boolean activated;
     private List<Role> roles;
     private String tenantId;
 
-    public User(String username, String email, String fullName,
-                String telephone, String address, String password) {
+    public User(String username, String email, String fullName, String telephone,
+                String address, String organization, String password) {
+
         this.username = username;
         this.email = email;
         this.password = password;
         this.fullName = fullName;
+        this.organization = organization;
 
         if (telephone != null) {
             this.telephone = telephone;

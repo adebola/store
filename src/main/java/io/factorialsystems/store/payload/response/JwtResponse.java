@@ -8,6 +8,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class JwtResponse {
+    private Integer status;
+    private String message;
     private Integer id;
     private String username;
     private String email;
