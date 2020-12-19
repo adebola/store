@@ -33,6 +33,20 @@ public class UserService {
         return userMapStructMapper.UserToUserDto(userMapper.findById(id, TenantContext.getCurrentTenant()));
     }
 
+    public UserDto updateUser(Integer id, UserDto userDto) {
+
+        if (userDto.getEmail() == null) {
+            throw new RuntimeException("E-mail cannot be null");
+        }
+
+        if (userMapper.existsByEmailUser(id, userDto.getEmail(), TenantContext.getCurrentTenant())) {
+            throw new RuntimeException("E-Mail already exists");
+        }
+
+        userMapper.updateUser(id, userMapStructMapper.UserDtoToUser(userDto), TenantContext.getCurrentTenant());
+        return userMapStructMapper.UserToUserDto(userMapper.findById(id, TenantContext.getCurrentTenant()));
+    }
+
     public Boolean changeUsername(Integer userId, String username) {
 
         // Check that Request is made by logged in User

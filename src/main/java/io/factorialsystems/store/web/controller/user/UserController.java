@@ -36,6 +36,17 @@ public class UserController {
         return new ResponseEntity<UserDto>(userService.findById(id), HttpStatus.OK);
     }
 
+    @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    public ResponseEntity<?> updateUser(@PathVariable("id") Integer id, @Valid @RequestBody UserDto userDto) {
+
+        try {
+            return new ResponseEntity<>(userService.updateUser(id, userDto), HttpStatus.OK);
+        } catch (Exception ex) {
+            return new ResponseEntity<>(new MessageResponse(ex.getMessage()), HttpStatus.BAD_REQUEST);
+        }
+    }
+
 //    @GetMapping("/byuser/{username}")
 //    @PreAuthorize("hasRole('ADMIN')")
 //    public ResponseEntity<UserDto> findByUsername(@PathVariable("username") String username) {

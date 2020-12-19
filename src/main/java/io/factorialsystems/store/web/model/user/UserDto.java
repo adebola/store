@@ -31,6 +31,7 @@ public class UserDto {
 
     private String telephone;
     private String address;
+    private String organization;
 
     private Set<String> roles;
 }

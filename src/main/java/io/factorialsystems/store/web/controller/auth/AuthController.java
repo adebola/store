@@ -90,6 +90,7 @@ public class AuthController {
                 .fullName(userDetails.getFullName())
                 .telephone(userDetails.getTelephone())
                 .address(userDetails.getAddress())
+                .organization(userDetails.getOrganization())
                 .token(jwt)
                 .build();
 
