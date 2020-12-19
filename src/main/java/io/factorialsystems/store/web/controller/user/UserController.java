@@ -1,7 +1,7 @@
 package io.factorialsystems.store.web.controller.user;
 
 import io.factorialsystems.store.payload.request.EmailRequest;
-import io.factorialsystems.store.payload.request.PasswordRequest;
+import io.factorialsystems.store.payload.request.PasswordChangeRequest;
 import io.factorialsystems.store.payload.request.UsernameRequest;
 import io.factorialsystems.store.payload.response.MessageResponse;
 import io.factorialsystems.store.service.user.UserService;
@@ -47,6 +47,18 @@ public class UserController {
         }
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    @PutMapping("/password/{id}")
+    public ResponseEntity<MessageResponse> changePassword(@PathVariable("id") Integer id, @Valid @RequestBody PasswordChangeRequest passwordChangeRequest) {
+        try {
+            userService.changePassword(id, passwordChangeRequest);
+            return new ResponseEntity<>(new MessageResponse("Password changed successfully"), HttpStatus.OK);
+        } catch (Exception ex) {
+            return new ResponseEntity<>(new MessageResponse(ex.getMessage()), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+
 //    @GetMapping("/byuser/{username}")
 //    @PreAuthorize("hasRole('ADMIN')")
 //    public ResponseEntity<UserDto> findByUsername(@PathVariable("username") String username) {
@@ -81,14 +93,14 @@ public class UserController {
         }
     }
 
-    @PutMapping("/password/{id}")
-    @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<MessageResponse>  changePassword(@PathVariable("id") Integer userId,
-                                                           @Valid @RequestBody PasswordRequest request) {
-        if (userService.changePassword(userId, request.getPassword())) {
-            return new ResponseEntity<MessageResponse>(new MessageResponse("Password changed successfully"), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<MessageResponse>(new MessageResponse("Password was not changed, you must be logged in and trying to change your own credentials ONLY"), HttpStatus.BAD_REQUEST);
-        }
-    }
+//    @PutMapping("/password/{id}")
+//    @PreAuthorize("hasRole('USER')")
+//    public ResponseEntity<MessageResponse>  changePassword(@PathVariable("id") Integer userId,
+//                                                           @Valid @RequestBody PasswordRequest request) {
+//        if (userService.changePassword(userId, request.getPassword())) {
+//            return new ResponseEntity<MessageResponse>(new MessageResponse("Password changed successfully"), HttpStatus.OK);
+//        } else {
+//            return new ResponseEntity<MessageResponse>(new MessageResponse("Password was not changed, you must be logged in and trying to change your own credentials ONLY"), HttpStatus.BAD_REQUEST);
+//        }
+//    }
 }

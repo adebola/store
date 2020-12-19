@@ -2,6 +2,7 @@ package io.factorialsystems.store.service.user;
 
 import io.factorialsystems.store.domain.user.User;
 import io.factorialsystems.store.mapper.user.UserMapper;
+import io.factorialsystems.store.payload.request.PasswordChangeRequest;
 import io.factorialsystems.store.security.TenantContext;
 import io.factorialsystems.store.web.mapper.user.UserMSMapper;
 import io.factorialsystems.store.web.model.user.AddressDto;
@@ -98,7 +99,7 @@ public class UserService {
         return false;
     }
 
-    public Boolean changePassword(Integer userId, String password) {
+    public Boolean changePassword(Integer userId, PasswordChangeRequest passwordChangeRequest) {
 
         // Check that Request is made by logged in User
         String username = TenantContext.getCurrentUser();
@@ -109,18 +110,25 @@ public class UserService {
         if (user == null) {
             // We really should not be here, means logged in User not found in database
             log.error(String.format("Error in UserService::changePassword, User %d not found with tenantId %s", userId, tenant));
-            return false;
+
+            throw new RuntimeException("Password change Request User Not Found");
         }
 
-        if (user.getUsername().equals(username)) {
-            PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-            String encodedPassword = passwordEncoder.encode(password);
-            userMapper.changePassword(userId, encodedPassword, TenantContext.getCurrentTenant());
-
-            return true;
+        if (!user.getUsername().equals(username)) {
+            throw new RuntimeException("Password change failed, you must be the account owner to change your password");
         }
 
-        return false;
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
+        if (!passwordEncoder.matches(passwordChangeRequest.getCurrentpassword(), user.getPassword())) {
+            throw new RuntimeException("Password change failed, the password you supplied is not correct");
+        }
+
+        String encodedPassword = passwordEncoder.encode(passwordChangeRequest.getNewPassword());
+        userMapper.changePassword(userId, encodedPassword, TenantContext.getCurrentTenant());
+
+        return true;
+
     }
 
     // Functions that are called from within and not returning data directly to the Outside

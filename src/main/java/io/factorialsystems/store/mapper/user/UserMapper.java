@@ -17,7 +17,7 @@ public interface UserMapper {
     final String SELECT_USER = "SELECT u.id, u.username, u.email, u.fullname, u.telephone, a.address, u.tenant_id " +
             "from users u, address a where u.tenant_id = #{tenantId} and a.user_id = u.id and a.is_default = true";
 
-    final String SELECT_USER_ID = "SELECT u.id, u.username, u.email, u.fullname, u.telephone, u.organization, a.address, u.tenant_id " +
+    final String SELECT_USER_ID = "SELECT u.id, u.username, u.email, u.fullname, u.telephone, u.organization, u.password, a.address, u.tenant_id " +
             "from users u, address a where u.id = #{id} and u.tenant_id = #{tenantId} and a.user_id = u.id and a.is_default = true";
 
     final String SELECT_USER_NAME = "SELECT u.id, u.username, u.email, u.password, u.fullname, u.telephone, u.activated, u.organization, a.address, u.tenant_id " +
@@ -47,6 +47,7 @@ public interface UserMapper {
             @Result(property = "fullName", column = "fullname"),
             @Result(property = "telephone", column = "telephone"),
             @Result(property = "address", column = "address"),
+            @Result(property = "password", column = "password"),
             @Result(property = "organization", column = "organization"),
             @Result(property = "tenantId", column = "tenant_id"),
             @Result(property = "roles", column = "id", javaType = List.class, many=@Many(select="selectUserRoles"))

@@ -38,7 +38,6 @@ public class AddressService {
     }
 
     public List<AddressDto> getUserAddresses(Integer userId) {
-        log.info("loadUserAddresses");
         return addressMapStructMapper.ListAddressToAddressDto(addressMapper.getUserAddresses(userId));
     }
 
