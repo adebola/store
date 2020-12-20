@@ -18,6 +18,12 @@ public class SMSSender {
     @Value("${SMS_URL}")
     private String smsUrl;
 
+    @Value("${SMS_USER}")
+    private String smsUser;
+
+    @Value("${SMS_PASSWORD}")
+    private String smsPassword;
+
     public void sendMessage(String message, String to) {
         RestTemplate restTemplate = new RestTemplate();
 
@@ -28,7 +34,7 @@ public class SMSSender {
                 newTo = "234" + to.substring(1);
             } else if (to.indexOf("+") == 0) {
                 newTo = to.substring(1);
-            } else if (to.substring(0,3) == "234") {
+            } else if (to.substring(0,3).compareTo("234") == 0) {
                  newTo = to;
             }
         } catch (Exception ex) {
@@ -42,14 +48,14 @@ public class SMSSender {
         }
 
         MultiValueMap param = new LinkedMultiValueMap<>();
-        param.add("user", "adebola");
-        param.add("pass", "uebaH4y2an5r@NT");
+        param.add("user", smsUser);
+        param.add("pass", smsPassword);
         param.add("from", "DELIFROST");
         param.add("to", newTo);
         param.add("msg", message);
         param.add("type", 0);
 
-        String response = restTemplate.postForObject("https://sms.hollatags.com/api/send", param, String.class);
+        String response = restTemplate.postForObject(smsUrl, param, String.class);
 
         log.info(String.format("SMS Response is %s", response));
     }
