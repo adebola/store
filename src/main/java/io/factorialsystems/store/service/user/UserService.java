@@ -62,7 +62,7 @@ public class UserService {
 
         Tenant tenant = tenantMapper.findById(TenantContext.getCurrentTenant());
 
-        String messageBody = String.format("Please click on the link below to reset your password \n %s/auth/forgetpassword/%s", tenant.getBase_url(), request.getUuid());
+        String messageBody = String.format("Please click on the link below to reset your password \n %s/auth/forgotpassword/%s", tenant.getBase_url(), request.getUuid());
         taskSendMail.setParameters(emailAddress, "Reset Password Request", messageBody, TenantContext.getCurrentTenant());
         taskExecutor.execute(taskSendMail);
 
