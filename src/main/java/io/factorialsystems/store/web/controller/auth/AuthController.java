@@ -3,9 +3,12 @@ package io.factorialsystems.store.web.controller.auth;
 import io.factorialsystems.store.domain.user.Role;
 import io.factorialsystems.store.domain.user.RoleType;
 import io.factorialsystems.store.domain.user.User;
+import io.factorialsystems.store.payload.request.EmailRequest;
 import io.factorialsystems.store.payload.request.LoginRequest;
+import io.factorialsystems.store.payload.request.PasswordChangeTokenRequest;
 import io.factorialsystems.store.payload.request.SignupRequest;
 import io.factorialsystems.store.payload.response.JwtResponse;
+import io.factorialsystems.store.payload.response.MessageResponse;
 import io.factorialsystems.store.payload.response.SignupResponse;
 import io.factorialsystems.store.security.JwtUtils;
 import io.factorialsystems.store.security.TenantContext;
@@ -14,6 +17,7 @@ import io.factorialsystems.store.service.user.RoleService;
 import io.factorialsystems.store.service.user.UserDetailsImpl;
 import io.factorialsystems.store.service.user.UserService;
 import io.factorialsystems.store.task.TaskSendMail;
+import io.factorialsystems.store.web.model.user.UserDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.task.TaskExecutor;
@@ -194,9 +198,15 @@ public class AuthController {
         user.setRoles(roles);
         User newUser = userService.saveUser(user);
 
+//        m.setSubject("Delifrost Account Activation");
+//
+//        String messageBody = String.format("Please click on the link below to activate your account \n %s/auth/activate", tenant.getBase_url());
+//        m.setBody(messageBody);
+
         if (newUser != null && newUser.getId() > 0) {
             // Send Activation E-Mail
-            taskSendMail.setParameters(newUser.getEmail(), TenantContext.getCurrentTenant());
+
+            taskSendMail.setParameters(newUser.getEmail(), "DELIFROST ACTIVATION", "Welcome to Delifrost", TenantContext.getCurrentTenant());
             taskExecutor.execute(taskSendMail);
 
             log.info(String.format("User Created Successfully with Id %d and Username %s", newUser.getId(), newUser.getUsername()));
@@ -212,5 +222,35 @@ public class AuthController {
             log.error(message);
             throw new RuntimeException(message);
         }
+    }
+
+    @PostMapping("/resetpassword")
+    public ResponseEntity<MessageResponse> ResetPasswordRequest(@Valid @RequestBody EmailRequest emailRequest) {
+
+        try {
+            return new ResponseEntity<>(new MessageResponse(userService.generatePasswordResetRequest(emailRequest.getEmail())), HttpStatus.OK);
+        } catch (Exception ex) {
+            return new ResponseEntity<>(new MessageResponse(ex.getMessage()), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/changepassword")
+    public ResponseEntity<MessageResponse> ChangePassword(@Valid @RequestBody PasswordChangeTokenRequest request) {
+
+        try {
+
+            if (userService.changeTokenPassword(request)) {
+                return new ResponseEntity<>(new MessageResponse("Password has been changed successfully"), HttpStatus.OK);
+            }
+
+            return new ResponseEntity<>(new MessageResponse("Unknown Error"), HttpStatus.BAD_REQUEST);
+        } catch (Exception ex) {
+            return new ResponseEntity<>(new MessageResponse(ex.getMessage()), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/user/{token}")
+    public ResponseEntity<UserDto> findResponseTokenUser(@PathVariable("token") String token) {
+        return  new ResponseEntity<>(userService.findUserByResetToken(token), HttpStatus.OK);
     }
 }

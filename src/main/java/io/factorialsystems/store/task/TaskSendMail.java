@@ -12,13 +12,17 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class TaskSendMail implements Runnable {
     private String eMail;
+    private String message;
+    private String subject;
     private String tenantId;
     private final TenantMapper tenantMapper;
     private final ApplicationContext applicationContext;
 
-    public void setParameters(String eMail, String tenantId) {
+    public void setParameters(String eMail, String subject, String message, String tenantId) {
         this.eMail = eMail;
         this.tenantId = tenantId;
+        this.message = message;
+        this.subject = subject;
     }
 
     @Override
@@ -28,10 +32,8 @@ public class TaskSendMail implements Runnable {
 
         Mail m = new Mail(eMail);
         m.setFrom(tenant.getEmail());
-        m.setSubject("Delifrost Account Activation");
-
-        String messageBody = String.format("Please click on the link below to activate your account \n %s/auth/activate", tenant.getBase_url());
-        m.setBody(messageBody);
+        m.setSubject(subject);
+        m.setBody(message);
 
         AWSMailer awsMailer = applicationContext.getBean(AWSMailer.class);
 

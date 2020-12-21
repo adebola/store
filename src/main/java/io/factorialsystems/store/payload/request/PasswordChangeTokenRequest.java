@@ -2,21 +2,19 @@ package io.factorialsystems.store.payload.request;
 
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-@ToString
 @Getter
 @Setter
-public class PasswordChangeRequest {
+public class PasswordChangeTokenRequest {
 
     @NotNull
     @NotBlank
-    private String currentpassword;
+    private String token;
 
     @NotNull
     @NotBlank
-    private String newPassword;
+    private String password;
 }

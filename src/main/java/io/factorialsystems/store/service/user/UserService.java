@@ -1,19 +1,26 @@
 package io.factorialsystems.store.service.user;
 
+import io.factorialsystems.store.domain.tenant.Tenant;
 import io.factorialsystems.store.domain.user.User;
+import io.factorialsystems.store.mapper.tenant.TenantMapper;
 import io.factorialsystems.store.mapper.user.UserMapper;
 import io.factorialsystems.store.payload.request.PasswordChangeRequest;
+import io.factorialsystems.store.payload.request.PasswordChangeTokenRequest;
+import io.factorialsystems.store.payload.request.PasswordResetRequest;
 import io.factorialsystems.store.security.TenantContext;
+import io.factorialsystems.store.task.TaskSendMail;
 import io.factorialsystems.store.web.mapper.user.UserMSMapper;
 import io.factorialsystems.store.web.model.user.AddressDto;
 import io.factorialsystems.store.web.model.user.UserDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.task.TaskExecutor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @Slf4j
@@ -23,6 +30,9 @@ public class UserService {
     private final UserMapper userMapper;
     private final UserMSMapper userMapStructMapper;
     private final AddressService addressService;
+    private final TaskSendMail taskSendMail;
+    private final TaskExecutor taskExecutor;
+    private final TenantMapper tenantMapper;
 
     // Functions that will be Invoked through the Controller from the Outside
 
@@ -32,6 +42,31 @@ public class UserService {
 
     public UserDto findById(Integer id) {
         return userMapStructMapper.UserToUserDto(userMapper.findById(id, TenantContext.getCurrentTenant()));
+    }
+
+    public String generatePasswordResetRequest(String emailAddress) {
+
+        User user = userMapper.findByEmail(emailAddress, TenantContext.getCurrentTenant());
+
+        if (user == null) {
+            throw new RuntimeException("User / Email address does not exist on our database");
+        }
+
+        PasswordResetRequest request = new PasswordResetRequest(user.getId(), UUID.randomUUID());
+
+        userMapper.createPasswordResetRequest(request);
+
+        if (request == null || request.getId() == null) {
+            throw new RuntimeException("Unable to create Password Reset Request");
+        }
+
+        Tenant tenant = tenantMapper.findById(TenantContext.getCurrentTenant());
+
+        String messageBody = String.format("Please click on the link below to reset your password \n %s/auth/forgetpassword/%s", tenant.getBase_url(), request.getUuid());
+        taskSendMail.setParameters(emailAddress, "Reset Password Request", messageBody, TenantContext.getCurrentTenant());
+        taskExecutor.execute(taskSendMail);
+
+        return request.getUuid();
     }
 
     public UserDto updateUser(Integer id, UserDto userDto) {
@@ -99,6 +134,23 @@ public class UserService {
         return false;
     }
 
+    public Boolean changeTokenPassword(PasswordChangeTokenRequest request) {
+
+        User user = userMapper.findUserByResetToken(request.getToken(), TenantContext.getCurrentTenant());
+
+        if (user == null) {
+            throw new RuntimeException("Unable to Find Password Reset Request, you might have used it ot it expired");
+        }
+
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
+        String encodedPassword = passwordEncoder.encode(request.getPassword());
+        userMapper.changePassword(user.getId(), encodedPassword, TenantContext.getCurrentTenant());
+        userMapper.closeRequestToken(request.getToken());
+
+        return true;
+    }
+
     public Boolean changePassword(Integer userId, PasswordChangeRequest passwordChangeRequest) {
 
         // Check that Request is made by logged in User
@@ -139,6 +191,10 @@ public class UserService {
 
     public Boolean existsByEmail(String email) {
         return userMapper.existsByEmail(email, TenantContext.getCurrentTenant());
+    }
+
+    public UserDto findUserByResetToken(String token) {
+        return userMapStructMapper.UserToUserDto(userMapper.findUserByResetToken(token, TenantContext.getCurrentTenant()));
     }
 
     public User findByUsername(String username) {

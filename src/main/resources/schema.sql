@@ -274,3 +274,13 @@ create table wishlist(
     FOREIGN KEY (status_id) REFERENCES wishlist_status(id),
     PRIMARY KEY (id)
 );
+
+create table password_reset_request(
+    id int(11) AUTO_INCREMENT,
+    uuid varchar(64) NOT NULL UNIQUE,
+    user_id int(11) NOT NULL,
+    createdAt timestamp DEFAULT CURRENT_TIMESTAMP,
+    lastModifiedAt timestamp DEFAULT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    PRIMARY KEY (id)
+)
