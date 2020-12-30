@@ -21,7 +21,7 @@ import java.util.List;
 public class CategoryController {
     private final CategoryService categoryService;
 
-    @GetMapping("/")
+    @GetMapping({"/", ""})
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<CategoryDto>> findAll() {
         return new ResponseEntity<>(categoryService.findAll(), HttpStatus.OK);
@@ -40,7 +40,7 @@ public class CategoryController {
         return new ResponseEntity<>(new MessageResponse("Category has been updated"), HttpStatus.OK);
     }
 
-    @PostMapping("/")
+    @PostMapping("")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<CategoryDto> save(@Valid @RequestBody CategoryDto categoryDto) {
         return new ResponseEntity<>(categoryService.save(categoryDto), HttpStatus.CREATED);
@@ -49,7 +49,12 @@ public class CategoryController {
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<MessageResponse> deleteById(@PathVariable("id") Integer id) {
-        categoryService.deleteById(id);
-        return new ResponseEntity<>(new MessageResponse("Category deleted successfully"), HttpStatus.OK);
+
+        try {
+            categoryService.deleteById(id);
+            return new ResponseEntity<>(new MessageResponse("Category deleted successfully"), HttpStatus.OK);
+        } catch (RuntimeException rex) {
+            return new ResponseEntity<>(new MessageResponse(rex.getMessage()), HttpStatus.BAD_REQUEST);
+        }
     }
 }

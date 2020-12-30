@@ -3,6 +3,7 @@ package io.factorialsystems.store.service.order;
 import io.factorialsystems.store.business.mail.Mail;
 import io.factorialsystems.store.domain.order.Order;
 import io.factorialsystems.store.domain.order.OrderItem;
+import io.factorialsystems.store.domain.order.OrderTotals;
 import io.factorialsystems.store.domain.user.User;
 import io.factorialsystems.store.mapper.order.OrderMapper;
 import io.factorialsystems.store.mapper.user.UserMapper;
@@ -123,6 +124,10 @@ public class OrderService {
 
     public List<OrderItemDto> findOrderItemById(Integer orderItemId) {
         return orderItemMSMapper.ListOrderToOrderDto(orderMapper.findOrderItemsById(orderItemId));
+    }
+
+    public List<OrderTotals> findOrderTotals() {
+        return orderMapper.findOrderTotals(TenantContext.getCurrentTenant());
     }
 
     public void sendTestEmail() {

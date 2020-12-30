@@ -16,20 +16,26 @@ public interface ProductMSMapper {
     @Mappings({
             @Mapping(source = "id", target = "id"),
             @Mapping(source = "name", target = "name"),
-            @Mapping(source = "category", target = "category"),
+            @Mapping(source = "categoryId", target = "categoryId"),
+            @Mapping(source = "brand", target = "brand"),
+            @Mapping(source = "description", target = "description"),
+            @Mapping(source = "categoryName", target = "categoryName"),
             @Mapping(source = "createdDate", target = "createdDate"),
             @Mapping(source = "lastModifiedDate", target = "lastModifiedDate"),
-            @Mapping(source = "variants", target = "variants")
+            // @Mapping(source = "variants", target = "variants")
     })
     ProductDto ProductToProductDto(Product product);
 
     @Mappings({
             @Mapping(source = "id", target = "id"),
             @Mapping(source = "name", target = "name"),
-            @Mapping(source = "category", target = "category"),
+            @Mapping(source = "categoryId", target = "categoryId"),
+            @Mapping(source = "categoryName", target = "categoryName"),
+            @Mapping(source = "brand", target = "brand"),
+            @Mapping(source = "description", target = "description"),
             @Mapping(source = "createdDate", target = "createdDate"),
             @Mapping(source = "lastModifiedDate", target = "lastModifiedDate"),
-            @Mapping(source = "variants", target = "variants")
+            // @Mapping(source = "variants", target = "variants")
     })
     Product ProductDtoToProduct(ProductDto productDto);
     List<ProductDto> ListProductToProductDto(List<Product> products);

@@ -2,6 +2,7 @@ package io.factorialsystems.store.mapper.order;
 
 import io.factorialsystems.store.domain.order.Order;
 import io.factorialsystems.store.domain.order.OrderItem;
+import io.factorialsystems.store.domain.order.OrderTotals;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Component;
 
@@ -11,14 +12,19 @@ import java.util.List;
 @Component
 public interface OrderMapper {
     final String SelectSQLOrder = "select id, user_id, order_date, order_amount, pickup, deliver, full_name, email, telephone, address, payment_ref, transaction_id, pin, tenant_id " +
-                            "from orders where id = #{id} and tenant_id = #{tenantId}";
+                                  "from orders where id = #{id} and tenant_id = #{tenantId}";
 
     final String SelectSQLOrderByUserId = "select id, user_id, order_date, order_amount, pickup, deliver, full_name, email, telephone, address, payment_ref, transaction_id, pin, tenant_id " +
-            "from orders where user_id = #{userId} and tenant_id = #{tenantId}";
+                                          "from orders where user_id = #{userId} and tenant_id = #{tenantId}";
 
     final String SelectOrderItems = "select o.id, o.order_id, o.sku_id, p.name, o.quantity, o.unit_price, o.discount, o.total_price, s.sku, pvo.name as uom, i.imagepath " +
                                     "from orderitems o, products p, sku_products s, images i, sku_images si, product_variant_options pvo, sku_product_variant_options spvo " +
                                     "where o.order_id = #{id} and o.sku_id = s.id and s.product_id = p.id and o.sku_id = si.sku_id and si.image_id = i.id and s.id = spvo.sku_id and spvo.product_variant_option_id = pvo.id";
+
+    final String SelectOrderTotals = "select p.name, i.imagepath, sum(o.total_price) as totals from products p, orderitems o, sku_products sp, sku_images si, images i " +
+                                     "where o.sku_id = sp.id and sp.product_id = p.id and si.sku_id = o.sku_id and si.image_id = i.id and sp.tenant_id = #{tenantId} " +
+                                     "GROUP BY p.name, i.imagepath " +
+                                     "ORDER BY sum(o.total_price) DESC";
 
     @Select(SelectSQLOrder)
     @Results(value = {
@@ -89,6 +95,14 @@ public interface OrderMapper {
             @Result(property = "total_price", column = "total_price")
     })
     public List<OrderItem> findOrderItemsById(Integer id);
+
+    @Select(SelectOrderTotals)
+    @Results(value = {
+            @Result(property="name", column = "name"),
+            @Result(property = "imagepath", column = "imagepath"),
+            @Result(property = "totals", column = "totals"),
+    })
+    public List<OrderTotals> findOrderTotals(String tenantId);
 }
 
 

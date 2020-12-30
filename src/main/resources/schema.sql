@@ -1,7 +1,7 @@
 
 drop table sku_product_variant_options;
 drop table sku_images;
-drop table orderItems;
+drop table orderitems;
 drop table wishlist;
 drop table sku_products;
 drop table product_variant_options;
@@ -17,6 +17,7 @@ drop table images;
 drop table tags;
 drop table address;
 drop table user_activation;
+drop table password_reset_request;
 drop table users;
 drop table roles;
 drop table tenants;
@@ -90,7 +91,7 @@ create table categories (
     id int(11) AUTO_INCREMENT,
     name varchar(64) NOT NULL,
     tenant_id varchar(64) NOT NULL,
-    image_url varchar(64) NOT NULL,
+    image_url varchar(512) NOT NULL,
     createdAt timestamp DEFAULT CURRENT_TIMESTAMP,
     lastModifiedAt timestamp DEFAULT NULL,
     PRIMARY KEY(id),
@@ -168,7 +169,7 @@ create table sku_product_variant_options (
 
 create table images (
     id int(11) AUTO_INCREMENT,
-    imagepath varchar(64) NOT NULL,
+    imagepath varchar(512) NOT NULL,
     PRIMARY KEY (id)
 );
 
@@ -283,4 +284,4 @@ create table password_reset_request(
     lastModifiedAt timestamp DEFAULT NULL,
     FOREIGN KEY (user_id) REFERENCES users(id),
     PRIMARY KEY (id)
-)
+);

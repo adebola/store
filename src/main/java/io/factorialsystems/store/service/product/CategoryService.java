@@ -45,6 +45,11 @@ public class CategoryService {
     }
 
     public void deleteById(Integer id) {
-        categoryMapper.deleteById(id, TenantContext.getCurrentTenant());
+
+        try {
+            categoryMapper.deleteById(id, TenantContext.getCurrentTenant());
+        } catch (Exception ex) {
+            throw new RuntimeException("Unable to delete Category due to foreign key constraints");
+        }
     }
 }

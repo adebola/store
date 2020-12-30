@@ -32,7 +32,7 @@ public class ProductService {
 
     public Boolean update(Integer id, ProductDto productDto) {
         String tenantContext = TenantContext.getCurrentTenant();
-        Category category = categoryMapper.findById(productDto.getCategory().getId(), tenantContext);
+        Category category = categoryMapper.findById(productDto.getCategoryId(), tenantContext);
 
         if (category == null) {
             return false;

@@ -10,7 +10,6 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
 import java.time.OffsetDateTime;
-import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -25,16 +24,24 @@ public class ProductDto {
     private String name;
 
     @NotNull
-    private CategoryDto category;
+    private Integer categoryId;
+
+    private String categoryName;
+
+    @NotNull
+    private String brand;
+
+    @NotNull
+    private String description;
 
     @Null(message = "Created Date cannot be set")
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssZ", shape = JsonFormat.Shape.STRING)
     private OffsetDateTime createdDate;
 
-    @Null(message = "LastModified Date cannt be set")
+    @Null(message = "LastModified Date cannot be set")
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssZ", shape = JsonFormat.Shape.STRING)
     private OffsetDateTime lastModifiedDate;
 
     // Values May or May not be set depending on the circumstances
-    private List<ProductVariantDto> variants;
+    // private List<ProductVariantDto> variants;
 }

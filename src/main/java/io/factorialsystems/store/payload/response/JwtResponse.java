@@ -4,6 +4,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Builder
 @Getter
 @Setter
@@ -18,4 +20,5 @@ public class JwtResponse {
     private String address;
     private String organization;
     private String token;
+    private List<String> roles;
 }

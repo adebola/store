@@ -13,31 +13,37 @@ import java.util.List;
 @Component
 public interface ProductMapper {
 
-    @Select("select id, name, category_id, tenant_id, lastModifiedAt, createdAt from products where tenant_id = #{tenantId}")
+    @Select("select p.id, p.name, p.brand, p.category_id, c.name as category_name, p.tenant_id, p.lastModifiedAt, p.createdAt from products p, categories c where p.category_id = c.id and p.tenant_id = #{tenantId} order by p.id")
     @Results(value = {
             @Result(property="id", column = "id"),
             @Result(property = "name", column = "name"),
+            @Result(property = "brand", column = "brand"),
+            @Result(property = "categoryId", column = "category_id"),
+            @Result(property = "categoryName", column = "category_name"),
             @Result(property = "createdDate", column = "createdAt"),
             @Result(property = "lastModifiedDate", column = "lastModifiedAt"),
             @Result(property = "tenantId", column = "tenant_id"),
-            @Result(property = "category", column = "category_id", javaType = Category.class, one=@One(select="findCategoryById")),
-            @Result(property = "variants", column = "id", javaType = List.class, many=@Many(select="selectProductVariants"))
+//            @Result(property = "category", column = "category_id", javaType = Category.class, one=@One(select="findCategoryById")),
+//            @Result(property = "variants", column = "id", javaType = List.class, many=@Many(select="selectProductVariants"))
     })
     public List<Product> findAll(String tenantId);
 
-    @Select("select id, name, category_id, tenant_id, lastModifiedAt, createdAt from products where tenant_id = #{tenantId} and id = #{id}")
+
+    @Select("select p.id, p.name, p.brand, p.description, p.category_id, c.name as category_name, p.tenant_id, p.lastModifiedAt, p.createdAt from products p, categories c where p.category_id = c.id and p.tenant_id = #{tenantId} and p.id = #{id}")
     @Results(value = {
             @Result(property="id", column = "id"),
             @Result(property = "name", column = "name"),
+            @Result(property = "brand", column = "brand"),
+            @Result(property = "description", column = "description"),
+            @Result(property = "categoryId", column = "category_id"),
+            @Result(property = "categoryName", column = "category_name"),
             @Result(property = "createdDate", column = "createdAt"),
             @Result(property = "lastModifiedDate", column = "lastModifiedAt"),
             @Result(property = "tenantId", column = "tenant_id"),
-            @Result(property = "category", column = "category_id", javaType = Category.class, one=@One(select="findCategoryById")),
-            @Result(property = "variants", column = "id", javaType = List.class, many=@Many(select="selectProductVariants"))
     })
     public Product findById(Integer id, String tenantId);
 
-    @Update("update products set name = #{product.name}, category_id = #{product.category.id}, lastModifiedAt = NOW() where id = #{id} and tenant_id = #{product.tenantId}")
+    @Update("update products set name = #{product.name}, category_id = #{product.categoryId}, brand = #{product.brand}, description = #{product.description}, lastModifiedAt = NOW() where id = #{id} and tenant_id = #{product.tenantId}")
     public Integer updateProduct(Integer id, Product product);
 
     @Insert("insert into products(name, category_id, tenant_id) values(#{name}, #{category.id}, #{tenantId})")

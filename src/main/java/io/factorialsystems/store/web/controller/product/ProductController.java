@@ -21,7 +21,7 @@ import java.util.List;
 public class ProductController {
     private final ProductService productService;
 
-    @GetMapping("/")
+    @GetMapping({"/", ""})
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<ProductDto>> findAll() {
         return new ResponseEntity<>(productService.findAll(), HttpStatus.OK);
@@ -50,13 +50,14 @@ public class ProductController {
         return new ResponseEntity<>(messageResponse, httpStatus);
     }
 
-    @PostMapping("/")
+    @PostMapping({"/",""})
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ProductDto> save(@Valid @RequestBody ProductDto productDto) {
         return new ResponseEntity<>(productService.save(productDto), HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<MessageResponse> deleteById(@PathVariable("id") Integer id) {
         productService.deleteById(id);
 

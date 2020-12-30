@@ -34,6 +34,7 @@ import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Slf4j
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -80,10 +81,13 @@ public class AuthController {
         String jwt = jwtUtils.generateJwtToken(authentication);
 
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-//        Roles Not needed for Now
-//        List<String> roles = userDetails.getAuthorities().stream()
-//                .map(item -> item.getAuthority())
-//                .collect(Collectors.toList());
+
+        // Roles
+        List<String> roles = userDetails.getAuthorities().stream()
+                .map(item -> item.getAuthority())
+                .collect(Collectors.toList());
+
+        log.info(String.format("Roles %d", roles.size()));
 
         JwtResponse response =  JwtResponse.builder()
                 .status(200)
@@ -96,6 +100,7 @@ public class AuthController {
                 .address(userDetails.getAddress())
                 .organization(userDetails.getOrganization())
                 .token(jwt)
+                .roles(roles)
                 .build();
 
         return ResponseEntity.ok(response);
