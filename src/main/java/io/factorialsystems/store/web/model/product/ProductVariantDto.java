@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Null;
 import java.util.Date;
-import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -33,5 +32,5 @@ public class ProductVariantDto {
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssZ", shape = JsonFormat.Shape.STRING)
     private Date lastModifiedDate;
 
-    private List<ProductVariantOptionDto> variantOptions;
+    // private List<ProductVariantOptionDto> variantOptions;
 }

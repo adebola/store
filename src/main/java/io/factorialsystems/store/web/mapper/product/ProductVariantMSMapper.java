@@ -19,7 +19,7 @@ public interface ProductVariantMSMapper {
             @Mapping(source = "productId", target = "productId"),
             @Mapping(source = "createdDate", target = "createdDate"),
             @Mapping(source = "lastModifiedDate", target = "lastModifiedDate"),
-            @Mapping(source = "variantOptions", target = "variantOptions")
+            // @Mapping(source = "variantOptions", target = "variantOptions")
     })
     ProductVariantDto ProductVariantToProductVariantDto(ProductVariant productVariant);
 
@@ -29,10 +29,11 @@ public interface ProductVariantMSMapper {
             @Mapping(source = "productId", target = "productId"),
             @Mapping(source = "createdDate", target = "createdDate"),
             @Mapping(source = "lastModifiedDate", target = "lastModifiedDate"),
-            @Mapping(source = "variantOptions", target = "variantOptions"),
-            @Mapping(target = "tenantId", ignore = true)
+            // @Mapping(source = "variantOptions", target = "variantOptions"),
+            // @Mapping(target = "tenantId", ignore = true)
     })
     ProductVariant ProductVariantDtoToProductVariant(ProductVariantDto productVariantDtoDto);
+
     List<ProductVariantDto> ListProductVariantToProductVariantDto(List<ProductVariant> productVariants);
-    //List<ProductVariant> ListProductVariantDtoToProductVariant(List<ProductVariantDto> productVariantDtos);
+    // List<ProductVariant> ListProductVariantDtoToProductVariant(List<ProductVariantDto> productVariantDtos);
 }

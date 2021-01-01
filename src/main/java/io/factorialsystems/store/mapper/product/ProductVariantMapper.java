@@ -10,7 +10,7 @@ import java.util.List;
 @Mapper
 @Component
 public interface ProductVariantMapper {
-    @Select("select id, name, tenant_id, product_id, lastModifiedAt, createdAt from product_variants where tenant_id = #{tenantId}")
+    @Select("select id, name, tenant_id, product_id, lastModifiedAt, createdAt from product_variants where product_id = #{id} and tenant_id = #{tenantId}")
     @Results(value = {
             @Result(property="id", column = "id"),
             @Result(property = "name", column = "name"),
@@ -18,9 +18,9 @@ public interface ProductVariantMapper {
             @Result(property = "createdDate", column = "createdAt"),
             @Result(property = "lastModifiedDate", column = "lastModifiedAt"),
             @Result(property = "tenantId", column = "tenant_id"),
-            @Result(property = "variantOptions", column = "id", javaType = List.class, many=@Many(select="selectProductVariantOptions"))
+            // @Result(property = "variantOptions", column = "id", javaType = List.class, many=@Many(select="selectProductVariantOptions"))
     })
-    public List<ProductVariant> findAll(String tenantId);
+    public List<ProductVariant> findByProductId(Integer id, String tenantId);
 
     @Select("select id, name, tenant_id, product_id, lastModifiedAt, createdAt from product_variants where tenant_id = #{tenantId} and id = #{id}")
     @Results(value = {
@@ -30,11 +30,11 @@ public interface ProductVariantMapper {
             @Result(property = "createdDate", column = "createdAt"),
             @Result(property = "lastModifiedDate", column = "lastModifiedAt"),
             @Result(property = "tenantId", column = "tenant_id"),
-            @Result(property = "variantOptions", column = "id", javaType = List.class, many=@Many(select="selectProductVariantOptions"))
+            // @Result(property = "variantOptions", column = "id", javaType = List.class, many=@Many(select="selectProductVariantOptions"))
     })
     public ProductVariant findById(Integer id, String tenantId);
 
-    @Update("update product_variants set name = #{productVariant.name}, lastModifiedAt = NOW() where id = #{id} and tenant_id = #{productVariant.tenantId}")
+    @Update("update product_variants set name = #{name}, lastModifiedAt = NOW() where id = #{id} and tenant_id = #{productVariant.tenantId}")
     public Integer updateProductVariant(Integer id, ProductVariant productVariant);
 
     @Insert("insert into product_variants(name, product_id, tenant_id) values(#{name}, #{productId}, #{tenantId})")

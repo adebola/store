@@ -17,14 +17,14 @@ import java.util.List;
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/product_variants")
+@RequestMapping("/api/v1/pv")
 public class ProductVariantController {
     private final ProductVariantService productVariantService;
 
-    @GetMapping("/")
+    @GetMapping("/product/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<ProductVariantDto>> findAll() {
-        return new ResponseEntity<List<ProductVariantDto>>(productVariantService.findAll(), HttpStatus.OK);
+    public ResponseEntity<List<ProductVariantDto>> findByProductId(@PathVariable("id") Integer id) {
+        return new ResponseEntity<>(productVariantService.findByProductId(id), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
@@ -55,6 +55,7 @@ public class ProductVariantController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<MessageResponse> deleteById(@PathVariable("id") Integer id) {
         productVariantService.deleteById(id);
 

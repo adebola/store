@@ -46,7 +46,7 @@ public interface ProductMapper {
     @Update("update products set name = #{product.name}, category_id = #{product.categoryId}, brand = #{product.brand}, description = #{product.description}, lastModifiedAt = NOW() where id = #{id} and tenant_id = #{product.tenantId}")
     public Integer updateProduct(Integer id, Product product);
 
-    @Insert("insert into products(name, category_id, tenant_id) values(#{name}, #{category.id}, #{tenantId})")
+    @Insert("insert into products(name, brand, description, category_id, tenant_id) values(#{name}, #{brand}, #{description}, #{categoryId}, #{tenantId})")
     @SelectKey(statement = "select LAST_INSERT_ID()", keyProperty = "id", keyColumn = "id", before = false, resultType = Integer.class)
     public Integer saveProduct(Product product);
 

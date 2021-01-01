@@ -21,8 +21,8 @@ public class ProductVariantService {
     private final ProductVariantMapper productVariantMapper;
     private final ProductVariantMSMapper productVariantMSMapper;
 
-    public List<ProductVariantDto> findAll() {
-        return productVariantMSMapper.ListProductVariantToProductVariantDto(productVariantMapper.findAll(TenantContext.getCurrentTenant()));
+    public List<ProductVariantDto> findByProductId(Integer id) {
+        return productVariantMSMapper.ListProductVariantToProductVariantDto(productVariantMapper.findByProductId(id, TenantContext.getCurrentTenant()));
     }
 
     public ProductVariantDto findById(Integer id) {
