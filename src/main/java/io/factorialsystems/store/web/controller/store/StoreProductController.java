@@ -24,6 +24,7 @@ public class StoreProductController {
         return new ResponseEntity<>(storeProductService.findAll(), HttpStatus.OK);
     }
 
+
     @GetMapping("/search/{search}")
     public ResponseEntity<List<StoreProductDto>> search(@PathVariable("search") String search) {
         return new ResponseEntity<>(storeProductService.search(search), HttpStatus.OK);

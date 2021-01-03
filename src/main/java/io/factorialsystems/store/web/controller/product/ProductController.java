@@ -3,6 +3,7 @@ package io.factorialsystems.store.web.controller.product;
 import io.factorialsystems.store.payload.response.MessageResponse;
 import io.factorialsystems.store.service.product.ProductService;
 import io.factorialsystems.store.web.model.product.ProductDto;
+import io.factorialsystems.store.web.model.product.admin.AdminProductDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -62,5 +63,13 @@ public class ProductController {
         productService.deleteById(id);
 
         return new ResponseEntity<>(new MessageResponse("Product has been deleted successfully"), HttpStatus.OK);
+    }
+
+
+    // SKU Paths
+    @GetMapping("/sku/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<AdminProductDto> findProductById(@PathVariable("id") Integer id) {
+        return new ResponseEntity<>(productService.findProductById(id), HttpStatus.OK);
     }
 }

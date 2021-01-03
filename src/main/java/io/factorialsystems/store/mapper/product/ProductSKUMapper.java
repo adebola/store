@@ -1,5 +1,6 @@
 package io.factorialsystems.store.mapper.product;
 
+import io.factorialsystems.store.domain.product.ProductAdminSKU;
 import io.factorialsystems.store.domain.product.ProductSKU;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Result;
@@ -48,12 +49,14 @@ public interface ProductSKUMapper {
             "            p.id as productId,\n" +
             "            sku.price,\n" +
             "            sku.discount,\n" +
+            "            sku.quantity,\n" +
             "            sku.sku_description as description,\n" +
             "            sku.new,\n" +
             "            sku.sale,\n" +
             "            p.name,\n" +
             "            p.brand,\n" +
             "            c.name as category,\n" +
+            "            c.id as category_id,\n" +
             "            pv.name as variant,\n" +
             "            pvo.name as variant_option,\n" +
             "            i.imagepath\n" +
@@ -165,8 +168,10 @@ public interface ProductSKUMapper {
             @Result(property = "productId", column = "productId"),
             @Result(property = "price", column = "price"),
             @Result(property = "discount", column = "discount"),
+            @Result(property = "quantity", column = "quantity"),
             @Result(property = "name", column = "name"),
             @Result(property = "category", column = "category"),
+            @Result(property = "categoryId", column = "category_id"),
             @Result(property = "imagePath", column = "imagePath"),
             @Result(property = "description", column = "description"),
             @Result(property = "isNew", column = "new"),
@@ -175,7 +180,7 @@ public interface ProductSKUMapper {
             @Result(property = "variant", column = "variant"),
             @Result(property = "variantOption", column = "variant_option")
     })
-    public List<ProductSKU> findByProductId(Integer id, String tenantId);
+    public ProductAdminSKU findByProductId(Integer id, String tenantId);
 
     @Select(SelectSQLSKU)
     @Results(value = {
