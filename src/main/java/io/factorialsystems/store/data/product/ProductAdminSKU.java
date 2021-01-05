@@ -1,4 +1,4 @@
-package io.factorialsystems.store.domain.product;
+package io.factorialsystems.store.data.product;
 
 
 import lombok.Data;
@@ -22,6 +22,7 @@ public class ProductAdminSKU {
     private String brand;
     private Boolean isNew;
     private Boolean onSale;
+    private Integer variantOptionId;
     private String variant;
     private String variantOption;
 }

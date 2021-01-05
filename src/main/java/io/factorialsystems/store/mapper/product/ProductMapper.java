@@ -50,6 +50,14 @@ public interface ProductMapper {
     @SelectKey(statement = "select LAST_INSERT_ID()", keyProperty = "id", keyColumn = "id", before = false, resultType = Integer.class)
     public Integer saveProduct(Product product);
 
+    @Insert("insert into product_variants(name, product_id, tenant_id) values(#{name}, #{productId}, #{tenantId})")
+    @SelectKey(statement = "select LAST_INSERT_ID()", keyProperty = "id", keyColumn = "id", before = false, resultType = Integer.class)
+    public Integer saveProductVariant(ProductVariant productVariant);
+
+    @Insert("insert into product_variant_options(name, product_variant_Id, tenant_id) values(#{name}, #{productVariantId}, #{tenantId})")
+    @SelectKey(statement = "select LAST_INSERT_ID()", keyProperty = "id", keyColumn = "id", before = false, resultType = Integer.class)
+    public Integer saveProductVariantOption(ProductVariantOption productVariant);
+
     @Delete("delete from products where id = #{id} and tenant_id = #{tenantId}")
     public Integer deleteById(Integer id, String tenantId);
 

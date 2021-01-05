@@ -31,6 +31,7 @@ import org.apache.ibatis.datasource.pooled.PooledDataSource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 
 import javax.sql.DataSource;
 
@@ -56,5 +57,10 @@ public class MyBatisConfiguration {
         PooledDataSource dataSource = new PooledDataSource(driver, url, username, password);
         log.info("Datasource created successfully");
         return dataSource;
+    }
+
+    @Bean
+    public DataSourceTransactionManager transactionManager() {
+        return new DataSourceTransactionManager(dataSource());
     }
 }

@@ -1,4 +1,4 @@
-package io.factorialsystems.store.domain.product;
+package io.factorialsystems.store.data.product;
 
 import lombok.Data;
 

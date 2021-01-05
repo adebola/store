@@ -1,11 +1,13 @@
 package io.factorialsystems.store.mapper.product;
 
-import io.factorialsystems.store.domain.product.ProductAdminSKU;
-import io.factorialsystems.store.domain.product.ProductSKU;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Result;
-import org.apache.ibatis.annotations.Results;
-import org.apache.ibatis.annotations.Select;
+import io.factorialsystems.store.data.image.SKUImage;
+import io.factorialsystems.store.data.product.ProductAdminSKU;
+import io.factorialsystems.store.data.product.ProductSKU;
+import io.factorialsystems.store.data.product.SPVO;
+import io.factorialsystems.store.domain.image.Image;
+import io.factorialsystems.store.domain.product.SKU;
+import io.factorialsystems.store.web.model.product.admin.AdminProductBundleDto;
+import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -59,6 +61,7 @@ public interface ProductSKUMapper {
             "            c.id as category_id,\n" +
             "            pv.name as variant,\n" +
             "            pvo.name as variant_option,\n" +
+            "            pvo.id as variant_option_id,\n" +
             "            i.imagepath\n" +
             "from\n" +
             "            products p, product_variants pv, product_variant_options pvo, categories c, sku_products sku, sku_product_variant_options spvo, images i, sku_images si\n" +
@@ -172,6 +175,7 @@ public interface ProductSKUMapper {
             @Result(property = "name", column = "name"),
             @Result(property = "category", column = "category"),
             @Result(property = "categoryId", column = "category_id"),
+            @Result(property = "variantOptionId", column = "variant_option_id"),
             @Result(property = "imagePath", column = "imagePath"),
             @Result(property = "description", column = "description"),
             @Result(property = "isNew", column = "new"),
@@ -200,6 +204,30 @@ public interface ProductSKUMapper {
             @Result(property = "variantOption", column = "variant_option")
     })
     public List<ProductSKU> findBySkuId(Integer id, String tenantId);
+
+    @Update("update sku_products set sku=#{dto.sku}, price=#{dto.price}, discount=#{dto.discount}, sku_description=#{dto.description}, quantity=#{dto.quantity}, new=#{dto.isNew}, sale=#{dto.onSale}, lastModifiedAt = NOW() where id=#{dto.id} and tenant_id=#{tenantId}")
+    public Integer updateProductSKU(AdminProductBundleDto dto, String tenantId);
+
+    @Update("update images INNER JOIN sku_images on images.id = sku_images.image_id  and sku_images.sku_id=#{id} SET imagepath=#{imagepath}")
+    public Integer updateSKUImagePath(Integer id, String imagepath);
+
+    @Update("update product_variant_options set name = #{option} where id=#{id}")
+    public Integer updateProductVariantOptions(Integer id, String option);
+
+    @Insert("insert into sku_products(product_id, sku, price, discount, sku_description, quantity, new, sale, tenant_id) values(#{productId}, #{sku}, #{price}, #{discount}, #{description}, #{quantity}, #{isNew}, #{onSale}, #{tenantId})")
+    @SelectKey(statement = "select LAST_INSERT_ID()", keyProperty = "id", keyColumn = "id", before = false, resultType = Integer.class)
+    public Integer saveProductSKU(SKU sku);
+
+    @Insert("insert into images(imagepath) values(#{imagePath})")
+    @SelectKey(statement = "select LAST_INSERT_ID()", keyProperty = "id", keyColumn = "id", before = false, resultType = Integer.class)
+    public Integer saveProductImage(Image image);
+
+    @Insert("insert into sku_product_variant_options(sku_id, product_variant_option_id) values(#{skuId}, #{pvoId})")
+    public Integer saveSPVO(SPVO spvo);
+
+    @Insert("insert into sku_images(sku_id, image_id) values(#{skuId}, #{imageId})")
+    public Integer saveProductSKUImage(SKUImage skuImage);
+
 
     @Select(SelectSQLSKUSearch)
     @Results(value = {

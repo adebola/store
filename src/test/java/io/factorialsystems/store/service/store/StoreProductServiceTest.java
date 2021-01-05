@@ -1,6 +1,6 @@
 package io.factorialsystems.store.service.store;
 
-import io.factorialsystems.store.domain.product.ProductSKU;
+import io.factorialsystems.store.data.product.ProductSKU;
 import io.factorialsystems.store.mapper.product.ProductSKUMapper;
 import io.factorialsystems.store.security.TenantContext;
 import org.junit.jupiter.api.BeforeEach;

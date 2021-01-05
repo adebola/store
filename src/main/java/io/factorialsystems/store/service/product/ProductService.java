@@ -1,8 +1,10 @@
 package io.factorialsystems.store.service.product;
 
-import io.factorialsystems.store.domain.product.Category;
-import io.factorialsystems.store.domain.product.Product;
-import io.factorialsystems.store.domain.product.ProductAdminSKU;
+import io.factorialsystems.store.data.image.SKUImage;
+import io.factorialsystems.store.data.product.ProductAdminSKU;
+import io.factorialsystems.store.data.product.SPVO;
+import io.factorialsystems.store.domain.image.Image;
+import io.factorialsystems.store.domain.product.*;
 import io.factorialsystems.store.mapper.product.CategoryMapper;
 import io.factorialsystems.store.mapper.product.ProductMapper;
 import io.factorialsystems.store.mapper.product.ProductSKUMapper;
@@ -15,6 +17,9 @@ import io.factorialsystems.store.web.model.product.admin.AdminProductDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import java.util.*;
 
@@ -27,6 +32,7 @@ public class ProductService {
     private final ProductMSMapper productMSMapper;
     private final CategoryMapper categoryMapper;
     private final ProductSKUMapper productSKUMapper;
+    private final PlatformTransactionManager transactionManager;
 
     public List<ProductDto> findAll() {
         return productMSMapper.ListProductToProductDto(productMapper.findAll(TenantContext.getCurrentTenant()));
@@ -70,7 +76,154 @@ public class ProductService {
     }
 
     public AdminProductDto findProductById(Integer id) {
-        return Convert( productSKUMapper.findByProductId(id, TenantContext.getCurrentTenant()));
+        ProductAdminSKU productAdminSKU = productSKUMapper.findByProductId(id, TenantContext.getCurrentTenant());
+
+        if (productAdminSKU != null) {
+            return Convert(productAdminSKU);
+        }
+
+        return null;
+    }
+
+    public Boolean updateSKU(Integer id, AdminProductDto adminProductDto) {
+
+        AdminProductBundleDto adminProductBundleDto = adminProductDto.getBundles().stream().findFirst().get();
+        AdminProductBundleVariantDto adminProductBundleVariantDto = adminProductBundleDto.getVariantOptions().stream().findFirst().get();
+
+        TransactionStatus txStatus = transactionManager.getTransaction(new DefaultTransactionDefinition());
+
+        try {
+            // Update Product
+            Product product = new Product();
+            product.setBrand(adminProductDto.getBrand());
+            product.setCategoryId(adminProductDto.getCategoryId());
+            product.setName(adminProductDto.getName());
+            product.setDescription(adminProductBundleDto.getDescription());
+            product.setTenantId(TenantContext.getCurrentTenant());
+            productMapper.updateProduct(id, product);
+
+            // Update SKU Product
+            productSKUMapper.updateProductSKU(adminProductBundleDto, TenantContext.getCurrentTenant());
+
+            // Update SKU ImagePath
+            productSKUMapper.updateSKUImagePath(adminProductBundleDto.getId(), adminProductBundleDto.getImagePath().get(0));
+
+            // Update The Variant
+            productSKUMapper.updateProductVariantOptions(adminProductBundleVariantDto.getId(), adminProductBundleVariantDto.getVariantOption());
+        } catch (Exception e) {
+            transactionManager.rollback(txStatus);
+            return false;
+        }
+
+        transactionManager.commit(txStatus);
+
+
+        return true;
+    }
+
+    public Boolean saveSKU(AdminProductDto adminProductDto) {
+
+        AdminProductBundleDto adminProductBundleDto = adminProductDto.getBundles().stream().findFirst().get();
+        AdminProductBundleVariantDto adminProductBundleVariantDto = adminProductBundleDto.getVariantOptions().stream().findFirst().get();
+
+        TransactionStatus txStatus = transactionManager.getTransaction(new DefaultTransactionDefinition());
+
+        try {
+            // Save the product
+            Product product = new Product();
+            product.setBrand(adminProductDto.getBrand());
+            product.setCategoryId(adminProductDto.getCategoryId());
+            product.setName(adminProductDto.getName());
+            product.setDescription(adminProductBundleDto.getDescription());
+            product.setTenantId(TenantContext.getCurrentTenant());
+            productMapper.saveProduct(product);
+
+            Integer productId = product.getId();
+            if (productId == null) {
+                throw new RuntimeException("Error Saving Product");
+            }
+
+            log.info(String.format("Product Id: %d Name: %s saved Successfully", product.getId(), product.getName()));
+
+            // Save ProductVariant
+            ProductVariant pv = new ProductVariant();
+            pv.setName(adminProductBundleVariantDto.getVariantName());
+            pv.setTenantId(TenantContext.getCurrentTenant());
+            pv.setProductId(productId);
+            productMapper.saveProductVariant(pv);
+
+            Integer pvId = pv.getId();
+
+            if (pvId == null) {
+                throw new RuntimeException("Error Saving Product Variant");
+            }
+
+            log.info(String.format("Product Variant Id: %d Name: %s saved Successfully", pv.getId(), pv.getName()));
+
+            // Save ProductVariantOptions
+            ProductVariantOption pvo = new ProductVariantOption();
+            pvo.setName(adminProductBundleVariantDto.getVariantOption());
+            pvo.setProductVariantId(pvId);
+            pvo.setTenantId(TenantContext.getCurrentTenant());
+            productMapper.saveProductVariantOption(pvo);
+
+            Integer pvoId = pvo.getId();
+
+            if (pvo == null) {
+                throw new RuntimeException("Product Variant Option");
+            }
+
+            log.info(String.format("Product Variant Option Id: %d Name: %s saved Successfully", pvo.getId(), pvo.getName()));
+
+            // Save Product SKU
+            SKU sku = SKU.builder()
+                    .discount(adminProductBundleDto.getDiscount())
+                    .price(adminProductBundleDto.getPrice())
+                    .sku(adminProductBundleDto.getSku())
+                    .onSale(adminProductBundleDto.getOnSale())
+                    .isNew(adminProductBundleDto.getIsNew())
+                    .quantity(adminProductBundleDto.getQuantity())
+                    .description(adminProductBundleDto.getDescription())
+                    .productId(productId)
+                    .tenantId(TenantContext.getCurrentTenant())
+                    .build();
+
+            productSKUMapper.saveProductSKU(sku);
+
+            Integer skuId = sku.getId();
+
+            if (skuId == null) {
+                throw new RuntimeException("Unable to save SKU");
+            }
+
+            log.info(String.format("Product SKU Id: %d SKU: %s saved Successfully", sku.getId(), sku.getSku()));
+
+            // Insert into Normalising Table sku_product_variant_options
+            SPVO spvo = new SPVO(skuId, pvoId);
+            productSKUMapper.saveSPVO(spvo);
+
+            // Save Image
+            Image image = new Image(adminProductBundleDto.getImagePath().stream().findFirst().get());
+            productSKUMapper.saveProductImage(image);
+
+            Integer imageId = image.getId();
+
+            if (imageId == null) {
+                throw new RuntimeException(String.format("Unable to Save Image %s", adminProductBundleDto.getImagePath().stream().findFirst().get()));
+            }
+
+            log.info(String.format("Image SKU Id: %d path: %s saved Successfully", image.getId(), image.getImagePath()));
+
+            // Link Image in the sku_images table
+            SKUImage skuImage = new SKUImage(skuId, imageId);
+            productSKUMapper.saveProductSKUImage(skuImage);
+        } catch (Exception e) {
+            transactionManager.rollback(txStatus);
+            return false;
+        }
+
+        transactionManager.commit(txStatus);
+        return true;
     }
 
     private AdminProductDto Convert(ProductAdminSKU productAdminSKU) {
@@ -133,6 +286,7 @@ public class ProductService {
 
             AdminProductBundleVariantDto spvd = AdminProductBundleVariantDto
                     .builder()
+                    .id(productAdminSKU.getVariantOptionId())
                     .variantName(productAdminSKU.getVariant())
                     .variantOption(productAdminSKU.getVariantOption())
                     .build();
@@ -145,6 +299,7 @@ public class ProductService {
             if (spvdOptional.isEmpty()) {
                 AdminProductBundleVariantDto spvd = AdminProductBundleVariantDto
                         .builder()
+                        .id(productAdminSKU.getVariantOptionId())
                         .variantName(productAdminSKU.getVariant())
                         .variantOption(productAdminSKU.getVariantOption())
                         .build();

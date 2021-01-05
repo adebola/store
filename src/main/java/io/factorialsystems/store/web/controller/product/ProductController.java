@@ -69,7 +69,29 @@ public class ProductController {
     // SKU Paths
     @GetMapping("/sku/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<AdminProductDto> findProductById(@PathVariable("id") Integer id) {
+    public ResponseEntity<AdminProductDto> findProductSKUById(@PathVariable("id") Integer id) {
         return new ResponseEntity<>(productService.findProductById(id), HttpStatus.OK);
+    }
+
+    @PutMapping("/sku/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<MessageResponse> updateProductSKU(@PathVariable("id") Integer id, @Valid @RequestBody AdminProductDto adminProductDto) {
+
+        if (productService.updateSKU(id, adminProductDto)) {
+            return new ResponseEntity<>(new MessageResponse("Product was updated Successfully"), HttpStatus.OK);
+        }
+
+        return new ResponseEntity<>(new MessageResponse("Error Updating Product"), HttpStatus.BAD_REQUEST);
+    }
+
+    @PostMapping("/sku")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<MessageResponse> saveProdcuctSKU(@Valid @RequestBody AdminProductDto adminProductDto) {
+
+        if (productService.saveSKU(adminProductDto)) {
+            return new ResponseEntity<>(new MessageResponse("Product has been saved successfully"), HttpStatus.OK);
+        }
+
+        return new ResponseEntity<>(new MessageResponse("Error Saving Product"), HttpStatus.BAD_REQUEST);
     }
 }
