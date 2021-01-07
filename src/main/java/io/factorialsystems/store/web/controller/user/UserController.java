@@ -72,12 +72,12 @@ public class UserController {
     @PostMapping("")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<MessageResponse> saveUser(@Valid @RequestBody UserDto userDto ) {
-//        try {
+        try {
             userService.SaveUserAdmin(userDto);
             return new ResponseEntity<>(new MessageResponse("User Created Successfully"), HttpStatus.OK);
-//        } catch (Exception ex) {
-//            return new ResponseEntity<>(new MessageResponse(ex.getMessage()), HttpStatus.BAD_REQUEST);
-//        }
+        } catch (Exception ex) {
+            return new ResponseEntity<>(new MessageResponse(ex.getMessage()), HttpStatus.BAD_REQUEST);
+        }
     }
 
 
