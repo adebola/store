@@ -124,12 +124,12 @@ public class UserService {
 
         if (strRoles == null) {
           // Remove Admin from User Profile if it already existed
-          Role o = roles.stream()
+          Optional<Role> o = roles.stream()
                   .filter(role -> role.getRoleType() == RoleType.ROLE_ADMIN)
-                  .findAny()
-                  .get();
+                  .findAny();
 
-          if (o != null) {
+
+          if (o != null && o.isPresent()) {
               log.info(String.format("Removing Admin Role from User %s", userDto.getEmail()));
               userMapper.removeRole(id, RoleType.ROLE_ADMIN.ordinal(), TenantContext.getCurrentTenant());
           }
@@ -138,14 +138,13 @@ public class UserService {
             String roleString = strRoles.stream().findFirst().get();
 
             if (roleString.equals("admin")) {
-                Role o = roles.stream()
+                Optional<Role> o = roles.stream()
                         .filter(r -> r.getRoleType() == RoleType.ROLE_ADMIN)
-                        .findFirst()
-                        .get();
+                        .findFirst();
 
-                if (o == null) {
+                if (o == null || !o.isPresent()) {
                     log.info(String.format("Admin RoleType not found in User Account %s it has been added", userDto.getEmail()));
-                    userMapper.addRole(userDto.getId(),RoleType.ROLE_ADMIN.ordinal(), TenantContext.getCurrentTenant());
+                    userMapper.addRole(id, RoleType.ROLE_ADMIN.ordinal(), TenantContext.getCurrentTenant());
                 } else {
                     log.info(String.format("Admin RoleType already Found In Profile of %s Request Ignored", userDto.getEmail()));
                 }
