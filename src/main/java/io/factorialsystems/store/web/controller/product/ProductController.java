@@ -102,4 +102,19 @@ public class ProductController {
         return new ResponseEntity<>(productService.getProductTags(id), HttpStatus.OK);
 
     }
+
+    @PostMapping("/tags")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<MessageResponse> saveProductTag(@Valid @RequestBody ProductTag productTag) {
+        productService.saveProductTag(productTag);
+
+        return new ResponseEntity<>(new MessageResponse("Tag Saved Successfully"), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/tags/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<MessageResponse> deleteProductTag(@PathVariable("id") Integer id, @RequestParam("productId") Integer productId) {
+        productService.deleteProductTag(id, productId);
+        return new ResponseEntity<>(new MessageResponse("Tag Deleted Successfully"), HttpStatus.OK);
+    }
 }

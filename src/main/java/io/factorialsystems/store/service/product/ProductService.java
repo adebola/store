@@ -313,4 +313,20 @@ public class ProductService {
     public List<ProductTag> getProductTags(Integer id) {
         return productMapper.getTags(id);
     }
+
+    public void deleteProductTag(Integer id, Integer productId) {
+        productMapper.deleteTag(id, productId);
+    }
+
+    public void saveProductTag(ProductTag productTag) {
+        productMapper.saveTag(productTag);
+
+        if (productTag.getId() == null) {
+            throw new RuntimeException("Error Saving Tag");
+        }
+
+        log.info(String.format("PRODUCT-TAG id: %d, tagName: %s, productId: %d", productTag.getId(), productTag.getTagName(), productTag.getProductId()));
+
+        productMapper.linkTag(productTag);
+    }
 }

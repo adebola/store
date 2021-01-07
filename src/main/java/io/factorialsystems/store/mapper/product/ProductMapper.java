@@ -99,4 +99,14 @@ public interface ProductMapper {
             @Result(property = "tagName", column = "tagname"),
     })
     List<ProductTag> getTags(Integer id);
+
+    @Insert("insert into tags(tagName) values(#{tagName})")
+    @SelectKey(statement = "select LAST_INSERT_ID()", keyProperty = "id", keyColumn = "id", before = false, resultType = Integer.class)
+    Integer saveTag(ProductTag tag);
+
+    @Insert("insert into product_tags(product_id, tag_id) values(#{productId}, #{id})")
+    Integer linkTag(ProductTag tag);
+
+    @Delete("delete from product_tags where product_id=#{productId} and tag_id=#{id}")
+    Integer deleteTag(Integer id, Integer productId);
 }
