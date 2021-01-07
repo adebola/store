@@ -24,7 +24,7 @@ import java.util.List;
 public class UserController {
     private final UserService userService;
 
-    @GetMapping("/")
+    @GetMapping({"/", ""})
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<UserDto>> findAll() {
         return new ResponseEntity<>(userService.findAll(), HttpStatus.OK);
@@ -47,6 +47,17 @@ public class UserController {
         }
     }
 
+    @PutMapping("/admin/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<MessageResponse> updateUserAdmin(@PathVariable("id") Integer id, @Valid @RequestBody UserDto userDto) {
+        try {
+            userService.updateUserAdmin(id, userDto);
+            return new ResponseEntity<>(new MessageResponse("User updated Successfully"), HttpStatus.OK);
+        } catch (Exception ex) {
+            return new ResponseEntity<>(new MessageResponse(ex.getMessage()), HttpStatus.BAD_REQUEST);
+        }
+    }
+
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @PutMapping("/password/{id}")
     public ResponseEntity<MessageResponse> changePassword(@PathVariable("id") Integer id, @Valid @RequestBody PasswordChangeRequest passwordChangeRequest) {
@@ -57,6 +68,19 @@ public class UserController {
             return new ResponseEntity<>(new MessageResponse(ex.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
+
+    @PostMapping("")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<MessageResponse> saveUser(@Valid @RequestBody UserDto userDto ) {
+//        try {
+            userService.SaveUserAdmin(userDto);
+            return new ResponseEntity<>(new MessageResponse("User Created Successfully"), HttpStatus.OK);
+//        } catch (Exception ex) {
+//            return new ResponseEntity<>(new MessageResponse(ex.getMessage()), HttpStatus.BAD_REQUEST);
+//        }
+    }
+
+
 
 
 //    @GetMapping("/byuser/{username}")

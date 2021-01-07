@@ -42,7 +42,7 @@ public class User {
     private String address;
     private String password;
     private String organization;
-    private boolean activated;
+    private Boolean activated;
     private List<Role> roles;
     private String tenantId;
 

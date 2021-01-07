@@ -12,23 +12,30 @@ import java.util.List;
 @Component
 public interface UserMapper {
 
-    final String SELECT_ROLES = "select r.id, r.name, r.tenant_id from roles r, user_roles ur, users u " +
+    String SELECT_ROLES = "select r.id, r.name, r.tenant_id from roles r, user_roles ur, users u " +
             "where r.id = ur.role_id and u.id = ur.user_id and u.id = #{userId}";
 
-    final String SELECT_USER = "SELECT u.id, u.username, u.email, u.fullname, u.telephone, a.address, u.tenant_id " +
+    String SELECT_USER = "SELECT u.id, u.username, u.email, u.fullname, u.telephone, a.address, u.tenant_id " +
             "from users u, address a where u.tenant_id = #{tenantId} and a.user_id = u.id and a.is_default = true";
 
-    final String SELECT_USER_ID = "SELECT u.id, u.username, u.email, u.fullname, u.telephone, u.organization, u.password, a.address, u.tenant_id " +
+    String SELECT_USER_ID = "SELECT u.id, u.username, u.email, u.fullname, u.telephone, u.organization, u.password, u.activated, a.address, u.tenant_id " +
             "from users u, address a where u.id = #{id} and u.tenant_id = #{tenantId} and a.user_id = u.id and a.is_default = true";
 
-    final String SELECT_USER_NAME = "SELECT u.id, u.username, u.email, u.password, u.fullname, u.telephone, u.activated, u.organization, a.address, u.tenant_id " +
+    String SELECT_USER_NAME = "SELECT u.id, u.username, u.email, u.password, u.fullname, u.telephone, u.activated, u.organization, a.address, u.tenant_id " +
             "from users u, address a where u.username = #{username} and u.tenant_id = #{tenantId} and a.user_id = u.id and a.is_default = true";
 
-    final String SELECT_USER_EMAIL = "SELECT u.id, u.username, u.email, u.password, u.fullname, u.telephone, a.address, u.tenant_id " +
+    String SELECT_USER_EMAIL = "SELECT u.id, u.username, u.email, u.password, u.fullname, u.telephone, a.address, u.tenant_id " +
             "from users u, address a where u.email = #{email} and u.tenant_id = #{tenantId} and a.user_id = u.id and a.is_default = true";
 
-    final String SELECT_USER_TOKEN = "SELECT u.id, u.username, u.email, u.password, u.fullname, u.telephone, u.tenant_id " +
+    String SELECT_USER_TOKEN = "SELECT u.id, u.username, u.email, u.password, u.fullname, u.telephone, u.tenant_id " +
             "from users u, password_reset_request pr where pr.uuid = #{token} and pr.lastModifiedAt is NULL and pr.user_id = u.id and u.tenant_id = #{tenantId}";
+
+    String UPDATE_WITHOUT_PASSWORD = "update users set username=#{user.username}, email=#{user.email}, fullname=#{user.fullName}, " +
+            "organization=#{user.organization}, telephone=#{user.telephone}, activated=#{user.activated}, lastModifiedAt = NOW() where id = #{id} and tenant_id = #{tenantId}";
+
+    String UPDATE_WITH_PASSWORD = "update users set username=#{user.username}, email=#{user.email}, fullname=#{user.fullName}, password=#{user.password}, " +
+            "organization=#{user.organization}, telephone=#{user.telephone}, activated=#{user.activated}, lastModifiedAt = NOW() where id = #{id} and tenant_id = #{tenantId}";
+
 
     @Select(SELECT_USER)
     @Results(value = {
@@ -117,7 +124,7 @@ public interface UserMapper {
     @Select("Select Exists(Select 1 from users where email = #{email} and id != #{id} and tenant_id = #{tenantId})")
     Boolean existsByEmailUser(Integer id, String email, String tenantId);
 
-    @Insert("insert into users(username, email, password, fullname, telephone, organization, tenant_id) values(#{username}, #{email}, #{password}, #{fullName}, #{telephone}, #{organization}, #{tenantId})")
+    @Insert("insert into users(username, email, password, fullname, telephone, organization, activated, tenant_id) values(#{username}, #{email}, #{password}, #{fullName}, #{telephone}, #{organization}, #{activated}, #{tenantId})")
     //@Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
     @SelectKey(statement = "select LAST_INSERT_ID()", keyProperty = "id", keyColumn = "id", before = false, resultType = Integer.class)
     Integer createUser(User user);
@@ -128,6 +135,15 @@ public interface UserMapper {
 
     @Update("update users set username = #{user.username}, email = #{user.email}, fullname = #{user.fullName}, organization = #{user.organization}, telephone = #{user.telephone}, lastModifiedAt = NOW() where id = #{id} and tenant_id = #{tenantId}")
     Integer updateUser(Integer id, User user, String tenantId);
+
+    @Update("update address set address=#{address} where user_id=#{id} and is_default=true")
+    Integer updateDefaultAddress(Integer id, String address);
+
+    @Update(UPDATE_WITHOUT_PASSWORD)
+    Integer updateUserWithoutPassword(Integer id, User user, String tenantId);
+
+    @Update(UPDATE_WITH_PASSWORD)
+    Integer updateUserWithPassword(Integer id, User user, String tenantId);
 
     @Update("update users set username = #{username}, lastModifiedAt = NOW() where id = #{userId} and tenant_id = #{tenantId}")
     Integer changeUsername(Integer userId, String username, String tenantId);
@@ -144,7 +160,7 @@ public interface UserMapper {
     @Insert("insert into user_roles(user_id, role_id) values(#{id}, #{roleId})")
     Integer addRole(Integer id, Integer roleId, String tenantId);
 
-    @Delete("delete from user_roles where user_id = #{id} and role_id = #{role_id}")
+    @Delete("delete from user_roles where user_id = #{id} and role_id = #{roleId}")
     Integer removeRole(Integer id, Integer roleId, String tenantId);
 
 

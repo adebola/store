@@ -57,7 +57,6 @@ public class OrderController {
     @GetMapping("/totals")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<OrderTotals>> findOrderTotals() {
-        log.info("INSIDE FINDORDER TOTALS");
         return new ResponseEntity<>(orderService.findOrderTotals(), HttpStatus.OK);
     }
 }

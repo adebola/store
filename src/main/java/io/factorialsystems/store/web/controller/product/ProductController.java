@@ -1,5 +1,6 @@
 package io.factorialsystems.store.web.controller.product;
 
+import io.factorialsystems.store.domain.product.ProductTag;
 import io.factorialsystems.store.payload.response.MessageResponse;
 import io.factorialsystems.store.service.product.ProductService;
 import io.factorialsystems.store.web.model.product.ProductDto;
@@ -93,5 +94,12 @@ public class ProductController {
         }
 
         return new ResponseEntity<>(new MessageResponse("Error Saving Product"), HttpStatus.BAD_REQUEST);
+    }
+
+    @GetMapping("/tags/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<ProductTag>> getProductTags(@PathVariable("id") Integer id) {
+        return new ResponseEntity<>(productService.getProductTags(id), HttpStatus.OK);
+
     }
 }

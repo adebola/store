@@ -309,4 +309,8 @@ public class ProductService {
 
         return adminProductDto;
     }
+
+    public List<ProductTag> getProductTags(Integer id) {
+        return productMapper.getTags(id);
+    }
 }

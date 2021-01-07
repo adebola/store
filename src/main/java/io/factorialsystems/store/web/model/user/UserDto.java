@@ -15,7 +15,6 @@ import java.util.Set;
 @AllArgsConstructor
 @Builder
 public class UserDto {
-
     @Null
     private Integer id;
 
@@ -28,6 +27,9 @@ public class UserDto {
 
     @NotBlank
     private String fullName;
+
+    private Boolean activated;
+    private String password;
 
     private String telephone;
     private String address;

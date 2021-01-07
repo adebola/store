@@ -1,9 +1,6 @@
 package io.factorialsystems.store.mapper.product;
 
-import io.factorialsystems.store.domain.product.Category;
-import io.factorialsystems.store.domain.product.Product;
-import io.factorialsystems.store.domain.product.ProductVariant;
-import io.factorialsystems.store.domain.product.ProductVariantOption;
+import io.factorialsystems.store.domain.product.*;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Component;
 
@@ -95,4 +92,11 @@ public interface ProductMapper {
             @Result(property = "tenantId", column = "tenant_id")
     })
     public List<ProductVariantOption> selectProductVariantOptions(Integer id);
+
+    @Select("select t.id, t.tagname from tags t, product_tags pt where pt.product_id=#{id} and pt.tag_id=t.id")
+    @Results(value = {
+            @Result(property="id", column = "id"),
+            @Result(property = "tagName", column = "tagname"),
+    })
+    List<ProductTag> getTags(Integer id);
 }

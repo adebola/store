@@ -1,8 +1,11 @@
 package io.factorialsystems.store.service.user;
 
 import io.factorialsystems.store.domain.tenant.Tenant;
+import io.factorialsystems.store.domain.user.Role;
+import io.factorialsystems.store.domain.user.RoleType;
 import io.factorialsystems.store.domain.user.User;
 import io.factorialsystems.store.mapper.tenant.TenantMapper;
+import io.factorialsystems.store.mapper.user.RoleMapper;
 import io.factorialsystems.store.mapper.user.UserMapper;
 import io.factorialsystems.store.payload.request.PasswordChangeRequest;
 import io.factorialsystems.store.payload.request.PasswordChangeTokenRequest;
@@ -19,8 +22,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -33,6 +35,7 @@ public class UserService {
     private final TaskSendMail taskSendMail;
     private final TaskExecutor taskExecutor;
     private final TenantMapper tenantMapper;
+    private final RoleMapper roleMapper;
 
     // Functions that will be Invoked through the Controller from the Outside
 
@@ -81,6 +84,112 @@ public class UserService {
 
         userMapper.updateUser(id, userMapStructMapper.UserDtoToUser(userDto), TenantContext.getCurrentTenant());
         return userMapStructMapper.UserToUserDto(userMapper.findById(id, TenantContext.getCurrentTenant()));
+    }
+
+    public void updateUserAdmin(Integer id, UserDto userDto) {
+
+        if (userMapper.existsByEmailUser(id, userDto.getEmail(), TenantContext.getCurrentTenant())) {
+            throw new RuntimeException("E-Mail Already Exists");
+        }
+
+        String userPassword = userDto.getPassword();
+
+        User user = new User(
+                userDto.getUsername(),
+                userDto.getEmail(),
+                userDto.getFullName(),
+                userDto.getTelephone(),
+                userDto.getAddress(),
+                userDto.getOrganization(),
+                null);
+
+        user.setActivated(userDto.getActivated());
+
+        if (userPassword == null || userPassword.length() == 0) {
+            log.info("NO PASSWORD");
+            userMapper.updateUserWithoutPassword(id, user, TenantContext.getCurrentTenant());
+        } else {
+            PasswordEncoder encoder = new BCryptPasswordEncoder();
+
+            log.info("PASSWORD");
+            user.setPassword(encoder.encode(userPassword));
+            userMapper.updateUserWithPassword(id, user, TenantContext.getCurrentTenant());
+        }
+
+        // Update User Address
+        userMapper.updateDefaultAddress(id, userDto.getAddress());
+
+        Set<String> strRoles = userDto.getRoles();
+        List<Role> roles = userMapper.selectUserRoles(id);
+
+        if (strRoles == null) {
+          // Remove Admin from User Profile if it already existed
+          Role o = roles.stream()
+                  .filter(role -> role.getRoleType() == RoleType.ROLE_ADMIN)
+                  .findAny()
+                  .get();
+
+          if (o != null) {
+              log.info(String.format("Removing Admin Role from User %s", userDto.getEmail()));
+              userMapper.removeRole(id, RoleType.ROLE_ADMIN.ordinal(), TenantContext.getCurrentTenant());
+          }
+        } else {
+            // Add Admin Role to User profile if it has been assigned
+            String roleString = strRoles.stream().findFirst().get();
+
+            if (roleString.equals("admin")) {
+                Role o = roles.stream()
+                        .filter(r -> r.getRoleType() == RoleType.ROLE_ADMIN)
+                        .findFirst()
+                        .get();
+
+                if (o == null) {
+                    log.info(String.format("Admin RoleType not found in User Account %s it has been added", userDto.getEmail()));
+                    userMapper.addRole(userDto.getId(),RoleType.ROLE_ADMIN.ordinal(), TenantContext.getCurrentTenant());
+                } else {
+                    log.info(String.format("Admin RoleType already Found In Profile of %s Request Ignored", userDto.getEmail()));
+                }
+            }
+        }
+    }
+
+    public void SaveUserAdmin(UserDto userDto) {
+
+        if (userMapper.existsByEmail(userDto.getEmail(), TenantContext.getCurrentTenant())) {
+            throw new RuntimeException("User E-mail exists on the system, Please choose another ");
+        }
+
+        PasswordEncoder encoder = new BCryptPasswordEncoder();
+
+        // Save the User
+        User user = new User(
+                userDto.getUsername(),
+                userDto.getEmail(),
+                userDto.getFullName(),
+                userDto.getTelephone(),
+                userDto.getAddress(),
+                userDto.getOrganization(),
+                encoder.encode(userDto.getPassword()));
+
+        user.setActivated(userDto.getActivated());
+
+        List<Role> roles = new ArrayList<>();
+        Role userRole = roleMapper.findRoleByType (RoleType.ROLE_USER, TenantContext.getCurrentTenant());
+        roles.add(userRole);
+
+        Set<String> strRoles = userDto.getRoles();
+        Optional<String> o = strRoles.stream()
+                .filter(r -> r.equals("admin"))
+                .findFirst();
+
+        if (o != null && o.isPresent()) {
+            Role adminRole = roleMapper.findRoleByType (RoleType.ROLE_ADMIN, TenantContext.getCurrentTenant());
+
+            roles.add(adminRole);
+        }
+
+        user.setRoles(roles);
+        saveUser(user);
     }
 
     public Boolean changeUsername(Integer userId, String username) {
