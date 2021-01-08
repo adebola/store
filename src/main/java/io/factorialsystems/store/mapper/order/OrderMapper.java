@@ -11,6 +11,9 @@ import java.util.List;
 @Mapper
 @Component
 public interface OrderMapper {
+    final String SelectSQLAllOrder = "select id, user_id, order_date, order_amount, pickup, deliver, full_name, email, telephone, address, payment_ref, transaction_id, pin, tenant_id " +
+                                     "from orders where tenant_id = #{tenantId}";
+
     final String SelectSQLOrder = "select id, user_id, order_date, order_amount, pickup, deliver, full_name, email, telephone, address, payment_ref, transaction_id, pin, tenant_id " +
                                   "from orders where id = #{id} and tenant_id = #{tenantId}";
 
@@ -25,6 +28,24 @@ public interface OrderMapper {
                                      "where o.sku_id = sp.id and sp.product_id = p.id and si.sku_id = o.sku_id and si.image_id = i.id and sp.tenant_id = #{tenantId} " +
                                      "GROUP BY p.name, i.imagepath " +
                                      "ORDER BY sum(o.total_price) DESC";
+
+    @Select(SelectSQLAllOrder)
+    @Results(value = {
+            @Result(property="id", column = "id"),
+            @Result(property = "user_id", column = "user_id"),
+            @Result(property = "orderedAt", column = "order_date"),
+            @Result(property = "orderAmount", column = "order_amount"),
+            @Result(property = "deliver", column = "deliver"),
+            @Result(property = "pickup", column = "pickup"),
+            @Result(property = "full_name", column = "full_name"),
+            @Result(property = "email", column = "email"),
+            @Result(property = "telephone", column = "telephone"),
+            @Result(property = "address", column = "address"),
+            @Result(property = "paymentRef", column = "payment_ref"),
+            @Result(property = "transaction_id", column = "transaction_id"),
+            @Result(property = "tenant_id", column = "tenant_id"),
+    })
+    public List<Order> findAll(String tenantId);
 
     @Select(SelectSQLOrder)
     @Results(value = {

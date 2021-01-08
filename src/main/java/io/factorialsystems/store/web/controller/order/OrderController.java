@@ -59,4 +59,10 @@ public class OrderController {
     public ResponseEntity<List<OrderTotals>> findOrderTotals() {
         return new ResponseEntity<>(orderService.findOrderTotals(), HttpStatus.OK);
     }
+
+    @GetMapping({"/",""})
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<OrderDto>> findAll() {
+        return new ResponseEntity<>(orderService.findAllOrders(), HttpStatus.OK);
+    }
 }

@@ -134,4 +134,8 @@ public class OrderService {
         taskPDFMail.setParameters(new Mail("adeomoboya@gmail.com"), TenantContext.getCurrentTenant(), 8);
         taskExecutor.execute(taskPDFMail);
     }
+
+    public List<OrderDto> findAllOrders() {
+        return orderMSMapper.ListOrderToOrderDto(orderMapper.findAll(TenantContext.getCurrentTenant()));
+    }
 }
