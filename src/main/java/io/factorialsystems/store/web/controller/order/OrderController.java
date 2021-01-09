@@ -1,5 +1,6 @@
 package io.factorialsystems.store.web.controller.order;
 
+import io.factorialsystems.store.domain.order.FulFillOrder;
 import io.factorialsystems.store.domain.order.OrderTotals;
 import io.factorialsystems.store.payload.response.MessageResponse;
 import io.factorialsystems.store.service.order.OrderService;
@@ -64,5 +65,13 @@ public class OrderController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<OrderDto>> findAll() {
         return new ResponseEntity<>(orderService.findAllOrders(), HttpStatus.OK);
+    }
+
+    @PutMapping("/fulfill/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<MessageResponse> fulfillOrder(@PathVariable("id") Integer id, @Valid @RequestBody FulFillOrder fulFillOrder) {
+        orderService.fulfillOrder(fulFillOrder);
+
+        return new ResponseEntity<>(new MessageResponse("Success"), HttpStatus.OK);
     }
 }

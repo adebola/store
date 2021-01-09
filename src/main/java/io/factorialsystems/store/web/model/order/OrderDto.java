@@ -30,6 +30,9 @@ public class OrderDto {
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssZ", shape = JsonFormat.Shape.STRING)
     private OffsetDateTime orderedAt;
 
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssZ", shape = JsonFormat.Shape.STRING)
+    private OffsetDateTime fulfilledAt;
+
     String paymentRef;
     String transaction_id;
 

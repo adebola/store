@@ -1,5 +1,6 @@
 package io.factorialsystems.store.mapper.order;
 
+import io.factorialsystems.store.domain.order.FulFillOrder;
 import io.factorialsystems.store.domain.order.Order;
 import io.factorialsystems.store.domain.order.OrderItem;
 import io.factorialsystems.store.domain.order.OrderTotals;
@@ -14,7 +15,7 @@ public interface OrderMapper {
     final String SelectSQLAllOrder = "select id, user_id, order_date, order_amount, pickup, deliver, full_name, email, telephone, address, payment_ref, transaction_id, pin, tenant_id " +
                                      "from orders where tenant_id = #{tenantId}";
 
-    final String SelectSQLOrder = "select id, user_id, order_date, order_amount, pickup, deliver, full_name, email, telephone, address, payment_ref, transaction_id, pin, tenant_id " +
+    final String SelectSQLOrder = "select id, user_id, order_date, order_amount, pickup, deliver, full_name, email, telephone, address, payment_ref, transaction_id, pin, fulfill_date, tenant_id " +
                                   "from orders where id = #{id} and tenant_id = #{tenantId}";
 
     final String SelectSQLOrderByUserId = "select id, user_id, order_date, order_amount, pickup, deliver, full_name, email, telephone, address, payment_ref, transaction_id, pin, tenant_id " +
@@ -52,6 +53,7 @@ public interface OrderMapper {
             @Result(property="id", column = "id"),
             @Result(property = "user_id", column = "user_id"),
             @Result(property = "orderedAt", column = "order_date"),
+            @Result(property = "fulfilledAt", column = "fulfill_date"),
             @Result(property = "orderAmount", column = "order_amount"),
             @Result(property = "deliver", column = "deliver"),
             @Result(property = "pickup", column = "pickup"),
@@ -124,6 +126,9 @@ public interface OrderMapper {
             @Result(property = "totals", column = "totals"),
     })
     public List<OrderTotals> findOrderTotals(String tenantId);
+
+    @Insert("update orders set fulfill_date = #{fulfill_date} where id=#{id}")
+    Integer fulfillOrder(FulFillOrder fulFillOrder);
 }
 
 

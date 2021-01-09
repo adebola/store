@@ -16,6 +16,7 @@ public class Order {
     Integer id;
     Integer user_id;
     Date orderedAt;
+    Date fulfilledAt;
     Double orderAmount;
     String paymentRef;
     String transaction_id;

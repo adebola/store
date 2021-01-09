@@ -1,6 +1,7 @@
 package io.factorialsystems.store.service.order;
 
 import io.factorialsystems.store.business.mail.Mail;
+import io.factorialsystems.store.domain.order.FulFillOrder;
 import io.factorialsystems.store.domain.order.Order;
 import io.factorialsystems.store.domain.order.OrderItem;
 import io.factorialsystems.store.domain.order.OrderTotals;
@@ -137,5 +138,9 @@ public class OrderService {
 
     public List<OrderDto> findAllOrders() {
         return orderMSMapper.ListOrderToOrderDto(orderMapper.findAll(TenantContext.getCurrentTenant()));
+    }
+
+    public void fulfillOrder(FulFillOrder fulFillOrder) {
+        orderMapper.fulfillOrder(fulFillOrder);
     }
 }
