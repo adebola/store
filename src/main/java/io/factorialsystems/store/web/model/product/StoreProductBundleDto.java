@@ -21,6 +21,7 @@ public class StoreProductBundleDto {
     private String description;
     private Boolean isNew;
     private Boolean onSale;
+    private Boolean vatExclusive;
     private List<String> imagePath;
     private Set<StoreProductBundleVariantDto> variantOptions;
 }

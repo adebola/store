@@ -18,6 +18,7 @@ public class ProductSKU {
     String brand;
     Boolean isNew;
     Boolean onSale;
+    Boolean vatExclusive;
     String variant;
     String variantOption;
 }

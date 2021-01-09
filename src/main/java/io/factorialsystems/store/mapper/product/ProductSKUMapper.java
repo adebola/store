@@ -23,6 +23,7 @@ public interface ProductSKUMapper {
     "            sku.discount,\n" +
     "            sku.sku_description as description,\n" +
     "            sku.new,\n" +
+    "            sku.vat_exclusive,\n" +
     "            sku.sale,\n" +
     "            p.name,\n" +
     "            p.brand,\n" +
@@ -157,6 +158,7 @@ public interface ProductSKUMapper {
             @Result(property = "price", column = "price"),
             @Result(property = "discount", column = "discount"),
             @Result(property = "name", column = "name"),
+            @Result(property = "vatExclusive", column = "vat_exclusive"),
             @Result(property = "category", column = "category"),
             @Result(property = "imagePath", column = "imagePath"),
             @Result(property = "description", column = "description"),
