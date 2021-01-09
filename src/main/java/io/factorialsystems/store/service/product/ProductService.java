@@ -48,12 +48,12 @@ public class ProductService {
 
         if (category == null) {
             return false;
-        } else {
-            Product product = productMSMapper.ProductDtoToProduct(productDto);
-            product.setTenantId(tenantContext);
-            productMapper.updateProduct(id, product);
-            return true;
         }
+
+        Product product = productMSMapper.ProductDtoToProduct(productDto);
+        product.setTenantId(tenantContext);
+        productMapper.updateProduct(id, product);
+        return true;
     }
 
     public ProductDto save(ProductDto productDto) {
@@ -181,6 +181,8 @@ public class ProductService {
                     .price(adminProductBundleDto.getPrice())
                     .sku(adminProductBundleDto.getSku())
                     .onSale(adminProductBundleDto.getOnSale())
+                    .discontinued(adminProductBundleDto.getDiscontinued())
+                    .vatExclusive(adminProductBundleDto.getVatExclusive())
                     .isNew(adminProductBundleDto.getIsNew())
                     .quantity(adminProductBundleDto.getQuantity())
                     .description(adminProductBundleDto.getDescription())
@@ -261,6 +263,8 @@ public class ProductService {
                     .description(productAdminSKU.getDescription())
                     .isNew(productAdminSKU.getIsNew())
                     .onSale(productAdminSKU.getOnSale())
+                    .discontinued(productAdminSKU.getDiscontinued())
+                    .vatExclusive(productAdminSKU.getVatExclusive())
                     .price(productAdminSKU.getPrice())
                     .quantity(productAdminSKU.getQuantity())
                     .imagePath(new ArrayList<>())

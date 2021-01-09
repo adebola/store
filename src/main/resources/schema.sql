@@ -148,6 +148,7 @@ create table sku_products (
     discount decimal (13,2) NOT NULL DEFAULT 0,
     sku_description varchar(256) DEFAULT NULL,
     discontinued boolean NOT NULL DEFAULT FALSE,
+    vat_exclusive boolean NOT NULL DEFAULT FALSE,
     quantity int(11) NOT NULL DEFAULT 0,
     new boolean NOT NULL DEFAULT TRUE,
     sale boolean NOT NULL DEFAULT FALSE,

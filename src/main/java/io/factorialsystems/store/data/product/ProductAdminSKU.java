@@ -22,6 +22,8 @@ public class ProductAdminSKU {
     private String brand;
     private Boolean isNew;
     private Boolean onSale;
+    private Boolean discontinued;
+    private Boolean vatExclusive;
     private Integer variantOptionId;
     private String variant;
     private String variantOption;

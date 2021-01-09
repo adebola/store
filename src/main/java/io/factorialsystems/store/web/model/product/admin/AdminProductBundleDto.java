@@ -43,6 +43,12 @@ public class AdminProductBundleDto {
     private Boolean onSale;
 
     @NotNull
+    private Boolean discontinued;
+
+    @NotNull
+    private Boolean vatExclusive;
+
+    @NotNull
     private List<String> imagePath;
 
     @NotNull

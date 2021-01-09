@@ -17,5 +17,7 @@ public class SKU {
     private Integer quantity;
     private Boolean isNew;
     private Boolean onSale;
+    private Boolean discontinued;
+    private Boolean vatExclusive;
     private String tenantId;
 }
