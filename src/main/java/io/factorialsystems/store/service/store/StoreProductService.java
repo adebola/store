@@ -152,6 +152,7 @@ public class StoreProductService {
                         .onSale(productSKU.getOnSale())
                         .price(productSKU.getPrice())
                         .imagePath(new ArrayList<>())
+                        .vatExclusive(productSKU.getVatExclusive())
                         .build();
 
                 storeProductBundleDtoSet.add(storeProductBundleDto);
