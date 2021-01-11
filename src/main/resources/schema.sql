@@ -252,6 +252,7 @@ create table orderitems(
     sku_id int(11) NOT NULL,
     quantity int(11) DEFAULT 1,
     unit_price decimal(10, 2) NOT NULL,
+    vat_price decimal(10, 2) DEFAULT 0,
     discount decimal(10, 2) DEFAULT 0,
     total_price decimal(10, 2) NOT NULL,
     FOREIGN KEY (order_id) REFERENCES orders(id),

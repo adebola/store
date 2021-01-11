@@ -303,6 +303,9 @@ public class InvoicePDF  {
             int i = 1;
             int qty = 0;
 
+            double vat_price = 0.0;
+            double amount_price = 0.0;
+
             for (OrderItem e : orderItems) {
 
                 table.addCell(String.format("%d", i)).setTextAlignment(TextAlignment.CENTER);
@@ -310,9 +313,20 @@ public class InvoicePDF  {
                 table.addCell(e.getProduct_name()).setTextAlignment(TextAlignment.LEFT);
                 table.addCell(e.getUom()).setTextAlignment(TextAlignment.LEFT);
                 table.addCell(String.format("%d", e.getQuantity())).setTextAlignment(TextAlignment.CENTER);
-                table.addCell(String.format("%s", decimalFormat.format(e.getUnit_price()))).setTextAlignment(TextAlignment.LEFT);
-                table.addCell(String.format("%s", decimalFormat.format(e.getTotal_price() * 0.05))).setTextAlignment(TextAlignment.LEFT);
-                table.addCell(String.format("%s", decimalFormat.format(e.getTotal_price() ))).setTextAlignment(TextAlignment.LEFT);
+                table.addCell(String.format("%s", decimalFormat.format(e.getTotal_price()))).setTextAlignment(TextAlignment.LEFT);
+
+                String s = "";
+                double d = e.getVat_price();
+
+                if (d > 0) {
+                    s = String.format("%s", decimalFormat.format(d));
+                }
+
+                table.addCell(s).setTextAlignment(TextAlignment.LEFT);
+                table.addCell(String.format("%s", decimalFormat.format(e.getTotal_price() + d))).setTextAlignment(TextAlignment.LEFT);
+
+                vat_price += e.getVat_price();
+                amount_price += e.getTotal_price();
 
                 qty += e.getQuantity();
                 i++;
@@ -320,14 +334,14 @@ public class InvoicePDF  {
 
             bottom -= 30;
 
-            p = new Paragraph(String.format("Total Quantity  %s  Total NGN Excl VAT    %s", qty, decimalFormat.format(order.getOrderAmount() * 0.95)))
+            p = new Paragraph(String.format("Total Quantity  %s  Total NGN Excl VAT    %s", qty, decimalFormat.format(amount_price)))
                     .addStyle(normal)
                     .setFixedPosition(300, bottom, 400);
             document.add(p);
 
             bottom -= 20;
 
-            p = new Paragraph(String.format("VAT Amount    %s", decimalFormat.format(order.getOrderAmount() * 0.05)))
+            p = new Paragraph(String.format("VAT Amount    %s", decimalFormat.format(vat_price)))
                     .addStyle(normal)
                     .setFixedPosition(420, bottom, 200);
             document.add(p);

@@ -21,7 +21,7 @@ public interface OrderMapper {
     final String SelectSQLOrderByUserId = "select id, user_id, order_date, order_amount, pickup, deliver, full_name, email, telephone, address, payment_ref, transaction_id, pin, tenant_id " +
                                           "from orders where user_id = #{userId} and tenant_id = #{tenantId}";
 
-    final String SelectOrderItems = "select o.id, o.order_id, o.sku_id, p.name, o.quantity, o.unit_price, o.discount, o.total_price, s.sku, pvo.name as uom, i.imagepath " +
+    final String SelectOrderItems = "select o.id, o.order_id, o.sku_id, p.name, o.quantity, o.unit_price, o.discount, o.total_price, o.vat_price, s.sku, pvo.name as uom, i.imagepath " +
                                     "from orderitems o, products p, sku_products s, images i, sku_images si, product_variant_options pvo, sku_product_variant_options spvo " +
                                     "where o.order_id = #{id} and o.sku_id = s.id and s.product_id = p.id and o.sku_id = si.sku_id and si.image_id = i.id and s.id = spvo.sku_id and spvo.product_variant_option_id = pvo.id";
 
@@ -95,8 +95,8 @@ public interface OrderMapper {
 
 
     @Insert(
-            "insert into orderitems(order_id, sku_id, quantity, unit_price, discount, total_price) " +
-            "values(#{order_id}, #{sku_id}, #{quantity}, #{unit_price}, #{discount}, #{total_price})"
+            "insert into orderitems(order_id, sku_id, quantity, unit_price, discount, total_price, vat_price) " +
+            "values(#{order_id}, #{sku_id}, #{quantity}, #{unit_price}, #{discount}, #{total_price}, #{vat_price})"
     )
     @SelectKey(statement = "select LAST_INSERT_ID()", keyProperty = "id", keyColumn = "id", before = false, resultType = Integer.class)
     public Integer saveOrderItem(OrderItem orderItem);
@@ -114,6 +114,7 @@ public interface OrderMapper {
             @Result(property = "product_name", column = "name"),
             @Result(property = "quantity", column = "quantity"),
             @Result(property = "unit_price", column = "unit_price"),
+            @Result(property = "vat_price", column = "vat_price"),
             @Result(property = "discount", column = "discount"),
             @Result(property = "total_price", column = "total_price")
     })

@@ -98,6 +98,7 @@ public class OrderService {
                     .sku_id(e.getSku_id())
                     .quantity(e.getQuantity())
                     .unit_price(e.getUnit_price())
+                    .vat_price(e.getVat_price())
                     .discount(e.getDiscount())
                     .total_price(e.getTotal_price())
                     .build();

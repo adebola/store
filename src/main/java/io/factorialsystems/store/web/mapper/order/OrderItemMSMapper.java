@@ -20,6 +20,7 @@ public interface OrderItemMSMapper {
             @Mapping(source = "product_name", target = "product_name"),
             @Mapping(source = "quantity", target = "quantity"),
             @Mapping(source = "unit_price", target = "unit_price"),
+            @Mapping(source = "vat_price", target = "vat_price"),
             @Mapping(source = "discount", target = "discount"),
             @Mapping(source = "total_price", target = "total_price")
     })
@@ -36,6 +37,7 @@ public interface OrderItemMSMapper {
             @Mapping(source = "product_name", target = "product_name"),
             @Mapping(source = "quantity", target = "quantity"),
             @Mapping(source = "unit_price", target = "unit_price"),
+            @Mapping(source = "vat_price", target = "vat_price"),
             @Mapping(source = "discount", target = "discount"),
             @Mapping(source = "total_price", target = "total_price")
     })

@@ -20,5 +20,6 @@ public class OrderItem {
     Integer quantity;
     Double unit_price;
     Double discount;
+    Double vat_price;
     Double total_price;
 }
