@@ -106,12 +106,10 @@ public class UserService {
         user.setActivated(userDto.getActivated());
 
         if (userPassword == null || userPassword.length() == 0) {
-            log.info("NO PASSWORD");
             userMapper.updateUserWithoutPassword(id, user, TenantContext.getCurrentTenant());
         } else {
             PasswordEncoder encoder = new BCryptPasswordEncoder();
 
-            log.info("PASSWORD");
             user.setPassword(encoder.encode(userPassword));
             userMapper.updateUserWithPassword(id, user, TenantContext.getCurrentTenant());
         }

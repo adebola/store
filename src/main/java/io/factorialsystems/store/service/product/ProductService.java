@@ -323,6 +323,8 @@ public class ProductService {
     }
 
     public void saveProductTag(ProductTag productTag) {
+
+        productTag.setTagName(productTag.getTagName().toLowerCase());
         productMapper.saveTag(productTag);
 
         if (productTag.getId() == null) {

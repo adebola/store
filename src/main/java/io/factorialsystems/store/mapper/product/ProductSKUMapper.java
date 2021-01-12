@@ -139,7 +139,7 @@ public interface ProductSKUMapper {
             "            si.image_id = i.id and\n" +
             "            sku.discontinued = FALSE and\n" +
             "            p.discontinued = FALSE and \n" +
-            "            p.id in (select p.product_id from tags t, product_tags p where t.tagname = #{search} and t.id = p.tag_id)\n " +
+            "            p.id in (select p.product_id from tags t, product_tags p where t.tagname like CONCAT(#{search}, '%') and t.id = p.tag_id)\n " +
             "order by sku.id;";
 
     final String UPDATE_SKU_PRODUCT = "update sku_products set sku=#{dto.sku}, price=#{dto.price}, discount=#{dto.discount}, vat_exclusive=#{dto.vatExclusive}," +
