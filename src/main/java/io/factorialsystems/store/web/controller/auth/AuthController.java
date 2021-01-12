@@ -201,6 +201,7 @@ public class AuthController {
         }
 
         user.setRoles(roles);
+        user.setActivated(false);
         User newUser = userService.saveUser(user);
 
 //        m.setSubject("Delifrost Account Activation");
