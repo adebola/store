@@ -19,6 +19,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.stereotype.Service;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
@@ -139,6 +141,18 @@ public class OrderService {
 
     public List<OrderDto> findAllOrders() {
         return orderMSMapper.ListOrderToOrderDto(orderMapper.findAll(TenantContext.getCurrentTenant()));
+    }
+
+    public List<OrderDto> findAllOrdersForDelivery() {
+
+        Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DATE);
+        calendar.set(year, month, day, 23, 59, 59);
+        Date endDate = calendar.getTime();
+
+        return orderMSMapper.ListOrderToOrderDto(orderMapper.findOrdersForDelivery(endDate, TenantContext.getCurrentTenant()));
     }
 
     public void fulfillOrder(FulFillOrder fulFillOrder) {

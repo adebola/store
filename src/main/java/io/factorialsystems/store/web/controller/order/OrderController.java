@@ -37,6 +37,12 @@ public class OrderController {
         return new ResponseEntity<>(new MessageResponse("It is Well"), HttpStatus.OK);
     }
 
+    @GetMapping("/delivery")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<OrderDto>> findOrdersForDelivery () {
+        return new ResponseEntity<>(orderService.findAllOrdersForDelivery(), HttpStatus.OK);
+    }
+
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<OrderDto> findOrderById(@PathVariable("id") Integer id) {

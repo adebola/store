@@ -7,6 +7,7 @@ import io.factorialsystems.store.domain.order.OrderTotals;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Component;
 
+import java.util.Date;
 import java.util.List;
 
 @Mapper
@@ -14,6 +15,9 @@ import java.util.List;
 public interface OrderMapper {
     final String SelectSQLAllOrder = "select id, user_id, order_date, order_amount, pickup, deliver, full_name, email, telephone, address, payment_ref, transaction_id, pin, tenant_id " +
                                      "from orders where tenant_id = #{tenantId}";
+
+    final String SelectSQLAllOrderDelivery = "select id, user_id, order_date, order_amount, pickup, deliver, full_name, email, telephone, address, payment_ref, transaction_id, pin, tenant_id " +
+                                             "from orders where fulfill_date is not null and fulfill_date < #{date} and tenant_id = #{tenantId}";
 
     final String SelectSQLOrder = "select id, user_id, order_date, order_amount, pickup, deliver, full_name, email, telephone, address, payment_ref, transaction_id, pin, fulfill_date, tenant_id " +
                                   "from orders where id = #{id} and tenant_id = #{tenantId}";
@@ -130,6 +134,24 @@ public interface OrderMapper {
 
     @Insert("update orders set fulfill_date = #{fulfill_date} where id=#{id}")
     Integer fulfillOrder(FulFillOrder fulFillOrder);
+
+    @Select(SelectSQLAllOrderDelivery)
+    @Results(value = {
+            @Result(property="id", column = "id"),
+            @Result(property = "user_id", column = "user_id"),
+            @Result(property = "orderedAt", column = "order_date"),
+            @Result(property = "orderAmount", column = "order_amount"),
+            @Result(property = "deliver", column = "deliver"),
+            @Result(property = "pickup", column = "pickup"),
+            @Result(property = "full_name", column = "full_name"),
+            @Result(property = "email", column = "email"),
+            @Result(property = "telephone", column = "telephone"),
+            @Result(property = "address", column = "address"),
+            @Result(property = "paymentRef", column = "payment_ref"),
+            @Result(property = "transaction_id", column = "transaction_id"),
+            @Result(property = "tenant_id", column = "tenant_id"),
+    })
+    List<Order> findOrdersForDelivery(Date date, String tenantId);
 }
 
 
