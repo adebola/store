@@ -13,10 +13,10 @@ import java.util.List;
 @Mapper
 @Component
 public interface OrderMapper {
-    final String SelectSQLAllOrder = "select id, user_id, order_date, order_amount, pickup, deliver, full_name, email, telephone, address, payment_ref, transaction_id, pin, tenant_id " +
+    final String SelectSQLAllOrder = "select id, user_id, order_date, fulfill_date, order_amount, pickup, deliver, full_name, email, telephone, address, payment_ref, transaction_id, pin, tenant_id " +
                                      "from orders where tenant_id = #{tenantId}";
 
-    final String SelectSQLAllOrderDelivery = "select id, user_id, order_date, order_amount, pickup, deliver, full_name, email, telephone, address, payment_ref, transaction_id, pin, tenant_id " +
+    final String SelectSQLAllOrderDelivery = "select id, user_id, order_date, fulfill_date, order_amount, pickup, deliver, full_name, email, telephone, address, payment_ref, transaction_id, pin, tenant_id " +
                                              "from orders where fulfill_date is not null and fulfill_date < #{date} and tenant_id = #{tenantId}";
 
     final String SelectSQLOrder = "select id, user_id, order_date, order_amount, pickup, deliver, full_name, email, telephone, address, payment_ref, transaction_id, pin, fulfill_date, tenant_id " +
@@ -43,6 +43,7 @@ public interface OrderMapper {
             @Result(property = "deliver", column = "deliver"),
             @Result(property = "pickup", column = "pickup"),
             @Result(property = "full_name", column = "full_name"),
+            @Result(property = "fulfilledAt", column = "fulfill_date"),
             @Result(property = "email", column = "email"),
             @Result(property = "telephone", column = "telephone"),
             @Result(property = "address", column = "address"),
@@ -147,6 +148,7 @@ public interface OrderMapper {
             @Result(property = "deliver", column = "deliver"),
             @Result(property = "pickup", column = "pickup"),
             @Result(property = "full_name", column = "full_name"),
+            @Result(property = "fulfilledAt", column = "fulfill_date"),
             @Result(property = "email", column = "email"),
             @Result(property = "telephone", column = "telephone"),
             @Result(property = "address", column = "address"),
