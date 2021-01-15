@@ -150,6 +150,7 @@ public class StoreProductService {
                         .description(productSKU.getDescription())
                         .isNew(productSKU.getIsNew())
                         .onSale(productSKU.getOnSale())
+                        .stock(productSKU.getStock())
                         .price(productSKU.getPrice())
                         .imagePath(new ArrayList<>())
                         .vatExclusive(productSKU.getVatExclusive())

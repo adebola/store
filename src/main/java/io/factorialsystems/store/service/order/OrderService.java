@@ -105,7 +105,9 @@ public class OrderService {
                     .total_price(e.getTotal_price())
                     .build();
 
+
             orderMapper.saveOrderItem(item);
+            orderMapper.updateOrderItemStock(item);
         });
 
         // Send E-Mail & Generate Report all in 1 Async Task

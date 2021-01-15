@@ -105,6 +105,9 @@ public interface OrderMapper {
     @SelectKey(statement = "select LAST_INSERT_ID()", keyProperty = "id", keyColumn = "id", before = false, resultType = Integer.class)
     public Integer saveOrderItem(OrderItem orderItem);
 
+    @Update("update orderitems set quantity=Greatest(0, quantity-#{quantity}) where id = #{id}")
+    public Integer updateOrderItemStock(OrderItem orderItem);
+
 
     //s.sku, pvo.name
     @Select(SelectOrderItems)

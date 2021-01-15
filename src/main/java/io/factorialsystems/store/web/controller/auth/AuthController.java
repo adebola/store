@@ -59,7 +59,7 @@ public class AuthController {
         if (!user.getActivated()) {
             JwtResponse response = JwtResponse.builder()
                     .status(400)
-                    .message("User has not been activated please contact DELIFROST")
+                    .message("User has not been activated please contact DELIFROST Support")
                     .build();
 
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);

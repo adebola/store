@@ -9,6 +9,7 @@ public class ProductSKU {
     Integer id;
     String sku;
     Integer productId;
+    Integer stock;
     BigDecimal price;
     BigDecimal discount;
     String name;

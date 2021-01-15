@@ -16,6 +16,7 @@ import java.util.Set;
 public class StoreProductBundleDto {
     private Integer id;
     private String sku;
+    private Integer stock;
     private BigDecimal price;
     private BigDecimal discount;
     private String description;
