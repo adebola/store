@@ -18,6 +18,9 @@ public interface UserMapper {
     String SELECT_USER = "SELECT u.id, u.username, u.email, u.fullname, u.telephone, a.address, u.tenant_id " +
             "from users u, address a where u.tenant_id = #{tenantId} and a.user_id = u.id and a.is_default = true";
 
+    String SELECT_ADMIN_USER = "SELECT u.id, u.username, u.email, u.fullname, u.telephone, a.address, u.tenant_id " +
+            "from users u, user_roles ur, address a where u.tenant_id = #{tenantId} and ur.role_id = 3 and u.id = ur.user_id and a.user_id = u.id and a.is_default = true";
+
     String SELECT_USER_ID = "SELECT u.id, u.username, u.email, u.fullname, u.telephone, u.organization, u.password, u.activated, a.address, u.tenant_id " +
             "from users u, address a where u.id = #{id} and u.tenant_id = #{tenantId} and a.user_id = u.id and a.is_default = true";
 
@@ -162,6 +165,19 @@ public interface UserMapper {
 
     @Delete("delete from user_roles where user_id = #{id} and role_id = #{roleId}")
     Integer removeRole(Integer id, Integer roleId, String tenantId);
+
+    @Select(SELECT_ADMIN_USER)
+    @Results(value = {
+            @Result(property = "id", column = "id"),
+            @Result(property = "username", column = "username"),
+            @Result(property = "email", column = "email"),
+            @Result(property = "fullName", column = "fullname"),
+            @Result(property = "telephone", column = "telephone"),
+            @Result(property = "address", column = "address"),
+            @Result(property = "tenantId", column = "tenant_id"),
+//            @Result(property = "roles", column = "id", javaType = List.class, many = @Many(select = "selectUserRoles"))
+    })
+    List<User> getAllAdmins(String tenantId);
 
 
     @Insert({"<script>",

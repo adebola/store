@@ -16,6 +16,7 @@ import io.factorialsystems.store.service.auth.CaptchaService;
 import io.factorialsystems.store.service.user.RoleService;
 import io.factorialsystems.store.service.user.UserDetailsImpl;
 import io.factorialsystems.store.service.user.UserService;
+import io.factorialsystems.store.task.TaskSendAdminRegistrationEmail;
 import io.factorialsystems.store.task.TaskSendMail;
 import io.factorialsystems.store.web.model.user.UserDto;
 import lombok.RequiredArgsConstructor;
@@ -48,6 +49,7 @@ public class AuthController {
     private final PasswordEncoder encoder;
     private final JwtUtils jwtUtils;
     private final TaskSendMail taskSendMail;
+    private final TaskSendAdminRegistrationEmail taskSendAdminRegistrationEmail;
     private final TaskExecutor taskExecutor;
     private final CaptchaService captchaService;
 
@@ -212,8 +214,12 @@ public class AuthController {
         if (newUser != null && newUser.getId() > 0) {
             // Send Activation E-Mail
 
-            taskSendMail.setParameters(newUser.getEmail(), "DELIFROST ACTIVATION", "Welcome to Delifrost", TenantContext.getCurrentTenant());
-            taskExecutor.execute(taskSendMail);
+
+            // taskSendMail.setParameters(newUser.getEmail(), "DELIFROST ACTIVATION", "Welcome to Delifrost", TenantContext.getCurrentTenant());
+            // taskExecutor.execute(taskSendMail);
+
+            taskSendAdminRegistrationEmail.setParameter(newUser.getEmail(), TenantContext.getCurrentTenant());
+            taskExecutor.execute(taskSendAdminRegistrationEmail);
 
             log.info(String.format("User Created Successfully with Id %d and Username %s", newUser.getId(), newUser.getUsername()));
 
