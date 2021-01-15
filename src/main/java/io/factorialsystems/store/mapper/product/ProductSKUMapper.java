@@ -120,6 +120,7 @@ public interface ProductSKUMapper {
             "            sku.sku_description as description,\n" +
             "            sku.new,\n" +
             "            sku.sale,\n" +
+            "            sku.vat_exclusive,\n" +
             "            p.name,\n" +
             "            p.brand,\n" +
             "            c.name as category,\n" +
@@ -251,6 +252,7 @@ public interface ProductSKUMapper {
             @Result(property = "category", column = "category"),
             @Result(property = "imagePath", column = "imagePath"),
             @Result(property = "description", column = "description"),
+            @Result(property = "vatExclusive", column = "vat_exclusive"),
             @Result(property = "isNew", column = "new"),
             @Result(property = "onSale", column = "sale"),
             @Result(property = "brand", column = "brand"),
