@@ -17,7 +17,8 @@ public interface CategoryMSMapper {
             @Mapping(source = "name", target = "name"),
             @Mapping(source = "image_url", target = "image_url"),
             @Mapping(source = "createdDate", target = "createdDate"),
-            @Mapping(source = "lastModifiedDate", target = "lastModifiedDate")
+            @Mapping(source = "lastModifiedDate", target = "lastModifiedDate"),
+            @Mapping(source = "subCategories", target = "subCategories")
     })
     CategoryDto CategoryToCategoryDto(Category category);
 
@@ -28,6 +29,7 @@ public interface CategoryMSMapper {
             @Mapping(source = "image_url", target = "image_url"),
             @Mapping(target = "createdDate", ignore = true),
             @Mapping(target = "lastModifiedDate", ignore = true),
+            @Mapping(source = "subCategories", target = "subCategories"),
             @Mapping(target = "tenantId", ignore = true)
     })
     Category CategoryDtoToCategory(CategoryDto categoryDto);

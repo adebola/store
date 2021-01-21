@@ -29,13 +29,15 @@ package io.factorialsystems.store.domain.product;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
 public class Category {
-    Integer id;
-    String name;
-    String image_url;
-    Date createdDate;
-    Date lastModifiedDate;
-    String tenantId;
+    private Integer id;
+    private String name;
+    private String image_url;
+    private Date createdDate;
+    private Date lastModifiedDate;
+    private String tenantId;
+    private List<Category> subCategories;
 }

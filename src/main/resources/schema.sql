@@ -91,6 +91,7 @@ create table categories (
     id int(11) AUTO_INCREMENT,
     name varchar(64) NOT NULL,
     tenant_id varchar(64) NOT NULL,
+    parent_category_id int (11) DEFAULT NULL,
     image_url varchar(512) NOT NULL,
     createdAt timestamp DEFAULT CURRENT_TIMESTAMP,
     lastModifiedAt timestamp DEFAULT NULL,
@@ -98,6 +99,8 @@ create table categories (
     FOREIGN KEY (tenant_id) REFERENCES tenants(id),
     UNIQUE KEY idx_name_tenant(name, tenant_id)
 );
+
+alter table categories add foreign key (parent_category_id) references categories(id);
 
 create table products (
     id int(11) AUTO_INCREMENT,

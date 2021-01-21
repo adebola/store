@@ -22,7 +22,7 @@ import java.util.List;
 public class StoreCategoryController {
     private final CategoryService categoryService;
 
-    @GetMapping("")
+    @GetMapping({"", "/"})
     public ResponseEntity<List<CategoryDto>> findAll() {
         return new ResponseEntity<>(categoryService.findAll(), HttpStatus.OK);
     }

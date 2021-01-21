@@ -6,10 +6,12 @@ import io.factorialsystems.store.security.TenantContext;
 import io.factorialsystems.store.web.mapper.product.CategoryMSMapper;
 import io.factorialsystems.store.web.model.product.CategoryDto;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CategoryService {
@@ -27,7 +29,6 @@ public class CategoryService {
     public void update(Integer id, CategoryDto categoryDto) {
 
         Category category = categoryMSMapper.CategoryDtoToCategory(categoryDto);
-
         categoryMapper.updateCategory(id, TenantContext.getCurrentTenant(), category);
     }
 
