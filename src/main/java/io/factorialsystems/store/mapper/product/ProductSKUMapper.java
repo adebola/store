@@ -81,6 +81,39 @@ public interface ProductSKUMapper {
             "            sku.id = si.sku_id and\n" +
             "            si.image_id = i.id";
 
+    final String SelectSQLAllAdmin = "select sku.id,\n" +
+            "            sku.sku,\n" +
+            "            p.id as productId,\n" +
+            "            sku.price,\n" +
+            "            sku.discount,\n" +
+            "            sku.quantity,\n" +
+            "            sku.sku_description as description,\n" +
+            "            sku.new,\n" +
+            "            sku.sale,\n" +
+            "            sku.discontinued,\n" +
+            "            sku.vat_exclusive,\n" +
+            "            p.name,\n" +
+            "            p.brand,\n" +
+            "            c.name as category,\n" +
+            "            c.id as category_id,\n" +
+            "            pv.name as variant,\n" +
+            "            pvo.name as variant_option,\n" +
+            "            pvo.id as variant_option_id,\n" +
+            "            i.imagepath\n" +
+            "from\n" +
+            "            products p, product_variants pv, product_variant_options pvo, categories c, sku_products sku, sku_product_variant_options spvo, images i, sku_images si\n" +
+            "where\n" +
+            "            p.tenant_id = #{tenantId} and\n" +
+            "            p.id = pv.product_id and\n" +
+            "            pv.id = pvo.product_variant_id and\n" +
+            "            c.id = p.category_id and\n" +
+            "            pvo.id = spvo.product_variant_option_id and\n" +
+            "            sku.id = spvo.sku_id and\n" +
+            "            p.id = sku.product_id and\n" +
+            "            sku.id = si.sku_id and\n" +
+            "            si.image_id = i.id\n" +
+            "order by sku.id;";
+
     final String SelectSQLSKU = "select sku.id,\n" +
             "            sku.sku,\n" +
             "            p.id as productId,\n" +
@@ -197,6 +230,30 @@ public interface ProductSKUMapper {
             @Result(property = "variantOption", column = "variant_option")
     })
     public ProductAdminSKU findByProductId(Integer id, String tenantId);
+
+    @Select(SelectSQLAllAdmin)
+    @Results(value = {
+            @Result(property = "id", column = "id"),
+            @Result(property = "sku", column = "sku"),
+            @Result(property = "productId", column = "productId"),
+            @Result(property = "price", column = "price"),
+            @Result(property = "discount", column = "discount"),
+            @Result(property = "quantity", column = "quantity"),
+            @Result(property = "name", column = "name"),
+            @Result(property = "discontinued", column = "discontinued"),
+            @Result(property = "vatExclusive", column = "vat_exclusive"),
+            @Result(property = "category", column = "category"),
+            @Result(property = "categoryId", column = "category_id"),
+            @Result(property = "variantOptionId", column = "variant_option_id"),
+            @Result(property = "imagePath", column = "imagePath"),
+            @Result(property = "description", column = "description"),
+            @Result(property = "isNew", column = "new"),
+            @Result(property = "onSale", column = "sale"),
+            @Result(property = "brand", column = "brand"),
+            @Result(property = "variant", column = "variant"),
+            @Result(property = "variantOption", column = "variant_option")
+    })
+    public List<ProductAdminSKU> findAllAdmin(String tenantId);
 
     @Select(SelectSQLSKU)
     @Results(value = {

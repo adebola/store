@@ -22,6 +22,7 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Slf4j
@@ -83,6 +84,14 @@ public class ProductService {
         }
 
         return null;
+    }
+
+    public List<AdminProductDto> findAllSKU() {
+        List<ProductAdminSKU> productAdminSKUList = productSKUMapper.findAllAdmin(TenantContext.getCurrentTenant());
+
+        return productAdminSKUList.stream()
+                .map(product -> Convert(product))
+                .collect(Collectors.toList());
     }
 
     public Boolean updateSKU(Integer id, AdminProductDto adminProductDto) {

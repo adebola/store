@@ -68,6 +68,12 @@ public class ProductController {
 
 
     // SKU Paths
+    @GetMapping("/sku")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<AdminProductDto>> findAllSKU() {
+        return new ResponseEntity<>(productService.findAllSKU(), HttpStatus.OK);
+    }
+
     @GetMapping("/sku/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<AdminProductDto> findProductSKUById(@PathVariable("id") Integer id) {
@@ -100,9 +106,9 @@ public class ProductController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<ProductTag>> getProductTags(@PathVariable("id") Integer id) {
         return new ResponseEntity<>(productService.getProductTags(id), HttpStatus.OK);
-
     }
 
+    // TAG Paths
     @PostMapping("/tags")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<MessageResponse> saveProductTag(@Valid @RequestBody ProductTag productTag) {
