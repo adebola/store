@@ -26,6 +26,10 @@ public class CategoryService {
         return categoryMSMapper.CategoryToCategoryDto(categoryMapper.findById(id, TenantContext.getCurrentTenant()));
     }
 
+    public List<CategoryDto> findCategoriesForSubCategory() {
+        return categoryMSMapper.ListCategoryToCategoryDto(categoryMapper.findAvailableSubCategories(TenantContext.getCurrentTenant()));
+    }
+
     public void update(Integer id, CategoryDto categoryDto) {
 
         Category category = categoryMSMapper.CategoryDtoToCategory(categoryDto);
@@ -43,6 +47,14 @@ public class CategoryService {
         }
 
         throw new RuntimeException("Error Saving Category to the Database");
+    }
+
+    public void removeSubCategory(Integer id) {
+        categoryMapper.removeSubCategory(id, TenantContext.getCurrentTenant());
+    }
+
+    public void addSubCategory(Integer id, Integer newId) {
+        categoryMapper.addSubCategory(id, newId, TenantContext.getCurrentTenant());
     }
 
     public void deleteById(Integer id) {

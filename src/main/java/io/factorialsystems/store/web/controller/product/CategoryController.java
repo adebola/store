@@ -27,6 +27,26 @@ public class CategoryController {
         return new ResponseEntity<>(categoryService.findAll(), HttpStatus.OK);
     }
 
+    @GetMapping("/subcategory")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<CategoryDto>> findCategoriesforSubCategory() {
+        return new ResponseEntity<>(categoryService.findCategoriesForSubCategory(), HttpStatus.OK);
+    }
+
+    @PutMapping("/subcategory/add/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<MessageResponse> addSubCategory(@PathVariable("id") Integer id, @RequestBody Integer newId) {
+        categoryService.addSubCategory(id, newId);
+        return new ResponseEntity<>(new MessageResponse("Category has been updated"), HttpStatus.OK);
+    }
+
+    @PutMapping("/subcategory/remove/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<MessageResponse> removeSubCategory(@PathVariable("id") Integer id) {
+        categoryService.removeSubCategory(id);
+        return new ResponseEntity<>(new MessageResponse("Category has been updated"), HttpStatus.OK);
+    }
+
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<CategoryDto> findById(@PathVariable("id") Integer id) {

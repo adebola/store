@@ -87,11 +87,10 @@ public class ProductService {
     }
 
     public List<AdminProductDto> findAllSKU() {
-        List<ProductAdminSKU> productAdminSKUList = productSKUMapper.findAllAdmin(TenantContext.getCurrentTenant());
 
-        return productAdminSKUList.stream()
-                .map(product -> Convert(product))
-                .collect(Collectors.toList());
+        return productSKUMapper.findAllAdmin(TenantContext.getCurrentTenant()).stream()
+                        .map(product -> Convert(product))
+                        .collect(Collectors.toList());
     }
 
     public Boolean updateSKU(Integer id, AdminProductDto adminProductDto) {
