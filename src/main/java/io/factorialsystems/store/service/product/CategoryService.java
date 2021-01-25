@@ -31,6 +31,10 @@ public class CategoryService {
         return categoryMSMapper.ListCategoryToCategoryDto(categoryMapper.findAvailableCategoriesforSubCategorization(id, TenantContext.getCurrentTenant()));
     }
 
+    public List<CategoryDto> findAssignableCategories() {
+        return categoryMSMapper.ListCategoryToCategoryDto(categoryMapper.findAssignableCategories(TenantContext.getCurrentTenant()));
+    }
+
     public void update(Integer id, CategoryDto categoryDto) {
 
         Category category = categoryMSMapper.CategoryDtoToCategory(categoryDto);
@@ -70,4 +74,5 @@ public class CategoryService {
     public IntegerResponse getProductCount(Integer id) {
         return categoryMapper.getProductCount(id);
     }
+
 }

@@ -47,6 +47,18 @@ public interface CategoryMapper {
     })
     List<Category> findAvailableCategoriesforSubCategorization(Integer id, String tenantId);
 
+    @Select("SELECT id, name, image_url, createdAt, lastModifiedAt, parent_category_id, tenant_id from categories where tenant_id = #{tenantId} and id not in (select parent_category_id from categories where parent_category_id is not null and tenant_id = #{tenantId})")
+    @Results(value = {
+            @Result(property="id", column = "id"),
+            @Result(property = "name", column = "name"),
+            @Result(property = "image_url", column = "image_url"),
+            @Result(property = "createdDate", column = "createdAt"),
+            @Result(property = "lastModifiedDate", column = "lastModifiedAt"),
+            @Result(property = "tenantId", column = "tenant_id"),
+            @Result(property = "subCategories", column = "id", javaType = List.class, many=@Many(select="findSubCategoriesById"))
+    })
+    List<Category> findAssignableCategories(String tenantId);
+
     @Select("SELECT id, name, image_url, createdAt, lastModifiedAt, tenant_id from categories where parent_category_id = #{id}")
     @Results(value = {
             @Result(property="id", column = "id"),
