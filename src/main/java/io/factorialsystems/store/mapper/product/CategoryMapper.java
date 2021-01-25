@@ -1,6 +1,7 @@
 package io.factorialsystems.store.mapper.product;
 
 import io.factorialsystems.store.domain.product.Category;
+import io.factorialsystems.store.payload.response.IntegerResponse;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Component;
 
@@ -34,7 +35,7 @@ public interface CategoryMapper {
     })
     Category findById(Integer id, String tenantId);
 
-    @Select("SELECT id, name, image_url, createdAt, lastModifiedAt, parent_category_id, tenant_id from categories where parent_category_id is null and id not in (select parent_category_id from categories where parent_category_id is not null and tenant_id = #{tenantId}) and tenant_id = #{tenantId}")
+    @Select("SELECT id, name, image_url, createdAt, lastModifiedAt, parent_category_id, tenant_id from categories where parent_category_id is null and id != #{id} and id not in (select parent_category_id from categories where parent_category_id is not null and tenant_id = #{tenantId}) and tenant_id = #{tenantId}")
     @Results(value = {
             @Result(property="id", column = "id"),
             @Result(property = "name", column = "name"),
@@ -44,7 +45,7 @@ public interface CategoryMapper {
             @Result(property = "tenantId", column = "tenant_id"),
             @Result(property = "subCategories", column = "id", javaType = List.class, many=@Many(select="findSubCategoriesById"))
     })
-    List<Category> findAvailableSubCategories(String tenantId);
+    List<Category> findAvailableCategoriesforSubCategorization(Integer id, String tenantId);
 
     @Select("SELECT id, name, image_url, createdAt, lastModifiedAt, tenant_id from categories where parent_category_id = #{id}")
     @Results(value = {
@@ -72,4 +73,10 @@ public interface CategoryMapper {
 
     @Update("update categories set parent_category_id = #{newId} where id = #{id} and tenant_id = #{tenantId}")
     Integer addSubCategory(Integer id, Integer newId, String tenantId);
+
+    @Select("select count(*) as count from products where category_id = #{id}")
+    @Results(value = {
+            @Result(property = "id", column = "count")
+    })
+    IntegerResponse getProductCount(Integer id);
 }

@@ -1,5 +1,6 @@
 package io.factorialsystems.store.web.controller.product;
 
+import io.factorialsystems.store.payload.response.IntegerResponse;
 import io.factorialsystems.store.payload.response.MessageResponse;
 import io.factorialsystems.store.service.product.CategoryService;
 import io.factorialsystems.store.web.model.product.CategoryDto;
@@ -27,10 +28,16 @@ public class CategoryController {
         return new ResponseEntity<>(categoryService.findAll(), HttpStatus.OK);
     }
 
-    @GetMapping("/subcategory")
+    @GetMapping("/count/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<CategoryDto>> findCategoriesforSubCategory() {
-        return new ResponseEntity<>(categoryService.findCategoriesForSubCategory(), HttpStatus.OK);
+    public ResponseEntity<IntegerResponse> categoryProductCount(@PathVariable("id") Integer id) {
+        return new ResponseEntity<>(categoryService.getProductCount(id), HttpStatus.OK);
+    }
+
+    @GetMapping("/subcategory/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<CategoryDto>> findCategoriesforSubCategory(@PathVariable("id") Integer id) {
+        return new ResponseEntity<>(categoryService.findAvailableCategoriesForSubCategorization(id), HttpStatus.OK);
     }
 
     @PutMapping("/subcategory/add/{id}")

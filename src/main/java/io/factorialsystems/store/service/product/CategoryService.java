@@ -2,6 +2,7 @@ package io.factorialsystems.store.service.product;
 
 import io.factorialsystems.store.domain.product.Category;
 import io.factorialsystems.store.mapper.product.CategoryMapper;
+import io.factorialsystems.store.payload.response.IntegerResponse;
 import io.factorialsystems.store.security.TenantContext;
 import io.factorialsystems.store.web.mapper.product.CategoryMSMapper;
 import io.factorialsystems.store.web.model.product.CategoryDto;
@@ -26,8 +27,8 @@ public class CategoryService {
         return categoryMSMapper.CategoryToCategoryDto(categoryMapper.findById(id, TenantContext.getCurrentTenant()));
     }
 
-    public List<CategoryDto> findCategoriesForSubCategory() {
-        return categoryMSMapper.ListCategoryToCategoryDto(categoryMapper.findAvailableSubCategories(TenantContext.getCurrentTenant()));
+    public List<CategoryDto> findAvailableCategoriesForSubCategorization(Integer id) {
+        return categoryMSMapper.ListCategoryToCategoryDto(categoryMapper.findAvailableCategoriesforSubCategorization(id, TenantContext.getCurrentTenant()));
     }
 
     public void update(Integer id, CategoryDto categoryDto) {
@@ -64,5 +65,9 @@ public class CategoryService {
         } catch (Exception ex) {
             throw new RuntimeException("Unable to delete Category due to foreign key constraints");
         }
+    }
+
+    public IntegerResponse getProductCount(Integer id) {
+        return categoryMapper.getProductCount(id);
     }
 }
