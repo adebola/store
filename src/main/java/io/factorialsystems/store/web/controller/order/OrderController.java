@@ -8,12 +8,16 @@ import io.factorialsystems.store.web.model.order.OrderDto;
 import io.factorialsystems.store.web.model.order.OrderItemDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.io.ByteArrayInputStream;
 import java.util.List;
 
 @Slf4j
@@ -79,5 +83,15 @@ public class OrderController {
         orderService.fulfillOrder(fulFillOrder);
 
         return new ResponseEntity<>(new MessageResponse("Success"), HttpStatus.OK);
+    }
+
+    @GetMapping("/export/pdf/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<InputStreamResource> exportPDF(@PathVariable("id") Integer id) {
+        ByteArrayInputStream byteArrayInputStream = orderService.getOrderInvoice(id);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Disposition", "inline; filename=invoice.pdf");
+
+        return ResponseEntity.ok().headers(headers).contentType(MediaType.APPLICATION_PDF).body(new InputStreamResource(byteArrayInputStream));
     }
 }

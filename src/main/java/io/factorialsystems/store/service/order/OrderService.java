@@ -1,12 +1,15 @@
 package io.factorialsystems.store.service.order;
 
 import io.factorialsystems.store.business.mail.Mail;
+import io.factorialsystems.store.business.report.InvoicePDF;
 import io.factorialsystems.store.domain.order.FulFillOrder;
 import io.factorialsystems.store.domain.order.Order;
 import io.factorialsystems.store.domain.order.OrderItem;
 import io.factorialsystems.store.domain.order.OrderTotals;
+import io.factorialsystems.store.domain.tenant.Tenant;
 import io.factorialsystems.store.domain.user.User;
 import io.factorialsystems.store.mapper.order.OrderMapper;
+import io.factorialsystems.store.mapper.tenant.TenantMapper;
 import io.factorialsystems.store.mapper.user.UserMapper;
 import io.factorialsystems.store.security.TenantContext;
 import io.factorialsystems.store.task.TaskPDFMail;
@@ -19,6 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.stereotype.Service;
 
+import java.io.*;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -34,6 +38,7 @@ public class OrderService {
     private final UserMapper userMapper;
     private final TaskExecutor taskExecutor;
     private final TaskPDFMail taskPDFMail;
+    private final TenantMapper tenantMapper;
 
     public Integer SaveOrder(OrderDto orderDto) {
 
@@ -159,5 +164,30 @@ public class OrderService {
 
     public void fulfillOrder(FulFillOrder fulFillOrder) {
         orderMapper.fulfillOrder(fulFillOrder);
+    }
+
+    public ByteArrayInputStream getOrderInvoice(Integer id) {
+        InvoicePDF invoicePDF = new InvoicePDF();
+
+        Tenant tenant = tenantMapper.findById(TenantContext.getCurrentTenant());
+
+        String fileName = invoicePDF.generateInvoice(id, TenantContext.getCurrentTenant(), tenant.getLogo_url(), false);
+
+        try {
+            InputStream in = new FileInputStream(new File(fileName));
+
+            ByteArrayOutputStream byteOut = new ByteArrayOutputStream(fileName.length());
+            byte[] buffer = new byte[4096]; // some large number - pick one
+            for (int size; (((size = in.read(buffer)) != -1));)
+                byteOut.write(buffer, 0, size);
+
+            ByteArrayInputStream byteIn = new ByteArrayInputStream(byteOut.toByteArray());
+
+            return byteIn;
+
+        } catch (Exception ex) {
+            log.info(String.format("Error generating invoice : %s", ex.getMessage()));
+            return null;
+        }
     }
 }

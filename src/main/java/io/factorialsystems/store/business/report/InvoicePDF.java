@@ -34,7 +34,7 @@ import java.text.SimpleDateFormat;
 @RequiredArgsConstructor
 public class InvoicePDF  {
 
-    public String generateInvoice(int orderId, String tenantId, String logo_url) {
+    public String generateInvoice(int orderId, String tenantId, String logo_url, boolean sendSMS) {
 
         // Load Orders From Database
         OrderMapper orderMapper = ApplicationContextProvider.getBean(OrderMapper.class);
@@ -59,6 +59,7 @@ public class InvoicePDF  {
             log.info(String.format("Receipt Generated: %s", tempFile.getAbsolutePath()));
 
             PdfDocument pdfDocument = new PdfDocument(new PdfWriter(tempFile));
+
             Document document = new Document(pdfDocument, PageSize.A4);
 
             // Logo
@@ -382,7 +383,7 @@ public class InvoicePDF  {
             document.add(table);
             document.close();
 
-            if (user.getTelephone() != null) {
+            if (sendSMS && user.getTelephone() != null) {
                 // Send SMS
                 SMSSender smsSender = ApplicationContextProvider.getBean(SMSSender.class);
                 smsSender.sendMessage(String.format("Dear %s Please note your order has been shipped kindly use PIN %s while receiving the order", user.getFullName(), order.getPin()), user.getTelephone());

@@ -40,7 +40,7 @@ public class TaskPDFMail implements Runnable {
         mail.setBody(String.format("Please find attached from us at %s your Invoice with Thanks", tenant.getOrganization()));
 
         // Generate PDF
-        mail.setFileName(new InvoicePDF().generateInvoice(orderId, tenantId, tenant.getLogo_url()));
+        mail.setFileName(new InvoicePDF().generateInvoice(orderId, tenantId, tenant.getLogo_url(), true));
         AWSMailer awsMailer = applicationContext.getBean(AWSMailer.class);
 
         try {
