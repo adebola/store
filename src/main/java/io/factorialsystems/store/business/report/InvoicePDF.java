@@ -109,7 +109,7 @@ public class InvoicePDF  {
 
             p = new Paragraph(user.getFullName())
                     .addStyle(normal)
-                    .setFixedPosition(120, 650, 100);
+                    .setFixedPosition(120, 650, 400);
             document.add(p);
 
             // Customer Address
@@ -120,7 +120,7 @@ public class InvoicePDF  {
 
             p = new Paragraph(order.getAddress() != null ? order.getAddress() : "")
                     .addStyle(normal)
-                    .setFixedPosition(120, 610, 300);
+                    .setFixedPosition(120, 610, 400);
             document.add(p);
 
             // Generated PIN
@@ -249,7 +249,7 @@ public class InvoicePDF  {
             tableStyle.setFont(fontCourier)
                     .setFontSize(10);
 
-            int bottom = 450;
+            int bottom = 440;
             int size = orderItems.size();
 
             bottom -= (size-1) * 25;
