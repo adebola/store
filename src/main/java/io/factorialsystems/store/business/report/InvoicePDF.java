@@ -118,9 +118,19 @@ public class InvoicePDF  {
                     .setFixedPosition(30, 610, 120);
             document.add(p);
 
-            p = new Paragraph(order.getAddress() != null ? order.getAddress() : "")
-                    .addStyle(normal)
-                    .setFixedPosition(120, 610, 400);
+            int nLines = 1;
+
+            if (order.getAddress() == null) {
+                p = new Paragraph("")
+                        .addStyle(normal)
+                        .setFixedPosition(120, 610, 400);
+            } else {
+                nLines = countLines(order.getAddress());
+                p = new Paragraph(order.getAddress())
+                        .addStyle(normal)
+                        .setFixedPosition(120, 610, 400);
+            }
+
             document.add(p);
 
             // Generated PIN
@@ -249,7 +259,7 @@ public class InvoicePDF  {
             tableStyle.setFont(fontCourier)
                     .setFontSize(10);
 
-            int bottom = 440;
+            int bottom = 440 - ((nLines - 1) * 25);
             int size = orderItems.size();
 
             bottom -= (size-1) * 25;
@@ -395,5 +405,12 @@ public class InvoicePDF  {
             log.info(String.format("Exception thrown: %s", ex.getMessage()));
             throw new RuntimeException(ex.getMessage());
         }
+    }
+
+    private static int countLines(String str) {
+        String[] lines = str.split("\r\n|\r|\n");
+
+        log.info(String.format("Number of Lines: %d", lines.length));
+        return  lines.length;
     }
 }
