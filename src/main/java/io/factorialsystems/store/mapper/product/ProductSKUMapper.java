@@ -283,6 +283,9 @@ public interface ProductSKUMapper {
     @Update("update product_variant_options set name = #{option} where id=#{id}")
     public Integer updateProductVariantOptions(Integer id, String option);
 
+    @Update("update sku_products set price=#{price}, discount=#{discount}, lastModifiedAt=NOW() where sku=#{sku} and tenant_id=#{tenantId}")
+    public Integer updatePrice(String sku, double price, double discount, String tenantId);
+
     @Insert(SAVE_SKU_PRODUCT)
     @SelectKey(statement = "select LAST_INSERT_ID()", keyProperty = "id", keyColumn = "id", before = false, resultType = Integer.class)
     public Integer saveProductSKU(SKU sku);

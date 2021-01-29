@@ -9,6 +9,9 @@ import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import io.factorialsystems.store.service.file.FileService;
+import io.factorialsystems.store.service.file.UploadFile;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -16,14 +19,14 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.PostConstruct;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class AmazonS3BucketService {
 
     private AmazonS3 amazonS3;
+    private final FileService fileService;
 
     @Value("${AWS_ENDPOINT}")
     private String endpointUrl;
@@ -47,25 +50,11 @@ public class AmazonS3BucketService {
     }
 
     public String uploadFile(MultipartFile multipartFile) {
-        String fileURL = "";
-        try {
-            File file = convertMultipartFileToFile(multipartFile);
-            String fileName = multipartFile.getOriginalFilename();
-            fileURL = endpointUrl + "/" + bucketName + "/" + fileName;
-            uploadFileToBucket(fileName, file);
-            file.delete();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return fileURL;
-    }
 
-    private File convertMultipartFileToFile(MultipartFile file) throws IOException {
-        File convertedFile = new File(file.getOriginalFilename());
-        FileOutputStream fos = new FileOutputStream(convertedFile);
-        fos.write(file.getBytes());
-        fos.close();
-        return convertedFile;
+        UploadFile uploadFile = fileService.uploadFile(multipartFile);
+        uploadFileToBucket(uploadFile.getFileName(), uploadFile.getFile());
+
+        return  endpointUrl + "/" + bucketName + "/" + uploadFile.getFileName();
     }
 
     private void uploadFileToBucket(String fileName, File file) {
@@ -77,5 +66,4 @@ public class AmazonS3BucketService {
         amazonS3.deleteObject(new DeleteObjectRequest(bucketName, fileName));
         return "Deletion Successful";
     }
-
 }
