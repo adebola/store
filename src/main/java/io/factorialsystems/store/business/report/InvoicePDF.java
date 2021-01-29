@@ -251,9 +251,7 @@ public class InvoicePDF  {
                     .setFixedPosition(400, 490, 100);
             document.add(p);
 
-
             DecimalFormat decimalFormat = new DecimalFormat("#,###.00");
-
 
             Style tableStyle = new Style();
             tableStyle.setFont(fontCourier)
@@ -277,7 +275,7 @@ public class InvoicePDF  {
             table.addCell(cell);
 
             // Item Column
-            cell = new Cell(1, 1).add(new Paragraph("Item No"));
+            cell = new Cell(1, 1).add(new Paragraph("Item"));
             cell.setTextAlignment(TextAlignment.LEFT);
             table.addCell(cell);
 
@@ -409,8 +407,6 @@ public class InvoicePDF  {
 
     private static int countLines(String str) {
         String[] lines = str.split("\r\n|\r|\n");
-
-        log.info(String.format("Number of Lines: %d", lines.length));
         return  lines.length;
     }
 }
