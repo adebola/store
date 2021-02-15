@@ -394,7 +394,8 @@ public class InvoicePDF  {
             if (sendSMS && user.getTelephone() != null) {
                 // Send SMS
                 SMSSender smsSender = ApplicationContextProvider.getBean(SMSSender.class);
-                smsSender.sendMessage(String.format("Dear %s Please note your order has been shipped kindly use PIN %s while receiving the order", user.getFullName(), order.getPin()), user.getTelephone());
+                smsSender.sendMessage(
+                        String.format("Dear Customer,your order is booked with us.You will get delivery details soon.Use PIN %s for Safe Delivery", order.getPin()), user.getTelephone());
             }
 
             return tempFile.getAbsolutePath();

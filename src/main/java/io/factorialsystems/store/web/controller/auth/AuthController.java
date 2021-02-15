@@ -58,6 +58,15 @@ public class AuthController {
 
         User user = userService.findByUsername(loginRequest.getUsername());
 
+        if (user == null) {
+            JwtResponse response = JwtResponse.builder()
+                    .status(401)
+                    .message("Invalid Username or Password")
+                    .build();
+
+            return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+        }
+
         if (!user.getActivated()) {
             JwtResponse response = JwtResponse.builder()
                     .status(400)
