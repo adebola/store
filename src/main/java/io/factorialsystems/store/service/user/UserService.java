@@ -37,6 +37,12 @@ public class UserService {
     private final TenantMapper tenantMapper;
     private final RoleMapper roleMapper;
 
+    private static final String activationMessage = "Dear esteemed Customer,\r\n" +
+            "Welcome to the Delifrost Family. Your registered user account is now activated.\r\n" +
+            "We are happy to be part of your business.\r\n" +
+            "Please enjoy the Online shopping\r\n\r\n\r\n" +
+            "Thank you.\r\n Regards,\r\nDelifrost Team";
+
     // Functions that will be Invoked through the Controller from the Outside
 
     public List<UserDto> findAll() {
@@ -305,6 +311,20 @@ public class UserService {
 
     public User findByUsername(String username) {
         return userMapper.findByUsername(username, TenantContext.getCurrentTenant());
+    }
+
+    public boolean sendUserActivationMessage(Integer userId) {
+
+        User user = userMapper.findById(userId, TenantContext.getCurrentTenant());
+
+        if (user != null) {
+            taskSendMail.setParameters(user.getEmail(), "Delifrost Activation", activationMessage, TenantContext.getCurrentTenant());
+            taskExecutor.execute(taskSendMail);
+
+            return true;
+        }
+
+        return false;
     }
 
     // Save User is not exposed to the outside world, for now only used by the Auth Framework

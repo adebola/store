@@ -24,7 +24,7 @@ public class TaskPDFMail implements Runnable {
             "Please see the attached invoice and use the imprinted PIN number while receiving the order.\r\n\r\n\r\n" +
             "Thank You.\r\n" +
             "Regards,\r\n" +
-            "Delifrost Team";
+            "Delifrost Team.";
 
     public void setParameters(Mail mail, String tenantId, Integer orderId) {
         this.orderId = orderId;

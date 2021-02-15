@@ -80,21 +80,6 @@ public class UserController {
         }
     }
 
-
-
-
-//    @GetMapping("/byuser/{username}")
-//    @PreAuthorize("hasRole('ADMIN')")
-//    public ResponseEntity<UserDto> findByUsername(@PathVariable("username") String username) {
-//        return new ResponseEntity<UserDto>(userService.findByUsername(username), HttpStatus.OK);
-//    }
-
-//    @GetMapping("/byemail/{email}")
-//    @PreAuthorize("hasRole('ADMIN')")
-//    public ResponseEntity<UserDto> findByEmail(@PathVariable("email") String email) {
-//        return new ResponseEntity<UserDto>(userService.findByEmail(email), HttpStatus.OK);
-//    }
-
     @PutMapping("/username/{id}")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<MessageResponse> changeUsername(@PathVariable("id") Integer userId,
@@ -117,14 +102,15 @@ public class UserController {
         }
     }
 
-//    @PutMapping("/password/{id}")
-//    @PreAuthorize("hasRole('USER')")
-//    public ResponseEntity<MessageResponse>  changePassword(@PathVariable("id") Integer userId,
-//                                                           @Valid @RequestBody PasswordRequest request) {
-//        if (userService.changePassword(userId, request.getPassword())) {
-//            return new ResponseEntity<MessageResponse>(new MessageResponse("Password changed successfully"), HttpStatus.OK);
-//        } else {
-//            return new ResponseEntity<MessageResponse>(new MessageResponse("Password was not changed, you must be logged in and trying to change your own credentials ONLY"), HttpStatus.BAD_REQUEST);
-//        }
-//    }
+    @GetMapping("/send/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<MessageResponse> sendActivationMessage(@PathVariable("id") Integer id) {
+        try {
+            userService.sendUserActivationMessage(id);
+            return new ResponseEntity<>(new MessageResponse("Activation Mail sent successfully"), HttpStatus.OK);
+        } catch (Exception ex) {
+            return new ResponseEntity<>(new MessageResponse(ex.getMessage()), HttpStatus.BAD_REQUEST);
+        }
+    }
+
 }
