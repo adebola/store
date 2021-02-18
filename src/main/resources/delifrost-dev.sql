@@ -1,7 +1,7 @@
 
 
 insert into tenants(id, organization, email, logo_url, base_url) values
-('65b5dd14-ef71-11ea-8db0-0a195e8ca79e', 'DELIFROST', 'delifrost@factorialsystems.io',  'https://delifrost-30582.web.app/assets/images/icon/logo-7.png','https://delifrost-30582.web.app');
+('65b5dd14-ef71-11ea-8db0-0a195e8ca79e', 'DELIFROST', 'no-reply@deli-frost.com',  'https://delifrost-30582.web.app/assets/images/icon/logo-7.png','https://delifrost-30582.web.app');
 
 insert into roles (name, tenant_id) values
 ('ROLE_USER', '65b5dd14-ef71-11ea-8db0-0a195e8ca79e'),

@@ -29,7 +29,7 @@ public class TaskSendAdminRegistrationEmail implements Runnable {
             log.info(String.format("ADMIN USER : %s", user.getEmail()));
 
             Mail mail = new Mail(user.getEmail());
-            mail.setFrom("delifrost@factorialsystems.io");
+            mail.setFrom("no-reply@deli-frost.com");
             mail.setSubject("User Registration");
             mail.setBody(String.format("User %s has just registered on the platform and requires activation please visit https://delifrost-admin.web.app/admin/users/users to activate", email));
 
