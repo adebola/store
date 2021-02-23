@@ -31,7 +31,14 @@ public class OrderController {
     @PostMapping("/")
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<Integer> save(@Valid @RequestBody OrderDto order) {
-        return new ResponseEntity<>(orderService.SaveOrder(order), HttpStatus.CREATED);
+
+        Integer response = orderService.SaveOrder(order);
+
+        if (response > 0) {
+            return new ResponseEntity<>(response, HttpStatus.CREATED);
+        }
+
+        return new ResponseEntity<>(0, HttpStatus.BAD_REQUEST);
     }
 
     @GetMapping("/test")

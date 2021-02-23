@@ -21,6 +21,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import java.io.*;
 import java.util.Calendar;
@@ -39,6 +42,7 @@ public class OrderService {
     private final TaskExecutor taskExecutor;
     private final TaskPDFMail taskPDFMail;
     private final TenantMapper tenantMapper;
+    private final PlatformTransactionManager transactionManager;
 
     public Integer SaveOrder(OrderDto orderDto) {
 
@@ -47,6 +51,8 @@ public class OrderService {
         if (orderDto.getUser_id() != null) {
             user = userMapper.findById(orderDto.getUser_id(), TenantContext.getCurrentTenant());
         }
+
+        TransactionStatus txStatus = transactionManager.getTransaction(new DefaultTransactionDefinition());
 
         // Save Order
         Order order = Order.builder()
@@ -84,36 +90,42 @@ public class OrderService {
             order.setTelephone(user != null ? user.getTelephone() : null);
         }
 
-
         // Make Sure that User Requesting Delivery has an Address either submitted or in the database
         if (order.getDeliver() && order.getAddress() == null) {
             throw new RuntimeException("User has requested that goods be delivered but has not specified delivery address or address cannot be read from the database");
         }
+        try {
+            orderMapper.saveOrder(order);
 
-        orderMapper.saveOrder(order);
+            if (!(order.getId() != null && order.getId() > 0)) {
+                throw new RuntimeException("Database Error Saving Order");
+            }
 
-        if (!(order.getId() != null && order.getId() > 0)) {
-            throw new RuntimeException("Database Error Saving Order");
+            int orderId = order.getId();
+
+            // Save OrderItems
+            orderDto.getOrderItems().forEach(e -> {
+
+                OrderItem item = OrderItem.builder()
+                        .order_id(orderId)
+                        .sku_id(e.getSku_id())
+                        .quantity(e.getQuantity())
+                        .unit_price(e.getUnit_price())
+                        .vat_price(e.getVat_price())
+                        .discount(e.getDiscount())
+                        .total_price(e.getTotal_price())
+                        .build();
+
+                orderMapper.saveOrderItem(item);
+                orderMapper.updateOrderItemStock(item);
+            });
+
+            transactionManager.commit(txStatus);
+        } catch (Exception ex) {
+            transactionManager.rollback(txStatus);
+            log.info(ex.getMessage());
+            return 0;
         }
-
-        int orderId = order.getId();
-
-        // Save OrderItems
-        orderDto.getOrderItems().forEach(e -> {
-            OrderItem item = OrderItem.builder()
-                    .order_id(orderId)
-                    .sku_id(e.getSku_id())
-                    .quantity(e.getQuantity())
-                    .unit_price(e.getUnit_price())
-                    .vat_price(e.getVat_price())
-                    .discount(e.getDiscount())
-                    .total_price(e.getTotal_price())
-                    .build();
-
-
-            orderMapper.saveOrderItem(item);
-            orderMapper.updateOrderItemStock(item);
-        });
 
         // Send E-Mail & Generate Report all in 1 Async Task
         if (order.getEmail() != null && order.getAddress() != null && order.getFull_name() != null) {
@@ -129,7 +141,6 @@ public class OrderService {
     }
 
     public List<OrderDto> findOrderByUserId(Integer userId) {
-
         return orderMSMapper.ListOrderToOrderDto(orderMapper.findOrderByUserId(userId, TenantContext.getCurrentTenant()));
     }
 
@@ -178,7 +189,7 @@ public class OrderService {
 
             ByteArrayOutputStream byteOut = new ByteArrayOutputStream(fileName.length());
             byte[] buffer = new byte[4096]; // some large number - pick one
-            for (int size; (((size = in.read(buffer)) != -1));)
+            for (int size; (((size = in.read(buffer)) != -1)); )
                 byteOut.write(buffer, 0, size);
 
             ByteArrayInputStream byteIn = new ByteArrayInputStream(byteOut.toByteArray());

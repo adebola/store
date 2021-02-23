@@ -104,11 +104,10 @@ public interface OrderMapper {
             "values(#{order_id}, #{sku_id}, #{quantity}, #{unit_price}, #{discount}, #{total_price}, #{vat_price})"
     )
     @SelectKey(statement = "select LAST_INSERT_ID()", keyProperty = "id", keyColumn = "id", before = false, resultType = Integer.class)
-    public Integer saveOrderItem(OrderItem orderItem);
+    public Integer saveOrderItem(OrderItem item);
 
-    @Update("update orderitems set quantity=Greatest(0, quantity-#{quantity}) where id = #{id}")
+    @Update("update sku_products set quantity=Greatest(0, quantity-#{quantity}) where id = #{sku_id}")
     public Integer updateOrderItemStock(OrderItem orderItem);
-
 
     //s.sku, pvo.name
     @Select(SelectOrderItems)

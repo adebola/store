@@ -1,5 +1,7 @@
 package io.factorialsystems.store.web.controller.test;
 
+import io.factorialsystems.store.domain.order.OrderItem;
+import io.factorialsystems.store.mapper.order.OrderMapper;
 import io.factorialsystems.store.payload.response.MessageResponse;
 import io.factorialsystems.store.reports.FirstReport;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/test")
 @RequiredArgsConstructor
 public class TestController {
+    private final OrderMapper orderMapper;
 
     @GetMapping({"","/"})
     public ResponseEntity<MessageResponse> TestReport() {
@@ -25,5 +28,25 @@ public class TestController {
         firstReport.runReport();
 
         return new ResponseEntity<>(new MessageResponse("OK"), HttpStatus.OK);
+    }
+
+    @GetMapping("/bill")
+    public ResponseEntity<?> TestOrderItems() {
+
+        OrderItem item = OrderItem.builder()
+                .order_id(22)
+                .sku_id(1)
+                .quantity(3)
+                .unit_price(25000.0)
+                .vat_price(0.0)
+                .discount(1.2)
+                .total_price(24500.0)
+                .build();
+
+        log.info(String.format("OrderItem BEFORE INSERT Quantity is %d", item.getQuantity()));
+        orderMapper.saveOrderItem(item);
+        log.info(String.format("OrderItem AFTER INSERT Quantity is %d, ID %d", item.getQuantity(), item.getId()));
+
+        return new ResponseEntity<>("Successes", HttpStatus.OK);
     }
 }
