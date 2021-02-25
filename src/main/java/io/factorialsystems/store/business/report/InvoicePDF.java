@@ -150,7 +150,7 @@ public class InvoicePDF  {
                     .setFixedPosition(30, 550, 100);
             document.add(p);
 
-            p = new Paragraph(String.format("%d",order.getId()))
+            p = new Paragraph(String.format("OSI-%05d",order.getId()))
                     .addStyle(normal)
                     .setFixedPosition(120, 550, 100);
             document.add(p);
@@ -257,7 +257,7 @@ public class InvoicePDF  {
             tableStyle.setFont(fontCourier)
                     .setFontSize(10);
 
-            int bottom = 440 - ((nLines - 1) * 25);
+            int bottom = 420 - ((nLines - 1) * 25);
             int size = orderItems.size();
 
             bottom -= (size-1) * 25;
