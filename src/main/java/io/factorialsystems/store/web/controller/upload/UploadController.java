@@ -41,4 +41,45 @@ public class UploadController {
         }
     }
 
+    @PostMapping("/stock")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<MessageResponse> uploadStock(@RequestPart(value = "file") MultipartFile file) {
+
+        try {
+            UploadFile uploadFile = fileService.uploadFile(file);
+
+            if (uploadFile == null) {
+                return new ResponseEntity<>(new MessageResponse("Error Uploading File"), HttpStatus.BAD_REQUEST);
+            }
+
+            updateService.updateStock(uploadFile);
+
+            return new ResponseEntity<>(new MessageResponse("Prices have been updated successfully"), HttpStatus.OK);
+        } catch (Exception ex) {
+            log.info(String.format("Exception Thrown Message : %s", ex.getMessage()));
+            return new ResponseEntity<>(new MessageResponse(ex.getMessage()), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/pricestock")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<MessageResponse> uploadPriceAndStock(@RequestPart(value = "file") MultipartFile file) {
+
+        try {
+            UploadFile uploadFile = fileService.uploadFile(file);
+
+            if (uploadFile == null) {
+                return new ResponseEntity<>(new MessageResponse("Error Uploading File"), HttpStatus.BAD_REQUEST);
+            }
+
+            updateService.uploadStockAndPrices(uploadFile);
+
+            return new ResponseEntity<>(new MessageResponse("Prices have been updated successfully"), HttpStatus.OK);
+        } catch (Exception ex) {
+            log.info(String.format("Exception Thrown Message : %s", ex.getMessage()));
+            return new ResponseEntity<>(new MessageResponse(ex.getMessage()), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+
 }

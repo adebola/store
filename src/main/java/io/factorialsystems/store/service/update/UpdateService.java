@@ -17,6 +17,38 @@ import java.io.IOException;
 public class UpdateService {
     private final ProductSKUMapper productSKUMapper;
 
+    public void updateStock(UploadFile uploadFile) {
+
+        String row;
+        BufferedReader csvReader = null;
+
+        try {
+            csvReader = new BufferedReader(new FileReader(uploadFile.getFile()));
+            while ((row = csvReader.readLine()) != null) {
+                String[] data = row.split(",");
+
+                String sku = data[0];
+                int  stock = Integer.parseInt(data[1]);
+
+                log.info(String.format("SKU: %s, stock: %d", sku, stock));
+
+                productSKUMapper.updateStock(sku, stock, TenantContext.getCurrentTenant());
+            }
+        } catch (Exception ex) {
+            throw new RuntimeException(ex.getMessage());
+        } finally {
+            uploadFile.getFile().delete();
+
+            try {
+                if (csvReader != null) {
+                    csvReader.close();
+                }
+            } catch (IOException ioe) {
+                ioe.printStackTrace();
+            }
+        }
+    }
+
     public void updatePrices(UploadFile uploadFile) {
 
         String row;
@@ -54,5 +86,45 @@ public class UpdateService {
                 ioe.printStackTrace();
             }
         }
+    }
+
+    public void uploadStockAndPrices(UploadFile uploadFile) {
+        String row;
+        BufferedReader csvReader = null;
+
+        try {
+            csvReader = new BufferedReader(new FileReader(uploadFile.getFile()));
+            while ((row = csvReader.readLine()) != null) {
+                String[] data = row.split(",");
+
+                String sku = data[0];
+                int stock = Integer.parseInt(data[1]);
+                double price = Double.parseDouble(data[2]);
+                double discount;
+
+                if (data.length == 4) {
+                    discount = Double.parseDouble(data[3]);
+                } else {
+                    discount = 0.0;
+                }
+
+                log.info(String.format("SKU: %s, stock: %d, price: %f, discount: %f", sku, stock, price, discount));
+
+                productSKUMapper.updateStockAndPrice(sku, stock, price, discount, TenantContext.getCurrentTenant());
+            }
+        } catch (Exception ex) {
+            throw new RuntimeException(ex.getMessage());
+        } finally {
+            uploadFile.getFile().delete();
+
+            try {
+                if (csvReader != null) {
+                    csvReader.close();
+                }
+            } catch (IOException ioe) {
+                ioe.printStackTrace();
+            }
+        }
+
     }
 }

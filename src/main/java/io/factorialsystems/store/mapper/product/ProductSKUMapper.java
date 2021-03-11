@@ -286,6 +286,14 @@ public interface ProductSKUMapper {
     @Update("update sku_products set price=#{price}, discount=#{discount}, lastModifiedAt=NOW() where sku=#{sku} and tenant_id=#{tenantId}")
     public Integer updatePrice(String sku, double price, double discount, String tenantId);
 
+    @Update("update sku_products set quantity=#{stock}, lastModifiedAt=NOW() where sku=#{sku} and tenant_id=#{tenantId}")
+    public Integer updateStock(String sku, int stock, String tenantId);
+
+    @Update("update sku_products set quantity=#{stock}, price=#{price}, discount=#{discount}, lastModifiedAt=NOW() where sku=#{sku} and tenant_id=#{tenantId}")
+    public Integer updateStockAndPrice(String sku, int stock, double price, double discount, String tenantId);
+
+
+
     @Insert(SAVE_SKU_PRODUCT)
     @SelectKey(statement = "select LAST_INSERT_ID()", keyProperty = "id", keyColumn = "id", before = false, resultType = Integer.class)
     public Integer saveProductSKU(SKU sku);

@@ -34,22 +34,19 @@ public class AuthTokenFilter extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
 
-
         String tenantHeader = request.getHeader("X-TenantID");
-        log.info("Tenant Header {}", tenantHeader);
 
-        if (tenantHeader != null && !tenantHeader.isEmpty()) {
-
-            // Set TenantHeader into context, we dont have the username yet
-            Context context = new Context(tenantHeader, null);
-            TenantContext.setContext(context);
-        } else {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        if (tenantHeader == null || tenantHeader.isEmpty()) {
+            response.setStatus(HttpServletResponse.SC_OK);
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
             response.getWriter().write("{\"error\": \"No organisation supplied\"}");
             response.getWriter().flush();
             return;
         }
+
+        // Set TenantHeader into context, we dont have the username yet
+        Context context = new Context(tenantHeader, null);
+        TenantContext.setContext(context);
 
         try {
             String jwt = parseJwt(request);
