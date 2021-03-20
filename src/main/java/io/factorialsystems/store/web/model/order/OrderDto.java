@@ -47,5 +47,11 @@ public class OrderDto {
     String telephone;
     String address;
 
+    Integer order_status;
+
+    @Null
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssZ", shape = JsonFormat.Shape.STRING)
+    private OffsetDateTime order_status_date;
+
     List<OrderItemDto> orderItems;
 }

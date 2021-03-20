@@ -4,6 +4,7 @@ import io.factorialsystems.store.domain.order.FulFillOrder;
 import io.factorialsystems.store.domain.order.OrderTotals;
 import io.factorialsystems.store.payload.response.MessageResponse;
 import io.factorialsystems.store.service.order.OrderService;
+import io.factorialsystems.store.web.model.order.OrderDeliveryUpdaterDto;
 import io.factorialsystems.store.web.model.order.OrderDto;
 import io.factorialsystems.store.web.model.order.OrderItemDto;
 import lombok.RequiredArgsConstructor;
@@ -92,6 +93,14 @@ public class OrderController {
         return new ResponseEntity<>(new MessageResponse("Success"), HttpStatus.OK);
     }
 
+    @PutMapping("/delivery/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<MessageResponse> UpdateDeliveryStatus(@PathVariable("id") Integer id, @Valid @RequestBody OrderDeliveryUpdaterDto dto) {
+        orderService.updateDeliveryStatus(dto);
+
+        return new ResponseEntity<>(new MessageResponse("Success"), HttpStatus.OK);
+    }
+
     @GetMapping("/export/pdf/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<InputStreamResource> exportPDF(@PathVariable("id") Integer id) {
@@ -100,5 +109,23 @@ public class OrderController {
         headers.add("Content-Disposition", "inline; filename=invoice.pdf");
 
         return ResponseEntity.ok().headers(headers).contentType(MediaType.APPLICATION_PDF).body(new InputStreamResource(byteArrayInputStream));
+    }
+
+    @GetMapping("/undelivered")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<OrderDto>> findUnDeliveredOrders() {
+        return new ResponseEntity<>(orderService.findUnDeliveredOrders(), HttpStatus.OK);
+    }
+
+    @GetMapping("/delivered")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<OrderDto>> findDeliveredOrders() {
+        return new ResponseEntity<>(orderService.findDeliveredOrders(), HttpStatus.OK);
+    }
+
+    @GetMapping("/rejected")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<OrderDto>> findRejectedOrders() {
+        return new ResponseEntity<>(orderService.findRejectedOrders(), HttpStatus.OK);
     }
 }

@@ -15,6 +15,7 @@ import io.factorialsystems.store.security.TenantContext;
 import io.factorialsystems.store.task.TaskPDFMail;
 import io.factorialsystems.store.web.mapper.order.OrderItemMSMapper;
 import io.factorialsystems.store.web.mapper.order.OrderMSMapper;
+import io.factorialsystems.store.web.model.order.OrderDeliveryUpdaterDto;
 import io.factorialsystems.store.web.model.order.OrderDto;
 import io.factorialsystems.store.web.model.order.OrderItemDto;
 import lombok.RequiredArgsConstructor;
@@ -173,6 +174,18 @@ public class OrderService {
         return orderMSMapper.ListOrderToOrderDto(orderMapper.findOrdersForDelivery(endDate, TenantContext.getCurrentTenant()));
     }
 
+    public List<OrderDto> findUnDeliveredOrders() {
+        return orderMSMapper.ListOrderToOrderDto(orderMapper.findUnDeliveredOrders(TenantContext.getCurrentTenant()));
+    }
+
+    public List<OrderDto> findDeliveredOrders() {
+        return orderMSMapper.ListOrderToOrderDto(orderMapper.findDeliveredOrders(TenantContext.getCurrentTenant()));
+    }
+
+    public List<OrderDto> findRejectedOrders() {
+        return orderMSMapper.ListOrderToOrderDto(orderMapper.findRejectedOrders(TenantContext.getCurrentTenant()));
+    }
+
     public void fulfillOrder(FulFillOrder fulFillOrder) {
         orderMapper.fulfillOrder(fulFillOrder);
     }
@@ -200,5 +213,9 @@ public class OrderService {
             log.info(String.format("Error generating invoice : %s", ex.getMessage()));
             return null;
         }
+    }
+
+    public void updateDeliveryStatus(OrderDeliveryUpdaterDto dto) {
+        orderMapper.updateDeliveryStatus(dto);
     }
 }

@@ -233,6 +233,8 @@ create table orders(
     user_id int(11),
     order_date timestamp DEFAULT CURRENT_TIMESTAMP,
     fulfill_date timestamp,
+    order_status int(11) DEFAULT 1,
+    order_status_date timestamp,
     order_amount decimal(10, 2) DEFAULT 0,
     payment_ref  varchar(16),
     transaction_id varchar(16),

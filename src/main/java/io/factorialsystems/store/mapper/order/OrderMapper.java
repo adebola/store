@@ -4,6 +4,7 @@ import io.factorialsystems.store.domain.order.FulFillOrder;
 import io.factorialsystems.store.domain.order.Order;
 import io.factorialsystems.store.domain.order.OrderItem;
 import io.factorialsystems.store.domain.order.OrderTotals;
+import io.factorialsystems.store.web.model.order.OrderDeliveryUpdaterDto;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Component;
 
@@ -16,10 +17,19 @@ public interface OrderMapper {
     final String SelectSQLAllOrder = "select id, user_id, order_date, fulfill_date, order_amount, pickup, deliver, full_name, email, telephone, address, payment_ref, transaction_id, pin, tenant_id " +
                                      "from orders where tenant_id = #{tenantId}";
 
+    final String SelectSQLUnDeliveredOrders = "select id, user_id, order_date, fulfill_date, order_amount, pickup, deliver, full_name, email, telephone, address, payment_ref, transaction_id, pin, tenant_id " +
+            "from orders where order_status = 1 and tenant_id = #{tenantId}";
+
+    final String SelectSQLDeliveredOrders = "select id, user_id, order_date, fulfill_date, order_amount, pickup, deliver, full_name, email, telephone, address, payment_ref, transaction_id, pin, tenant_id " +
+            "from orders where order_status = 2 and order_status_date is not null and tenant_id = #{tenantId}";
+
+    final String SelectSQLRejectedOrders = "select id, user_id, order_date, fulfill_date, order_amount, pickup, deliver, full_name, email, telephone, address, payment_ref, transaction_id, pin, tenant_id " +
+            "from orders where order_status = 3 and order_status_date is not null and tenant_id = #{tenantId}";
+
     final String SelectSQLAllOrderDelivery = "select id, user_id, order_date, fulfill_date, order_amount, pickup, deliver, full_name, email, telephone, address, payment_ref, transaction_id, pin, tenant_id " +
                                              "from orders where fulfill_date is not null and fulfill_date < #{date} and tenant_id = #{tenantId}";
 
-    final String SelectSQLOrder = "select id, user_id, order_date, order_amount, pickup, deliver, full_name, email, telephone, address, payment_ref, transaction_id, pin, fulfill_date, tenant_id " +
+    final String SelectSQLOrder = "select id, user_id, order_date, order_amount, pickup, deliver, full_name, email, telephone, address, payment_ref, transaction_id, pin, fulfill_date, order_status, order_status_date, tenant_id " +
                                   "from orders where id = #{id} and tenant_id = #{tenantId}";
 
     final String SelectSQLOrderByUserId = "select id, user_id, order_date, order_amount, pickup, deliver, full_name, email, telephone, address, payment_ref, transaction_id, pin, tenant_id " +
@@ -68,6 +78,8 @@ public interface OrderMapper {
             @Result(property = "address", column = "address"),
             @Result(property = "paymentRef", column = "payment_ref"),
             @Result(property = "transaction_id", column = "transaction_id"),
+            @Result(property = "order_status", column = "order_status"),
+            @Result(property = "order_status_date", column = "order_status_date"),
             @Result(property = "tenant_id", column = "tenant_id"),
             @Result(property = "orderItems", column = "id", javaType = List.class, many=@Many(select="findOrderItemsById"))
     })
@@ -156,6 +168,66 @@ public interface OrderMapper {
             @Result(property = "tenant_id", column = "tenant_id"),
     })
     List<Order> findOrdersForDelivery(Date date, String tenantId);
+
+    @Select(SelectSQLUnDeliveredOrders)
+    @Results(value = {
+            @Result(property="id", column = "id"),
+            @Result(property = "user_id", column = "user_id"),
+            @Result(property = "orderedAt", column = "order_date"),
+            @Result(property = "orderAmount", column = "order_amount"),
+            @Result(property = "deliver", column = "deliver"),
+            @Result(property = "pickup", column = "pickup"),
+            @Result(property = "full_name", column = "full_name"),
+            @Result(property = "fulfilledAt", column = "fulfill_date"),
+            @Result(property = "email", column = "email"),
+            @Result(property = "telephone", column = "telephone"),
+            @Result(property = "address", column = "address"),
+            @Result(property = "paymentRef", column = "payment_ref"),
+            @Result(property = "transaction_id", column = "transaction_id"),
+            @Result(property = "tenant_id", column = "tenant_id"),
+    })
+    List<Order> findUnDeliveredOrders(String tenantId);
+
+    @Select(SelectSQLDeliveredOrders)
+    @Results(value = {
+            @Result(property="id", column = "id"),
+            @Result(property = "user_id", column = "user_id"),
+            @Result(property = "orderedAt", column = "order_date"),
+            @Result(property = "orderAmount", column = "order_amount"),
+            @Result(property = "deliver", column = "deliver"),
+            @Result(property = "pickup", column = "pickup"),
+            @Result(property = "full_name", column = "full_name"),
+            @Result(property = "fulfilledAt", column = "fulfill_date"),
+            @Result(property = "email", column = "email"),
+            @Result(property = "telephone", column = "telephone"),
+            @Result(property = "address", column = "address"),
+            @Result(property = "paymentRef", column = "payment_ref"),
+            @Result(property = "transaction_id", column = "transaction_id"),
+            @Result(property = "tenant_id", column = "tenant_id"),
+    })
+    List<Order> findDeliveredOrders(String tenantId);
+
+    @Select(SelectSQLRejectedOrders)
+    @Results(value = {
+            @Result(property="id", column = "id"),
+            @Result(property = "user_id", column = "user_id"),
+            @Result(property = "orderedAt", column = "order_date"),
+            @Result(property = "orderAmount", column = "order_amount"),
+            @Result(property = "deliver", column = "deliver"),
+            @Result(property = "pickup", column = "pickup"),
+            @Result(property = "full_name", column = "full_name"),
+            @Result(property = "fulfilledAt", column = "fulfill_date"),
+            @Result(property = "email", column = "email"),
+            @Result(property = "telephone", column = "telephone"),
+            @Result(property = "address", column = "address"),
+            @Result(property = "paymentRef", column = "payment_ref"),
+            @Result(property = "transaction_id", column = "transaction_id"),
+            @Result(property = "tenant_id", column = "tenant_id"),
+    })
+    List<Order> findRejectedOrders(String tenantId);
+
+    @Update("update orders set order_status = #{status}, order_status_date = NOW() where id = #{id}")
+    Integer updateDeliveryStatus(OrderDeliveryUpdaterDto dto);
 }
 
 

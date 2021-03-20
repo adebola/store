@@ -27,6 +27,8 @@ public class Order {
     String email;
     String telephone;
     String address;
+    Integer order_status;
+    Date order_status_date;
     String tenant_id;
 
     List<OrderItem> orderItems;

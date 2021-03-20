@@ -25,7 +25,9 @@ public interface OrderMSMapper {
             @Mapping(source = "deliver", target = "deliver"),
             @Mapping(source = "telephone", target = "telephone"),
             @Mapping(source = "address", target = "address"),
-            @Mapping(source = "orderItems", target = "orderItems")
+            @Mapping(source = "orderItems", target = "orderItems"),
+            @Mapping(source = "order_status", target = "order_status"),
+            @Mapping(source = "order_status_date", target = "order_status_date")
     })
     OrderDto OrderToOrderDto(Order order);
 
@@ -45,7 +47,9 @@ public interface OrderMSMapper {
             @Mapping(source = "deliver", target = "deliver"),
             @Mapping(source = "telephone", target = "telephone"),
             @Mapping(source = "address", target = "address"),
-            @Mapping(source = "orderItems", target = "orderItems")
+            @Mapping(source = "orderItems", target = "orderItems"),
+            @Mapping(source = "order_status", target = "order_status"),
+            @Mapping(source = "order_status_date", target = "order_status_date")
     })
     Order OrderDtoToOrder(OrderDto orderDto);
 
