@@ -27,7 +27,6 @@ package io.factorialsystems.store.domain.user;
 
 public enum RoleType {
     ROLE_USER,
-    ROLE_MODERATOR,
     ROLE_OPERATOR,
     ROLE_ADMIN,
     ROLE_SUPER_USER

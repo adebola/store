@@ -22,7 +22,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
 @Service
 @Slf4j
@@ -124,36 +127,49 @@ public class UserService {
         userMapper.updateDefaultAddress(id, userDto.getAddress());
 
         Set<String> strRoles = userDto.getRoles();
-        List<Role> roles = userMapper.selectUserRoles(id);
+        saveRoles(id, strRoles);
+    }
 
-        if (strRoles == null) {
-          // Remove Admin from User Profile if it already existed
-          Optional<Role> o = roles.stream()
-                  .filter(role -> role.getRoleType() == RoleType.ROLE_ADMIN)
-                  .findAny();
+    private boolean saveRoles(int id, Set<String> roles) {
 
+        // Get Existing Roles Form Database
+        List<Role> existingRoles = userMapper.selectUserRoles(id);
 
-          if (o != null && o.isPresent()) {
-              log.info(String.format("Removing Admin Role from User %s", userDto.getEmail()));
-              userMapper.removeRole(id, RoleType.ROLE_ADMIN.ordinal(), TenantContext.getCurrentTenant());
-          }
-        } else {
-            // Add Admin Role to User profile if it has been assigned
-            String roleString = strRoles.stream().findFirst().get();
+        if (roles == null || roles.isEmpty()) {
+            for (Role role: existingRoles) {
 
-            if (roleString.equals("admin")) {
-                Optional<Role> o = roles.stream()
-                        .filter(r -> r.getRoleType() == RoleType.ROLE_ADMIN)
-                        .findFirst();
-
-                if (o == null || !o.isPresent()) {
-                    log.info(String.format("Admin RoleType not found in User Account %s it has been added", userDto.getEmail()));
-                    userMapper.addRole(id, RoleType.ROLE_ADMIN.ordinal(), TenantContext.getCurrentTenant());
-                } else {
-                    log.info(String.format("Admin RoleType already Found In Profile of %s Request Ignored", userDto.getEmail()));
+                if (!role.getRoleType().name().equals("ROLE_USER")) {
+                    userMapper.removeRole(id, role.getRoleType().ordinal() + 1, TenantContext.getCurrentTenant());
                 }
             }
+
+            return true;
         }
+
+        for (String role: roles) {
+            Role rl = existingRoles.stream()
+                    .filter(r -> r.getRoleType().name().equals(role))
+                    .findAny()
+                    .orElse(null);
+
+            if (rl == null) {
+                log.info(String.format("Ordinal for %s is %d", role, RoleType.valueOf(role).ordinal()));
+                userMapper.addRole(id, RoleType.valueOf(role).ordinal() + 1, TenantContext.getCurrentTenant());
+            }
+        }
+
+        for (Role role: existingRoles) {
+           String sr = roles.stream()
+                   .filter(s -> role.getRoleType().name().equals(s))
+                   .findAny()
+                   .orElse(null);
+
+           if (sr == null && role.getRoleType() != RoleType.ROLE_USER) {
+               userMapper.removeRole(id, role.getRoleType().ordinal() + 1, TenantContext.getCurrentTenant());
+           }
+        }
+
+        return true;
     }
 
     public void SaveUserAdmin(UserDto userDto) {
@@ -181,14 +197,12 @@ public class UserService {
         roles.add(userRole);
 
         Set<String> strRoles = userDto.getRoles();
-        Optional<String> o = strRoles.stream()
-                .filter(r -> r.equals("admin"))
-                .findFirst();
 
-        if (o != null && o.isPresent()) {
-            Role adminRole = roleMapper.findRoleByType (RoleType.ROLE_ADMIN, TenantContext.getCurrentTenant());
-
-            roles.add(adminRole);
+        if (strRoles != null && !strRoles.isEmpty()) {
+            for (String strRole : strRoles) {
+                Role tempRole = roleMapper.findRoleByType(RoleType.valueOf(strRole), TenantContext.getCurrentTenant());
+                roles.add(tempRole);
+            }
         }
 
         user.setRoles(roles);

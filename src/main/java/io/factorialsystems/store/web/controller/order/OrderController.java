@@ -30,7 +30,7 @@ public class OrderController {
     private final OrderService orderService;
 
     @PostMapping("/")
-    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'OPERATOR', 'USER')")
     public ResponseEntity<Integer> save(@Valid @RequestBody OrderDto order) {
 
         Integer response = orderService.SaveOrder(order);
@@ -43,50 +43,50 @@ public class OrderController {
     }
 
     @GetMapping("/test")
-    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'OPERATOR', 'USER')")
     public ResponseEntity<MessageResponse> testEmail () {
         orderService.sendTestEmail();
         return new ResponseEntity<>(new MessageResponse("It is Well"), HttpStatus.OK);
     }
 
     @GetMapping("/delivery")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'OPERATOR')")
     public ResponseEntity<List<OrderDto>> findOrdersForDelivery () {
         return new ResponseEntity<>(orderService.findAllOrdersForDelivery(), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'OPERATOR', 'USER')")
     public ResponseEntity<OrderDto> findOrderById(@PathVariable("id") Integer id) {
         return new ResponseEntity<>(orderService.findOrderById(id), HttpStatus.OK);
     }
 
     @GetMapping("/user/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'OPERATOR', 'USER')")
     public ResponseEntity<List<OrderDto>> findOrdersByUsersId(@PathVariable("id") Integer id) {
         return new ResponseEntity<>(orderService.findOrderByUserId(id), HttpStatus.OK);
     }
 
     @GetMapping("/orderitem/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'OPERATOR', 'USER')")
     public ResponseEntity<List<OrderItemDto>> findOrderItemsById(@PathVariable("id") Integer id) {
         return new ResponseEntity<>(orderService.findOrderItemById(id), HttpStatus.OK);
     }
 
     @GetMapping("/totals")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'OPERATOR')")
     public ResponseEntity<List<OrderTotals>> findOrderTotals() {
         return new ResponseEntity<>(orderService.findOrderTotals(), HttpStatus.OK);
     }
 
     @GetMapping({"/",""})
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'OPERATOR')")
     public ResponseEntity<List<OrderDto>> findAll() {
         return new ResponseEntity<>(orderService.findAllOrders(), HttpStatus.OK);
     }
 
     @PutMapping("/fulfill/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN', 'OPERATOR')")
     public ResponseEntity<MessageResponse> fulfillOrder(@PathVariable("id") Integer id, @Valid @RequestBody FulFillOrder fulFillOrder) {
         orderService.fulfillOrder(fulFillOrder);
 
@@ -94,7 +94,7 @@ public class OrderController {
     }
 
     @PutMapping("/delivery/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'OPERATOR')")
     public ResponseEntity<MessageResponse> UpdateDeliveryStatus(@PathVariable("id") Integer id, @Valid @RequestBody OrderDeliveryUpdaterDto dto) {
         orderService.updateDeliveryStatus(dto);
 
@@ -102,7 +102,7 @@ public class OrderController {
     }
 
     @GetMapping("/export/pdf/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'OPERATOR')")
     public ResponseEntity<InputStreamResource> exportPDF(@PathVariable("id") Integer id) {
         ByteArrayInputStream byteArrayInputStream = orderService.getOrderInvoice(id);
         HttpHeaders headers = new HttpHeaders();
@@ -112,19 +112,19 @@ public class OrderController {
     }
 
     @GetMapping("/undelivered")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'OPERATOR')")
     public ResponseEntity<List<OrderDto>> findUnDeliveredOrders() {
         return new ResponseEntity<>(orderService.findUnDeliveredOrders(), HttpStatus.OK);
     }
 
     @GetMapping("/delivered")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'OPERATOR')")
     public ResponseEntity<List<OrderDto>> findDeliveredOrders() {
         return new ResponseEntity<>(orderService.findDeliveredOrders(), HttpStatus.OK);
     }
 
     @GetMapping("/rejected")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'OPERATOR')")
     public ResponseEntity<List<OrderDto>> findRejectedOrders() {
         return new ResponseEntity<>(orderService.findRejectedOrders(), HttpStatus.OK);
     }

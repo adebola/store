@@ -84,7 +84,8 @@ create table user_roles (
     user_id int(11) NOT NULL,
     role_id int(11) NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(id),
-    FOREIGN KEY (role_id) REFERENCES roles(id)
+    FOREIGN KEY (role_id) REFERENCES roles(id),
+    UNIQUE KEY _idx_user_role(user_id, role_id)
 );
 
 create table categories (

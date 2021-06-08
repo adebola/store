@@ -181,8 +181,8 @@ public class AuthController {
                         log.info("Added Admin Role");
                         break;
 
-                    case "mod":
-                        Role modRole = roleService.findRoleByType(RoleType.ROLE_MODERATOR);
+                    case "operator":
+                        Role modRole = roleService.findRoleByType(RoleType.ROLE_OPERATOR);
 
                         if (modRole == null) {
                             throw new RuntimeException("Error Role MODERATOR Not Found");
