@@ -55,6 +55,8 @@ public class MyBatisConfiguration {
     public DataSource dataSource() {
         log.info(String.format("Driver: %s, url: %s", driver, url));
         PooledDataSource dataSource = new PooledDataSource(driver, url, username, password);
+        dataSource.setPoolPingEnabled(true);
+        dataSource.setPoolPingQuery("select 1");
         log.info("Datasource created successfully");
         return dataSource;
     }
