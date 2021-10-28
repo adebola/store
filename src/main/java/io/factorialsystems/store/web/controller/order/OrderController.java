@@ -86,7 +86,7 @@ public class OrderController {
     }
 
     @PutMapping("/fulfill/{id}")
-    @PreAuthorize("hasRole('ADMIN', 'OPERATOR')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'OPERATOR')")
     public ResponseEntity<MessageResponse> fulfillOrder(@PathVariable("id") Integer id, @Valid @RequestBody FulFillOrder fulFillOrder) {
         orderService.fulfillOrder(fulFillOrder);
 

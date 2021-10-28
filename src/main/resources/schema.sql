@@ -294,3 +294,11 @@ create table password_reset_request(
     FOREIGN KEY (user_id) REFERENCES users(id),
     PRIMARY KEY (id)
 );
+
+create table reports (
+    id int AUTO_INCREMENT,
+    report_name varchar(64) NOT NULL,
+    report_file varchar(64) NOT NULL,
+    report_narrative varchar(256),
+    PRIMARY KEY (id)
+)

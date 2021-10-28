@@ -2,8 +2,6 @@ package io.factorialsystems.store.web.controller.test;
 
 import io.factorialsystems.store.domain.order.OrderItem;
 import io.factorialsystems.store.mapper.order.OrderMapper;
-import io.factorialsystems.store.payload.response.MessageResponse;
-import io.factorialsystems.store.reports.FirstReport;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -21,14 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class TestController {
     private final OrderMapper orderMapper;
-
-    @GetMapping({"","/"})
-    public ResponseEntity<MessageResponse> TestReport() {
-        FirstReport firstReport = new FirstReport();
-        firstReport.runReport();
-
-        return new ResponseEntity<>(new MessageResponse("OK"), HttpStatus.OK);
-    }
 
     @GetMapping("/bill")
     public ResponseEntity<?> TestOrderItems() {
